@@ -1,0 +1,11 @@
+node_modules 
+
+.env
+
+# Hide Duplicate entry cleanup files
+cleanupRentFlats.js
+cleanupSellFlats.js
+
+# Firebase config files 
+firebaseConfig.js
+razorpayConfig.js

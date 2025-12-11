@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin Panel for Real Estate User Management">
+    <meta name="author" content="QuadCoders Team">
+    <meta name="theme-color" content="#1e3a8a">
+    <link rel="icon" href="img/DSA.png" type="image/x-icon">
+    <title>DSA Enterprise - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caprasimo&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Base & Reset Styles --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex-grow: 1;
+        } 
+
+        .data-section, .search-section {
+            scroll-margin-top: 85px;
+        }
+
+        /* --- Navbar Styles --- */
+        .navbar {
+            background: #1e3a8a;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 25px;
+            color: #fff;
+            background: transparent;
+            cursor: pointer;
+            font-family: "Caprasimo", serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .logo span {
+            background: transparent;
+            vertical-align: middle;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            vertical-align: middle;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 4px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+
+        /* --- Search Section --- */
+        .search-section {
+            background: white;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .search-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .search-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .search-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex-grow: 1;
+            min-width: 200px;
+        }
+
+        .search-label {
+            font-weight: 500;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .search-input, .dropdown-btn {
+            height: 50px;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+            width: 100%;
+        }
+
+        .search-input:focus, .dropdown.active .dropdown-btn {
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+
+        .dropdown {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .dropdown-btn {
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #374151;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            margin-top: 0.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 100;
+            max-height: 250px;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown.active .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-option {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .dropdown-option:hover {
+            background: #f8fafc;
+        }
+
+        .dropdown-option.selected {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        .search-btn {
+            height: 50px;
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(30, 58, 138, 0.3);
+        }
+        
+        /* --- Data Section (Counters & Table) --- */
+        .data-section {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .user-counters {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .counter-card {
+            flex: 1;
+            min-width: 150px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .counter-card h4 {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .counter-card .count {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        
+        .data-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .data-title {
+            font-size: 1.75rem;
+            color: #333;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+            overflow: hidden; 
+        }
+
+        .data-table th, .data-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            word-wrap: break-word;
+        }
+
+        .data-table th {
+            background-color: #f8fafc;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+        }
+
+        .data-table tr:hover {
+            background-color: #eff6ff;
+            cursor: pointer;
+        }
+
+        .data-table td {
+            color: #374151;
+        }
+        
+        .status-active {
+            color: #16a34a;
+            background-color: #dcfce7;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+        
+        .status-inactive {
+            color: #dc2626;
+            background-color: #fee2e2;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        /* --- Side Panel Styles --- */
+        .side-panel {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            right: 0;
+            top: 0;
+            background: #fff;
+            overflow-x: hidden;
+            transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: -2px 0 15px rgba(0,0,0,0.2);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+        }
+
+        .panel-content {
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+        
+        .panel-content form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .panel-content label {
+            font-weight: 500;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .panel-content input, .panel-content select {
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 100%;
+        }
+        
+        .panel-content input:focus, .panel-content select:focus {
+            outline: none;
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-container .fa-eye, .password-container .fa-eye-slash {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #888;
+        }
+        .button-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .button-row button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        #logoutBtn {
+            width: 100%;
+            margin-top: 1.5rem;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 8px;
+            padding: 12px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            cursor: pointer;
+        }
+        #logoutBtn:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+.side-panel.open {
+    width: 400px; 
+}
+
+/* Media queries for responsiveness (applied to the open state) */
+@media (max-width: 1023px) {
+    .side-panel.open {
+        width: 400px; /* Adjust for medium screens */
+    }
+}
+
+@media (max-width: 425px) {
+    .side-panel.open {
+        width: 100%; /* Full width for mobile screens */
+    }
+}
+        /* --- Overlay for background dim --- */
+        .overlay {
+            position: fixed;
+            display: none;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1500;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        .overlay.show {
+            display: block;
+            opacity: 1;
+        }
+
+        /* --- Responsive Styles --- */
+        @media (max-width: 768px) {
+            .navbar { padding: 1rem; }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: #1e3a8a;
+                flex-direction: column;
+                padding: 1rem 0;
+            }
+            .nav-links.active { display: flex; }
+            .hamburger { display: flex; }
+            .search-form { flex-direction: column; align-items: stretch; }
+            .data-section { padding: 1rem; }
+            
+            /* Mobile Table Styles */
+            .data-table.mobile-table,
+            .data-table.mobile-table thead,
+            .data-table.mobile-table tbody,
+            .data-table.mobile-table th,
+            .data-table.mobile-table td,
+            .data-table.mobile-table tr {
+                display: block;
+            }
+
+            .data-table.mobile-table thead {
+                display: none;
+            }
+
+            .data-table.mobile-table tr {
+                border: 1px solid #ddd;
+                margin-bottom: 15px;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            .data-table.mobile-table td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+                text-align: right;
+                border-bottom: 1px solid #f2f2f2;
+            }
+
+            .data-table.mobile-table td:last-child {
+                border-bottom: none;
+            }
+            
+            .data-table.mobile-table td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 45%;
+                padding: 12px;
+                font-weight: bold;
+                color: #333;
+                white-space: nowrap;
+                text-align: left;
+                top: 50%;
+                transform: translateY(-50%);
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .data-table.mobile-table {
+                display: table;
+            }
+            .data-table.mobile-table thead,
+            .data-table.mobile-table tbody,
+            .data-table.mobile-table tr,
+            .data-table.mobile-table th,
+            .data-table.mobile-table td {
+                display: table-cell;
+            }
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer * {
+            background: transparent;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: transparent;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 2rem;
+            background: transparent;
+        }
+
+        .footer-left {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: transparent;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            background: transparent;
+            font-family: "Caprasimo", serif;
+            font-style: normal;
+        }
+
+        .footer-logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .footer-description {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            background: transparent;
+        }
+
+        .footer-copyright {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+            background: transparent;
+        }
+
+        .footer-center h3,
+        .footer-right h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: white;
+            background: transparent;
+        }
+
+        .footer-nav {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            background: transparent;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-nav li {
+            background: transparent;
+        }
+
+        .footer-nav a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 400;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0;
+            background: transparent;
+        }
+
+        .footer-nav a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .footer-nav a i {
+            font-size: 0.875rem;
+            width: 16px;
+            background: transparent;
+        }
+
+        .footer .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: transparent;
+        }
+
+        .footer .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            background: transparent;
+            margin-bottom: 0;
+            padding: 0;
+        }
+
+        .footer .contact-item i {
+            width: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            background: transparent;
+        }
+
+        .footer .contact-item span {
+            background: transparent;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            background: transparent;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .social-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .social-link i {
+            background: transparent;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 1.5rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+            background: transparent;
+        }
+        @media (max-width: 768px) {
+            .footer {
+                padding: 2rem 1rem 1rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+            }
+
+            .footer-left {
+                align-items: center;
+                text-align: center;
+            }
+
+            .footer-nav {
+                align-items: center;
+            }
+
+            .footer-nav a:hover {
+                transform: none;
+            }
+
+            .footer .contact-info {
+                align-items: center;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+        }
+
+        /* Pop-up Overlay styles */
+        #custom-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001; /* Ensure it's on top of other content */
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        /* Pop-up Card styles */
+        .custom-popup-card {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        /* Hide the pop-up by default */
+        .popup-hidden {
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        /* Show the pop-up with a smooth animation */
+        .popup-visible {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .custom-popup-content {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Adjust button styles to match your design */
+        .custom-popup-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .custom-popup-buttons .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: #1e3a8a;
+            color: #fff;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: #fff;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <div class="logo">
+  <a onclick="history.back()">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+  <a>
+    <img src="img/DSA.png" alt="Logo">
+    <span>DSA Enterprise</span>
+  </a>
+</div>
+
+    <ul class="nav-links">
+        <li><a href="sellFlats.html">Sell Flats</a></li>
+        <li><a href="rentFlats.html">Rent Flats</a></li>
+        <li><a href="#home">Home</a></li>
+        <li>
+            <a href="admin.html" id="profileIcon"><i class="fa fa-user"></i></a>
+        </li>
+    </ul>
+    <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</nav>
+
+<div id="custom-popup-overlay" class="popup-hidden">
+        <div class="custom-popup-card">
+            <div class="custom-popup-content">
+                <h3 id="popup-title"></h3>
+                <p id="popup-message"></p>
+            </div>
+            <div class="custom-popup-buttons">
+                <button id="popup-ok-btn" class="btn btn-primary">OK</button>
+                <button id="popup-close-btn" class="btn btn-danger">Close</button>
+            </div>
+        </div>
+    </div>
+
+<main>
+    <section class="search-section" id="home">
+        <div class="search-container">
+            <h2 class="search-title">Admin Dashboard</h2>
+            <form class="search-form" onsubmit="event.preventDefault();">
+                <div class="search-group">
+                    <label for="mobileSearch" class="search-label">Enter Mobile No.</label>
+                    <input type="tel" class="search-input" id="mobileSearch" name="mobile" placeholder="e.g., 9876543210" pattern="[6789]\d{9}" maxlength="10" title="Enter a valid 10-digit mobile number.">
+                </div>
+                <div class="search-group">
+                    <label class="search-label">Account Status</label>
+                    <div class="dropdown" id="accountStatusFilter">
+                        <div class="dropdown-btn">
+                            <span>All Statuses</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="dropdown-content">
+                            <div class="dropdown-option" data-value="">All Statuses</div>
+                            <div class="dropdown-option" data-value="active">Active</div>
+                            <div class="dropdown-option" data-value="inactive">Inactive</div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="search-btn" id="searchBtn">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <section class="data-section" id="home">
+        <div class="user-counters">
+            <div class="counter-card">
+                <h4>Total Users</h4>
+                <div class="count" id="totalUsers">0</div>
+            </div>
+            <div class="counter-card">
+                <h4>Agents</h4>
+                <div class="count" id="agentUsers">0</div>
+            </div>
+            <div class="counter-card">
+                <h4>Owners</h4>
+                <div class="count" id="ownerUsers">0</div>
+            </div>
+            <div class="counter-card">
+                <h4>Active Users</h4>
+                <div class="count" id="activeUsers">0</div>
+            </div>
+            <div class="counter-card">
+                <h4>Inactive Users</h4>
+                <div class="count" id="inactiveUsers">0</div>
+            </div>
+        </div>
+
+        <div class="data-header">
+            <h2 class="data-title">User Management</h2>
+        </div>
+        
+        <div class="data-table-wrapper">
+             <table class="data-table" id="usersTable">
+                 <thead>
+                     <tr>
+                         <th>Name</th>
+                         <th>Contact</th>
+                         <th>Date Joined</th>
+                         <th>User Type</th>
+                         <th>Status</th>
+                     </tr>
+                 </thead>
+                 <tbody id="usersBody">
+                     </tbody>
+             </table>
+        </div>
+    </section>
+</main>
+
+<div id="profilePanel" class="side-panel">
+    <div class="panel-header">
+        <span>My Profile</span>
+        <button class="close-btn" id="closeProfileBtn">&times;</button>
+    </div>
+    <div class="panel-content">
+        <label for="profileName">Name:</label>
+        <input type="text" id="profileName" readonly>
+        <label for="profileMobile">Mobile Number:</label>
+        <input type="text" id="profileMobile" readonly>
+        <label for="profilePassword">Password:</label>
+        <div class="password-container">
+            <input type="password" id="profilePassword" value="*******" disabled>
+            <i class="fas fa-eye-slash" id="togglePassword"></i>
+        </div>
+        <button id="logoutBtn">Logout</button>
+    </div>
+</div>
+
+<div id="overlay" class="overlay"></div>
+
+<footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <div class="footer-logo">
+                        <img src="img/DSA.png" alt="Logo">
+                        <span>DSA Enterprise</span>
+                    </div>
+                    <p class="footer-description">
+                        Your trusted partner in finding the perfect property. We combine years of experience with modern technology to help you buy, sell, or rent with confidence.
+                    </p>
+                    <div class="footer-copyright">
+                        © 2025 DSA Enterprise. All rights reserved.
+                    </div>
+                </div>
+
+                <div class="footer-center">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-nav">
+                        <li><a href="#home"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="#about"><i class="fas fa-info-circle"></i> About</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-right">
+                    <h3>Get In Touch</h3>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Mumbai, Maharashtra, India</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>
+                                <a href="mailto:dsaenterprise30@gmail.com" style="text-decoration: none; color: inherit;">dsaenterprise30@gmail.com</a>
+                            </span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>+91 9004053133</span>
+                        </div>
+                    </div>
+                    
+                    <div class="social-links">
+                        <a href="https://wa.link/qykos7" class="social-link" title="Whatsapp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="https://www.facebook.com/share/14R1w7XsyMb/" class="social-link" title="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://www.instagram.com/dsa.enterprise?igsh=N3pidmZ6YjY2MDc=&utm_source=ig_contact_invite" class="social-link" title="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                Privacy Policy | Terms of Service
+            </div>
+        </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // --- Initial State & Data ---
+
+    // --- DOM Element Selectors ---
+    const usersTable = document.getElementById('usersTable');
+    const usersBody = document.getElementById('usersBody');
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.querySelector('.nav-links');
+    const overlay = document.getElementById('overlay');
+    
+    // Panels
+    const profilePanel = document.getElementById('profilePanel');
+
+    // Panel Triggers
+    const profileIcon = document.getElementById('profileIcon');
+    
+    // Panel Close Buttons
+    const closeProfileBtn = document.getElementById('closeProfileBtn');
+    
+    // Filtering
+    const mobileSearchInput = document.getElementById('mobileSearch');
+    const statusDropdown = document.getElementById('accountStatusFilter');
+    const togglePassword = document.getElementById('togglePassword');
+    const profilePasswordInput = document.getElementById('profilePassword');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userData = JSON.parse(localStorage.getItem("admin"));
+    let allusers = [];
+
+    // --- Core Functions ---
+    
+    // Unified Custom Popup Function
+    function showCustomPopup(message, isConfirm = false, callback = null) {
+        const popupOverlay = document.getElementById('custom-popup-overlay');
+        const popupMessage = document.getElementById('popup-message');
+        const popupOkBtn = document.getElementById('popup-ok-btn');
+        const popupCloseBtn = document.getElementById('popup-close-btn');
+
+        popupMessage.textContent = message;
+
+        if (isConfirm) {
+            popupOkBtn.textContent = "Yes";
+            popupOkBtn.classList.remove('btn-primary');
+            popupOkBtn.classList.add('btn-success');
+            popupCloseBtn.style.display = 'inline-block';
+            popupCloseBtn.textContent = "No";
+        } else {
+            popupOkBtn.textContent = "OK";
+            popupOkBtn.classList.add('btn-primary');
+            popupOkBtn.classList.remove('btn-success');
+            popupCloseBtn.style.display = 'none';
+        }
+
+        popupOkBtn.onclick = () => {
+            hideCustomPopup();
+            if (callback) callback(true);
+        };
+
+        popupCloseBtn.onclick = () => {
+            hideCustomPopup();
+            if (callback) callback(false);
+        };
+        
+        popupOverlay.classList.remove('popup-hidden');
+        popupOverlay.classList.add('popup-visible');
+        document.querySelector('.custom-popup-card').style.transform = 'scale(1)';
+    }
+
+    function hideCustomPopup() {
+        const overlay = document.getElementById('custom-popup-overlay');
+        overlay.classList.remove('popup-visible');
+        overlay.classList.add('popup-hidden');
+        document.querySelector('.custom-popup-card').style.transform = 'scale(0.9)';
+    }
+
+    if (userData) {
+        document.getElementById("profileName").value = userData.fullName;
+        document.getElementById("profileMobile").value = userData.mobileNumber;
+    }
+
+    // --- Fetch users from API ---
+    async function fetchUsers() {
+        try {
+            const token = localStorage.getItem("token"); // if JWT is required
+            const response = await fetch("https://real-estate-project-1-lps5.onrender.com/api/users/all-users", {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}` // send JWT if backend requires
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch users");
+            }
+
+            allusers = await response.json();
+            renderTable(allusers); // Pass users to your table renderer
+            updateCounters(allusers); // Pass fresh users to counters
+        } catch (error) {
+            console.error("Error fetching users:", error);
+            showCustomPopup("❌ Error fetching users. Please try again." + error.message);
+            usersBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px;">Error loading users.</td></tr>`;
+        }
+    }
+
+    function renderTable(data) {
+        usersBody.innerHTML = '';
+        if (data.length === 0) {
+            usersBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px;">No users found.</td></tr>`;
+            return;
+        }
+        data.forEach((user) => {
+            const statusText = user.subscriptionStatus ? user.subscriptionStatus : "Unknown";
+            const statusClass = `status-${user.subscriptionStatus ? user.subscriptionStatus.toLowerCase() : 'unknown'}`;
+            let formattedMobile = String(user.mobileNumber || "N/A");
+            if (formattedMobile !== "N/A" && formattedMobile.startsWith('91')) {
+                formattedMobile = formattedMobile.replace('91', '+91 ');
+            } else if (formattedMobile !== "N/A") {
+                formattedMobile = '+91' + formattedMobile;
+            }
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td data-label="Name">${user.fullName || "N/A"}</td>
+                <td data-label="Contact">${formattedMobile}</td>
+                <td data-label="Date Joined">${
+                    user.registrationDate
+                    ? new Date(user.registrationDate).toLocaleDateString()
+                    : "N/A"
+                }</td>
+                <td data-label="User Type">${user.type || "N/A"}</td>
+                <td data-label="Status"><span class="${statusClass}">${statusText}</span></td>
+            `;
+            usersBody.appendChild(row);
+        });
+        updateCounters(data);
+    }
+    
+    function updateCounters(data) {
+        document.getElementById('totalUsers').textContent = data.length;
+        document.getElementById('agentUsers').textContent = data.filter(u => u.type === 'Agent').length;
+        document.getElementById('ownerUsers').textContent = data.filter(u => u.type === 'Owner').length;
+        document.getElementById('activeUsers').textContent = data.filter(u => u.subscriptionStatus === 'Active').length;
+        document.getElementById('inactiveUsers').textContent = data.filter(u => u.subscriptionStatus === 'Inactive').length;
+    }
+    
+    function checkOrientation() {
+        if (window.innerWidth <= 768 && window.innerHeight > window.innerWidth) {
+            usersTable.classList.add('mobile-table');
+        } else {
+            usersTable.classList.remove('mobile-table');
+        }
+    }
+
+    // --- Panel Management ---
+function openPanel() {
+    profilePanel.classList.add('open');
+    overlay.classList.add('show');
+}
+
+function closeAllPanels() {
+    profilePanel.classList.remove('open');
+    overlay.classList.remove('show');
+}
+
+    // --- Event Handlers ---
+    hamburger.addEventListener('click', () => navLinks.classList.toggle('active'));
+    profileIcon.addEventListener('click', (e) => { e.preventDefault(); openPanel(profilePanel); });
+    
+    closeProfileBtn.addEventListener('click', closeAllPanels);
+    overlay.addEventListener('click', closeAllPanels);
+    
+    // Toggle Password Visibility
+    togglePassword.addEventListener('click', () => {
+        const type = profilePasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        profilePasswordInput.setAttribute('type', type);
+        togglePassword.classList.toggle('fa-eye');
+        togglePassword.classList.toggle('fa-eye-slash');
+    });
+
+    // Logout Button
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("admin");
+        window.location.href = "login.html"; // redirect to login page
+    });
+
+    // --- Filtering Logic ---
+    let currentFilters = { mobile: '', subscriptionStatus: '' }; // Changed 'status' to 'subscriptionStatus' to match backend
+
+    function filterAndRender() {
+        let filteredData = [...allusers];
+
+        if (currentFilters.mobile) {
+            filteredData = filteredData.filter(user => String(user.mobileNumber).includes(currentFilters.mobile));
+        }
+        if (currentFilters.subscriptionStatus) {
+            filteredData = filteredData.filter(user => user.subscriptionStatus && user.subscriptionStatus.toLowerCase() === currentFilters.subscriptionStatus.toLowerCase());
+        }
+        
+        renderTable(filteredData);
+        updateCounters(filteredData);
+    }
+    
+    mobileSearchInput.addEventListener('input', (e) => {
+        currentFilters.mobile = e.target.value.trim();
+        filterAndRender();
+    });
+    
+    // Custom Dropdown Logic
+    statusDropdown.addEventListener('click', (e) => {
+        if (e.target.classList.contains('dropdown-option')) {
+            const value = e.target.dataset.value;
+            statusDropdown.querySelector('.dropdown-btn span').textContent = e.target.textContent;
+            currentFilters.subscriptionStatus = value;
+            filterAndRender();
+        }
+        statusDropdown.classList.toggle('active');
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!statusDropdown.contains(e.target)) {
+        statusDropdown.classList.remove('active');
+      }
+    });
+
+    fetchUsers(); // Render the initial table
+    checkOrientation(); // Initial check for mobile view
+    window.addEventListener('resize', checkOrientation); // Re-check on window resize
+});
+</script>
+
+</body>
+</html>

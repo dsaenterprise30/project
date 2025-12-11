@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="icon" href="../frontend/img/house.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary-blue: #1e3a8a;
+            --secondary-blue: #3b82f6;
+            --text-dark: #333;
+            --text-light: #f0f4f8;
+            --bg-white: #fff;
+            --border-grey: #ccc;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* --- Global & Layout Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: #1e3a8a;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 25px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .navbar .logo a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .navbar .logo i {
+            vertical-align: middle;
+        }
+
+        main {
+            padding: 2.5rem 0;
+        }
+
+        /* This centers the container within the main content area */
+        .main-container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
+            box-shadow: var(--shadow);
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 0 auto; 
+        }
+        
+        .left-panel {
+            width: 50%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: var(--text-light);
+            padding: 2rem;
+            background-image: url('../frontend/img/image_login.png');
+            background-size: cover;
+            background-position: center;
+            transition: width 0.3s ease;
+        }
+
+        .background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .left-panel-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .left-panel h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .left-panel p {
+            font-size: 1rem;
+            font-weight: 400;
+            margin-top: 0;
+        }
+
+        .right-panel {
+            background-color: var(--bg-white);
+            width: 60%;
+            display: flex;
+            position: relative;
+            transition: width 0.3s ease;
+        }
+
+        .form-container {
+            width: 100%;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .form-container h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: var(--text-dark);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-grey);
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        .input-group input:focus {
+            border-color: var(--secondary-blue);
+            box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
+            outline: none;
+        }
+
+        .phone-input {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .phone-input span {
+            padding: 0.75rem 1rem;
+            background: #f1f1f1;
+            border: 1px solid var(--border-grey);
+            border-radius: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .password-input-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-input-container i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--border-grey);
+        }
+
+        .form-links {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-links a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .form-links a:hover {
+            text-decoration: underline;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: var(--bg-white);
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue));
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message-text {
+            text-align: center;
+            margin-top: 1rem;
+            color: var(--text-dark);
+        }
+
+        .message-text a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .message-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- OTP Form Specific Styles --- */
+        .otp-box {
+            text-align: center;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .otp-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .otp-input {
+            width: 45px;
+            height: 45px;
+            font-size: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border-grey);
+            border-radius: 8px;
+            transition: border-color 0.2s;
+        }
+
+        .otp-input:focus {
+            border-color: var(--secondary-blue);
+            outline: none;
+        }
+        
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+                height: auto;
+                width: 95%;
+                border-radius: 12px;
+                margin: 0 auto;
+            }
+
+            .left-panel {
+                width: 100%;
+                height: 25vh;
+                padding: 1rem;
+            }
+
+            .left-panel h1 {
+                font-size: 1.6rem;
+            }
+
+            .left-panel p {
+                font-size: 0.8rem;
+            }
+
+            .right-panel {
+                width: 100%;
+            }
+
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            .form-container h2 {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            /* Adjust OTP inputs for smaller screens */
+            .otp-row {
+                gap: 5px;
+            }
+            .otp-input {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <a href="../frontend/index.html">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Home</span>
+            </a>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="main-container">
+            <div class="left-panel">
+                <div class="background-overlay"></div>
+                <div class="left-panel-content">
+                    <h1>Find Your Dream Home</h1>
+                    <p>Your journey to the perfect property starts here.</p>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="form-container" id="form-container">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        // Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        
+        // IMPORTANT: Replace with your actual Firebase project configuration
+       const firebaseConfig = {
+      apiKey: "AIzaSyArmp7LtzuH4GKXUX9xKKMgaMHV1ioSeKU",
+      authDomain: "realestate-ba037.firebaseapp.com",
+      projectId: "realestate-ba037",
+      storageBucket: "realestate-ba037.appspot.com",
+      messagingSenderId: "1014619180710",
+      appId: "1:1014619180710:web:49f231abc721762a472e67",
+      measurementId: "G-YS2N7C27EC"
+     };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        
+        let confirmationResult;
+        let recaptchaVerifier;
+
+        // All form rendering and logic is contained within this function
+        function setupFirebaseAndForms() {
+            const formContainer = document.getElementById('form-container');
+
+            const renderLoginForm = () => {
+                formContainer.innerHTML = `
+                    <h2>Login</h2>
+                    <form id="loginForm">
+                        <div class="input-group">
+                            <label for="loginMobile">Mobile Number</label>
+                            <div class="phone-input">
+                                <span>+91</span>
+                                <input type="tel" id="loginMobile" name="mobile" placeholder="Enter your mobile number" required pattern="^[6-9]\\d{9}$">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="password">Password</label>
+                            <div class="password-input-container">
+                                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                                <i class="fa-solid fa-eye-slash toggle-password"></i>
+                            </div>
+                        </div>
+                        <div class="form-links">
+                            <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+                        </div>
+                        <div id="recaptcha-container-login"></div>
+                        <button type="submit" class="btn" id="loginSendOtpBtn">Login with OTP</button>
+                    </form>
+                    <p class="message-text">Don't have an account? <a href="#" id="showRegisterLink">Sign up</a></p>
+                `;
+                setupEventListeners();
+                setupRecaptcha('recaptcha-container-login', 'loginSendOtpBtn', 'loginMobile');
+            };
+
+            const renderRegisterForm = () => {
+                formContainer.innerHTML = `
+                    <h2>Register</h2>
+                    <form id="registerForm">
+                        <div class="input-group">
+                            <label for="regName">Full Name</label>
+                            <input type="text" id="regName" name="name" placeholder="Enter your name" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="regMobile">Mobile Number</label>
+                            <div class="phone-input">
+                                <span>+91</span>
+                                <input type="tel" id="regMobile" name="mobile" placeholder="Enter your mobile number" required pattern="^[6-9]\\d{9}$">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="regPassword">Password</label>
+                            <div class="password-input-container">
+                                <input type="password" id="regPassword" name="password" placeholder="Create a password" required>
+                                <i class="fa-solid fa-eye-slash toggle-password"></i>
+                            </div>
+                        </div>
+                        <div id="recaptcha-container-signup"></div>
+                        <button type="submit" class="btn" id="signupSendOtpBtn">Register with OTP</button>
+                    </form>
+                    <p class="message-text">Already have an account? <a href="#" id="showLoginLink">Login</a></p>
+                `;
+                setupEventListeners();
+                setupRecaptcha('recaptcha-container-signup', 'signupSendOtpBtn', 'regMobile');
+            };
+
+            const renderOtpForm = () => {
+                formContainer.innerHTML = `
+                    <h2>Verify Your Mobile</h2>
+                    <p class="message-text">A 6-digit OTP has been sent to your mobile number.</p>
+                    <form id="otpForm">
+                        <div class="otp-box">
+                            <div class="otp-row">
+                                <input type="text" maxlength="1" class="otp-input" inputmode="numeric" />
+                                <input type="text" maxlength="1" class="otp-input" inputmode="numeric" />
+                                <input type="text" maxlength="1" class="otp-input" inputmode="numeric" />
+                                <input type="text" maxlength="1" class="otp-input" inputmode="numeric" />
+                                <input type="text" maxlength="1" class="otp-input" inputmode="numeric" />
+                                <input type="text" maxlength="1" class="otp-input" inputmode="numeric" />
+                            </div>
+                        </div>
+                        <button type="submit" class="btn" id="verifyOtpBtn">Verify OTP</button>
+                        <p class="message-text">Didn't receive the OTP? <a href="#">Resend OTP</a></p>
+                    </form>
+                    <p class="message-text"><a href="#" id="changeNumberLink">Change Number</a></p>
+                `;
+                setupOtpLogic();
+                setupEventListeners();
+            };
+
+            const setupRecaptcha = (containerId, buttonId, mobileInputId) => {
+                if (recaptchaVerifier) {
+                    recaptchaVerifier.clear();
+                }
+                
+                recaptchaVerifier = new RecaptchaVerifier(containerId, {
+                    'size': 'invisible',
+                    'callback': () => {},
+                    'expired-callback': () => {
+                        alert("reCAPTCHA expired. Please try again.");
+                    }
+                }, auth);
+
+                const sendOtpBtn = document.getElementById(buttonId);
+                sendOtpBtn.addEventListener('click', async (event) => {
+                    event.preventDefault();
+                    const phoneNumber = '+91' + document.getElementById(mobileInputId).value;
+                    
+                    if (!/^\+91[6-9]\d{9}$/.test(phoneNumber)) {
+                        alert("Please enter a valid 10-digit Indian mobile number.");
+                        return;
+                    }
+
+                    try {
+                        confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
+                        renderOtpForm();
+                        alert("OTP sent successfully!");
+                    } catch (error) {
+                        console.error("Error sending OTP:", error);
+                        alert("Error sending OTP: " + error.message);
+                    }
+                });
+            };
+
+            const setupOtpLogic = () => {
+                const otpInputs = document.querySelectorAll('.otp-input');
+                const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+
+                otpInputs[0].focus();
+
+                otpInputs.forEach((input, index, arr) => {
+                    input.addEventListener('input', () => {
+                        input.value = input.value.replace(/[^0-9]/g, '').slice(0, 1);
+                        if (input.value && index < arr.length - 1) {
+                            arr[index + 1].focus();
+                        }
+                        checkOtpFilled();
+                    });
+                    input.addEventListener('keydown', (e) => {
+                        if (e.key === 'Backspace' && !input.value && index > 0) {
+                            arr[index - 1].focus();
+                        }
+                    });
+                });
+
+                const checkOtpFilled = () => {
+                    const allFilled = Array.from(otpInputs).every(input => input.value.length === 1);
+                    verifyOtpBtn.disabled = !allFilled;
+                };
+                
+                checkOtpFilled(); // Initial check
+
+                verifyOtpBtn.addEventListener('click', async (event) => {
+                    event.preventDefault();
+                    const otp = Array.from(otpInputs).map(input => input.value).join('');
+
+                    if (otp.length !== 6) {
+                        alert("Please enter a valid 6-digit OTP.");
+                        return;
+                    }
+
+                    if (!confirmationResult) {
+                        alert("Please request an OTP first.");
+                        return;
+                    }
+
+                    try {
+                        const result = await confirmationResult.confirm(otp);
+                        const user = result.user;
+                        alert("OTP verified! Phone: " + user.phoneNumber);
+                        // At this point, the user is signed in. You can redirect or perform other actions.
+                        // window.location.href = "../frontend/home.html"; // Example redirect
+                    } catch (error) {
+                        console.error("OTP verification failed:", error);
+                        alert("OTP verification failed: " + error.message);
+                    }
+                });
+            };
+
+            // Other form rendering functions...
+            const renderForgotPasswordForm = () => {
+                formContainer.innerHTML = `
+                    <h2>Forgot Password</h2>
+                    <p class="message-text">Enter your registered mobile number to reset your password.</p>
+                    <form id="forgotPasswordForm">
+                        <div class="input-group">
+                            <label for="fpMobile">Mobile Number</label>
+                            <div class="phone-input">
+                                <span>+91</span>
+                                <input type="tel" id="fpMobile" name="mobile" placeholder="Enter your mobile number" required pattern="^[6-9]\\d{9}$">
+                            </div>
+                        </div>
+                        <div id="recaptcha-container-forgot"></div>
+                        <button type="submit" class="btn" id="forgotPasswordBtn">Reset Password</button>
+                    </form>
+                    <p class="message-text"><a href="#" id="showLoginLink">Back to Login</a></p>
+                `;
+                setupEventListeners();
+                setupRecaptcha('recaptcha-container-forgot', 'forgotPasswordBtn', 'fpMobile');
+            };
+
+            // Password reset and verification pages
+            const renderPasswordResetForm = () => {
+                formContainer.innerHTML = `
+                    <h2>Set New Password</h2>
+                    <form id="newPasswordForm">
+                        <div class="input-group">
+                            <label for="newPassword">New Password</label>
+                            <div class="password-input-container">
+                                <input type="password" id="newPassword" name="newPassword" placeholder="Enter new password" required>
+                                <i class="fa-solid fa-eye-slash toggle-password"></i>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <div class="password-input-container">
+                                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm new password" required>
+                                <i class="fa-solid fa-eye-slash toggle-password"></i>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn">Update Password</button>
+                    </form>
+                    <p class="message-text"><a href="#" id="showLoginLink">Back to Login</a></p>
+                `;
+                setupEventListeners();
+            };
+
+            const renderVerificationPage = () => {
+                formContainer.innerHTML = `
+                    <div style="text-align:center; padding: 2rem;">
+                        <i class="fa-solid fa-circle-check" style="font-size: 4rem; color: var(--secondary-blue); margin-bottom: 1rem;"></i>
+                        <h2>Password Changed!</h2>
+                        <p>Your password has been successfully updated.</p>
+                        <button class="btn" id="backToLoginBtn" style="margin-top: 2rem;">Back to Login</button>
+                    </div>
+                `;
+                const backToLoginBtn = document.getElementById('backToLoginBtn');
+                if (backToLoginBtn) {
+                    backToLoginBtn.addEventListener('click', renderLoginForm);
+                }
+            };
+
+            const renderRegistrationConfirmPage = () => {
+                formContainer.innerHTML = `
+                    <div style="text-align:center; padding: 2rem;">
+                        <i class="fa-solid fa-circle-check" style="font-size: 4rem; color: var(--secondary-blue); margin-bottom: 1rem;"></i>
+                        <h2>Registration Confirm !</h2>
+                        <p>Your account has been registered successfully.</p>
+                        <button class="btn" id="backToLoginBtn" style="margin-top: 2rem;">Back to Login</button>
+                    </div>
+                `;
+                const backToLoginBtn = document.getElementById('backToLoginBtn');
+                if (backToLoginBtn) {
+                    backToLoginBtn.addEventListener('click', renderLoginForm);
+                }
+            };
+
+            const setupEventListeners = () => {
+                const togglePasswordIcons = document.querySelectorAll('.toggle-password');
+                togglePasswordIcons.forEach(icon => {
+                    icon.addEventListener('click', () => {
+                        const passwordInput = icon.previousElementSibling;
+                        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                        passwordInput.setAttribute('type', type);
+                        icon.classList.toggle('fa-eye');
+                        icon.classList.toggle('fa-eye-slash');
+                    });
+                });
+
+                const showRegisterLink = document.getElementById('showRegisterLink');
+                if (showRegisterLink) showRegisterLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    renderRegisterForm();
+                });
+
+                const showLoginLink = document.getElementById('showLoginLink');
+                if (showLoginLink) showLoginLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    renderLoginForm();
+                });
+
+                const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+                if (forgotPasswordLink) forgotPasswordLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    renderForgotPasswordForm();
+                });
+
+                const changeNumberLink = document.getElementById('changeNumberLink');
+                if (changeNumberLink) changeNumberLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    renderLoginForm();
+                });
+
+                const loginForm = document.getElementById('loginForm');
+                if (loginForm) {
+                    // This form no longer handles login, just OTP sending
+                    loginForm.addEventListener('submit', (e) => e.preventDefault());
+                }
+
+                const registerForm = document.getElementById('registerForm');
+                if (registerForm) {
+                    // This form no longer handles registration, just OTP sending
+                    registerForm.addEventListener('submit', (e) => e.preventDefault());
+                }
+
+                const newPasswordForm = document.getElementById('newPasswordForm');
+                if (newPasswordForm) newPasswordForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const newPass = document.getElementById('newPassword').value;
+                    const confirmPass = document.getElementById('confirmPassword').value;
+                    if (newPass === confirmPass) {
+                        alert("Password updated successfully. Navigating back to login.");
+                        renderVerificationPage();
+                    } else {
+                        alert("Passwords do not match. Please try again.");
+                    }
+                });
+            };
+
+            renderLoginForm();
+        }
+
+        document.addEventListener('DOMContentLoaded', setupFirebaseAndForms);
+    </script>
+</body>
+</html>
