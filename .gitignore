@@ -6,6 +6,7 @@ node_modules
 cleanupRentFlats.js
 cleanupSellFlats.js
 
+
 # Firebase config files 
 firebaseConfig.js
 razorpayConfig.js
