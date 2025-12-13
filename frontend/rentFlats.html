@@ -956,7 +956,7 @@ html {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const BASE_URL = 'https://real-estate-project-1-lps5.onrender.com/api/rentflats';
+    const BASE_URL = 'https://project-tbbc.onrender.com/api/rentflats';
     let properties = [];
 
     // --- Custom Modal Functionality ---
@@ -1033,7 +1033,7 @@ function showCustomPopup(message, isConfirm = false, callback = null, duration =
         const contactVal = contactInput.value.trim();
         if (contactVal.length === 10) {
             try {
-                const res = await fetch(`https://real-estate-project-1-lps5.onrender.com/api/users/findByContact/${contactVal}`);
+                const res = await fetch(`https://project-tbbc.onrender.com/api/users/findByContact/${contactVal}`);
                 const data = await res.json();
 
                 if (res.ok && data.fullName) {
