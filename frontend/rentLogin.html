@@ -821,9 +821,8 @@
               data.message || "⚠️ Your subscription has expired. Please subscribe to continue.",
               "Subscription Required",
               () => {
-                // Redirect to pricing page so user can choose a plan and renew
-                localStorage.setItem("userMobileNumber", phoneNumber);
-                window.location.href = `pricing.html?mode=renewal&mobile=${encodeURIComponent(phoneNumber)}`;
+                // Start Razorpay subscription flow as renewal
+                handleSubscription(phoneNumber, "renewal", passwordInput);
               },
               true
             );
@@ -888,7 +887,7 @@
         }
 
         try {
-          const response = await fetch("http://project-tbbc.onrender.com/api/users/forgot", {
+          const response = await fetch("https://project-tbbc.onrender.com/api/users/forgot", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -1015,9 +1014,8 @@
 
                 const data = await response.json();
                 if (data.status === 'success') {
-                  // Save mobile and redirect to pricing page for plan selection
-                  localStorage.setItem("userMobileNumber", mobileNumber);
-                  window.location.href = `pricing.html?mode=registration&mobile=${encodeURIComponent(mobileNumber)}`;
+                  // Start subscription flow in "registration" mode
+                  handleSubscription(mobileNumber, "registration");
                 } else {
                   showCustomPopup("❌ " + (data.msg || "Registration failed."));
                 }
@@ -1038,7 +1036,7 @@
     // ===== Razorpay Subscription Handler =====
 const handleSubscription = async (mobileNumber, mode = "registration", loginPassword = null) => {
   try {
-    const response = await fetch("http://localhost:3000/api/payment/create-subscription", {
+    const response = await fetch("https://project-tbbc.onrender.com/api/payment/create-subscription", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ mobileNumber: mobileNumber }),
