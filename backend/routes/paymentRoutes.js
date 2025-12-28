@@ -3,6 +3,7 @@ import express from "express";
 import razorpay from "../config/razorpay.js";
 import User from "../models/User.js";
 import dotenv from "dotenv";
+import SubscriptionPlan from "../models/subscriptionPlan.js";
 dotenv.config();
 
 const router = express.Router();
@@ -32,65 +33,63 @@ async function findOrCreateCustomerByContact({ mobileNumber, fullName, email }) 
 
 // Route to create a new subscription
 router.post("/create-subscription", async (req, res) => {
+  const { mobileNumber, planType } = req.body;
+
   try {
-    const { mobileNumber } = req.body;
-
-    if (!mobileNumber) {
-      return res.status(400).json({ status: "failed", message: "Mobile number is required" });
+    if (!mobileNumber || !planType) {
+      return res.status(400).json({ message: "Mobile number and planType are required" });
     }
 
-    // Find user in DB
-    const user = await User.findOne({ mobileNumber: mobileNumber });
+    const user = await User.findOne({ mobileNumber });
     if (!user) {
-      return res.status(404).json({ status: "failed", message: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Create or reuse a Razorpay customer for this user (recommended)
-    let razorCustomer;
-    try {
-      razorCustomer = await findOrCreateCustomerByContact({
-        mobileNumber,
-        fullName: user.fullName,
-        email: user.email || undefined,
-      });
-    } catch (err) {
-      console.error("Razorpay customer creation error:", err && err.message);
-      return res.status(500).json({ status: "failed", message: "Failed to create customer for payment provider" });
+    if (user.subscriptionStatus === "Active") {
+      return res.status(400).json({ message: "User already has an active subscription" });
     }
 
-    // Create subscription using Plan ID and customer_id
-    const payload = {
-      plan_id: process.env.RAZORPAY_PLAN_ID,
+    const plan = await SubscriptionPlan.findOne({ planType, isActive: true });
+    if (!plan) {
+      return res.status(400).json({ message: "Invalid plan selected" });
+    }
+
+    const razorCustomer = await findOrCreateCustomerByContact({
+      mobileNumber: user.mobileNumber,
+      fullName: user.fullName || user.name,
+      email: user.email,
+    });
+
+    const totalCount =
+      plan.interval === "yearly" ? 1 : plan.duration;
+
+    const subscription = await razorpay.subscriptions.create({
+      plan_id: plan.razorpayPlanId,
       customer_notify: 1,
-      total_count: 12,
+      total_count: totalCount,
       customer_id: razorCustomer.id,
-    };
+    });
 
-    const subscription = await razorpay.subscriptions.create(payload);
-
-    // Save subscription id to user
     await User.findOneAndUpdate(
-      { mobileNumber: mobileNumber },
+      { mobileNumber },
       {
         subscriptionId: subscription.id,
-        subscriptionStatus: "Inactive", // subscription will be marked Active on webhook activation
+        subscriptionStatus: "Inactive",
+        planType: plan.planType,
+        planName: plan.name,
+        planPrice: plan.price,
       }
     );
 
-    return res.json({
+    res.json({
       status: "success",
-      message: "Subscription created. Complete payment through Razorpay.",
       subscriptionId: subscription.id,
-      subscription,
     });
   } catch (error) {
-    console.error("Error in create-subscription:", error && error.message, error);
-    return res.status(500).json({
-      status: "failed",
-      message: "Server error while creating subscription",
-      error: error && error.message,
-    });
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 });
+
 
 export default router;
