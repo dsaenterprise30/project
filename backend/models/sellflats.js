@@ -27,7 +27,6 @@ const sellFlatSchema = new mongoose.Schema({
         required: [true, 'Mobile number is required.'],
         trim: true,
         match: [/^[0-9]{10}$/, 'Please fill a valid 10-digit mobile number.'],
-        index: true //  index for faster lookups
     },
     date: {
         type: Date,
@@ -43,8 +42,8 @@ const sellFlatSchema = new mongoose.Schema({
     },
 }, { timestamps: true });
 
-// ✅ Ensure unique index for contact
-sellFlatSchema.index({ contact: 1 }, { unique: true });
+// Note: explicit index for `contact` removed to avoid collisions with existing DB indexes.
+// If you need a new index, add it after cleaning up existing indexes in the DB.
 
 const SellFlat = mongoose.model('SellFlat', sellFlatSchema);
 

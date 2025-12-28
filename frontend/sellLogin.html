@@ -821,11 +821,14 @@
             localStorage.setItem("user", JSON.stringify(data.data));
             window.location.href = "sellProperties.html";
           } else if (response.status === 403 && data.subscriptionActive === false) {
-            // Subscription expired or not active – show Razorpay renewal
+            // Subscription expired or not active – redirect to pricing page for renewal
             showCustomPopup(
               data.message || "⚠️ Your subscription has expired. Please subscribe to continue.",
               "Subscription Expired",
-              () => handleSubscription(phoneNumber, "renewal", passwordInput),
+              () => {
+                localStorage.setItem("userMobileNumber", phoneNumber);
+                window.location.href = `pricing.html?mode=renewal&mobile=${encodeURIComponent(phoneNumber)}`;
+              },
               true
             );
           } else {
@@ -1016,8 +1019,9 @@
 
                 const data = await response.json();
                 if (data.status === 'success') {
-                  // First-time subscription
-                  handleSubscription(mobileNumber, "registration");
+                  // Save mobile and redirect to pricing page for plan selection
+                  localStorage.setItem("userMobileNumber", mobileNumber);
+                  window.location.href = `pricing.html?mode=registration&mobile=${encodeURIComponent(mobileNumber)}`;
                 } else {
                   showCustomPopup("❌ " + (data.msg || "Registration failed."));
                 }
