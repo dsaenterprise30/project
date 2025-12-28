@@ -27,7 +27,6 @@ import User from "../models/User.js";
 router.post("/create", registerUser);
 
 // Route 2 - Login existing user
-// Don't check subscription before login — loginUser will validate subscription status and return a clear message if inactive
 router.post("/login", loginUser);
 
 // Route 3 - Forgot password (password reset request)
