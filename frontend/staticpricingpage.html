@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pricing</title>
+
+  <!-- Font Awesome (for back icon) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-blue: #1e3a8a;
+      --secondary-blue: #3b82f6;
+      --bg-light: #f6f6f6;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg-light);
+      margin: 0;
+      padding-top: 78px; /* space for navbar */
+      text-align: center;
+    }
+
+    /* ================= NAVBAR ================= */
+    .navbar {
+      background: var(--primary-blue);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+    }
+
+    .navbar .back-btn {
+      color: #fff;
+      font-size: 18px;
+      margin-right: 14px;
+      cursor: pointer;
+    }
+
+    .navbar .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .navbar .logo img {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* ================= PAGE ================= */
+    h1 {
+      margin: 32px 0;
+    }
+
+    .plans-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding: 0 16px 40px;
+    }
+
+    .plan-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      width: 280px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      position: relative;
+    }
+
+    .badge {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: #ff9800;
+      color: #fff;
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 20px;
+    }
+
+    .plan-price {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 16px 0;
+    }
+
+    .promo {
+      color: #047857;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary-blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: var(--secondary-blue);
+    }
+
+    @media (max-width: 480px) {
+      .navbar .logo span {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ================= NAVBAR ================= -->
+  <nav class="navbar">
+    <i class="fas fa-arrow-left back-btn" onclick="history.back()"></i>
+    <div class="logo">
+      <img src="img/DSA.png" alt="Logo">
+      <span>DSA Enterprise</span>
+    </div>
+  </nav>
+
+  <!-- ================= CONTENT ================= -->
+  <h1>Choose Your Plan</h1>
+
+  <div id="plans" class="plans-container"></div>
+
+  <!-- ================= JS ================= -->
+  <script>
+    const plansContainer = document.getElementById("plans");
+
+    const plans = [
+      {
+        name: "Monthly Plan",
+        price: 1999,
+        interval: "mo"
+      },
+      {
+        name: "Half Yearly Plan",
+        price: 10000,
+        interval: "6 months",
+        promo: "Save ₹1,994"
+      },
+      {
+        name: "Yearly Plan",
+        price: 20000,
+        interval: "yr",
+        promo: "2 months free",
+        popular: true
+      }
+    ];
+
+    plans.forEach(plan => {
+      const card = document.createElement("div");
+      card.className = "plan-card";
+
+      if (plan.popular) {
+        card.innerHTML += `<div class="badge">Most Popular</div>`;
+      }
+
+      card.innerHTML += `
+        <h2>${plan.name}</h2>
+        <div class="plan-price">₹${plan.price.toLocaleString()} / ${plan.interval}</div>
+        ${plan.promo ? `<div class="promo">${plan.promo}</div>` : ""}
+        <button class="btn" onclick="alert('Subscription coming soon')">
+          Subscribe
+        </button>
+      `;
+
+      plansContainer.appendChild(card);
+    });
+  </script>
+
+</body>
+</html>
