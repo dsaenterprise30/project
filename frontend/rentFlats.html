@@ -877,9 +877,9 @@ html {
         <form id="addPropertyForm" novalidate>
             <input type="hidden" id="propertyId" value="">
             <label for="propertyLocation">Location:</label>
-            <select id="propertyLocation" name="location" required><option value="">Select a Location</option><option value="Borivali West">Borivali West</option><option value="Kandivali West">Kandivali West</option><option value="Malad West">Malad West</option><option value="Ram Mandir West">Ram Mandir West</option><option value="Goregaon West">Goregaon West</option><option value="Andheri West">Andheri West</option><option value="Vile Parle West">Vile Parle West</option></select>
+            <select id="propertyLocation" name="location" required><option value="">Select a Location</option><option value="Mira Road West">Mira Road West</option><option value="Dahisar West">Dahisar West</option><option value="Borivali West">Borivali West</option><option value="Kandivali West">Kandivali West</option><option value="Malad West">Malad West</option><option value="Ram Mandir West">Ram Mandir West</option><option value="Goregaon West">Goregaon West</option><option value="Andheri West">Andheri West</option><option value="Vile Parle West">Vile Parle West</option></select>
             <label for="propertyType">Property Type:</label>
-            <select id="propertyType" name="propertyType" required><option value="">Select a Property Type</option><option value="1 RK">1 RK</option><option value="1 BHK">1 BHK</option><option value="1.5 BHK">1.5 BHK</option><option value="2 BHK">2 BHK</option></select>
+            <select id="propertyType" name="propertyType" required><option value="">Select a Property Type</option><option value="1 RK">1 RK</option><option value="1 BHK">1 BHK</option><option value="1.5 BHK">1.5 BHK</option><option value="2 BHK">2 BHK</option><option value="2.5 BHK">2.5 BHK</option><option value="3 BHK">3 BHK</option><option value="3.5 BHK">3.5 BHK</option><option value="4 BHK">4 BHK</option></select>
             <label for="propertyPrice">Rent:</label>
             <input type="text" id="propertyPrice" name="price" placeholder="e.g., ₹25,000" required>
             <label for="propertyName">Name:</label>
@@ -912,11 +912,14 @@ html {
         <form class="search-form" onsubmit="return false;">
             <div class="search-group">
                 <label class="search-label">Select Location</label>
-                <div class="dropdown" id="location"><div class="dropdown-btn"><span>Select Location</span><i class="fas fa-chevron-down"></i></div><div class="dropdown-content"><div class="dropdown-option" data-value="Borivali West">Borivali West</div><div class="dropdown-option" data-value="Kandivali West">Kandivali West</div><div class="dropdown-option" data-value="Malad West">Malad West</div><div class="dropdown-option" data-value="Ram Mandir West">Ram Mandir West</div><div class="dropdown-option" data-value="Goregaon West">Goregaon West</div><div class="dropdown-option" data-value="Andheri West">Andheri West</div><div class="dropdown-option" data-value="Vile Parle West">Vile Parle West</div></div></div>
+                <div class="dropdown" id="location"><div class="dropdown-btn"><span>Select Location</span><i class="fas fa-chevron-down"></i></div><div class="dropdown-content"><div class="dropdown-option" data-value="Mira Road West">Mira Road West</div><div class="dropdown-option" data-value="Dahisar West">Dahisar West</div><div class="dropdown-option" data-value="Borivali West">Borivali West</div><div class="dropdown-option" data-value="Kandivali West">Kandivali West</div><div class="dropdown-option" data-value="Malad West">Malad West</div><div class="dropdown-option" data-value="Ram Mandir West">Ram Mandir West</div><div class="dropdown-option" data-value="Goregaon West">Goregaon West</div><div class="dropdown-option" data-value="Andheri West">Andheri West</div><div class="dropdown-option" data-value="Vile Parle West">Vile Parle West</div></div></div>
             </div>
             <div class="search-group">
                 <label class="search-label">Property Type</label>
-                <div class="dropdown" id="flatType"><div class="dropdown-btn"><span>Select Property Type</span><i class="fas fa-chevron-down"></i></div><div class="dropdown-content"><div class="dropdown-option" data-value="1 RK">1 RK</div><div class="dropdown-option" data-value="1 BHK">1 BHK</div><div class="dropdown-option" data-value="1.5 BHK">1.5 BHK</div><div class="dropdown-option" data-value="2 BHK">2 BHK</div></div></div>
+                <div class="dropdown" id="flatType"><div class="dropdown-btn"><span>Select Property Type</span><i class="fas fa-chevron-down"></i></div><div class="dropdown-content"><div class="dropdown-option" data-value="1 RK">1 RK</div><div class="dropdown-option" data-value="1 BHK">1 BHK</div><div class="dropdown-option" data-value="1.5 BHK">1.5 BHK</div><div class="dropdown-option" data-value="2 BHK">2 BHK</div><div class="dropdown-option" data-value="2.5 BHK">2.5 BHK</div><div class="dropdown-option" data-value="3 BHK">3 BHK</div><div class="dropdown-option" data-value="3.5 BHK">3.5 BHK</div><div class="dropdown-option" data-value="4 BHK">4 BHK</div></div></div>
+            <div class="search-group">
+                <label class="search-label">Enter Rent</label>
+                <div class="input-with-clear"><input type="text" class="search-input" id="price" placeholder="e.g., ₹25,000"><button type="button" class="clear-btn" data-target="price">&times;</button></div>
             </div>
             <div class="search-group">
                 <label class="search-label">Enter Rent</label>

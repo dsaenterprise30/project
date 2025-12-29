@@ -1070,6 +1070,8 @@
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="dropdown-content">
+                        <div class="dropdown-option" data-value="mira road west">Mira Road West</div>
+                        <div class="dropdown-option" data-value="dahisar west">Dahisar West</div>
                         <div class="dropdown-option" data-value="borivali west">Borivali West</div>
                         <div class="dropdown-option" data-value="kandivali west">Kandivali West</div>
                         <div class="dropdown-option" data-value="malad west">Malad West</div>
@@ -1093,6 +1095,10 @@
                         <div class="dropdown-option" data-value="1bhk">1 BHK</div>
                         <div class="dropdown-option" data-value="1.5bhk">1.5 BHK</div>
                         <div class="dropdown-option" data-value="2bhk">2 BHK</div>
+                        <div class="dropdown-option" data-value="2.5bhk">2.5 BHK</div>
+                        <div class="dropdown-option" data-value="3bhk">3 BHK</div>
+                        <div class="dropdown-option" data-value="3.5bhk">3.5 BHK</div>
+                        <div class="dropdown-option" data-value="4bhk">4 BHK</div>
                     </div>
                 </div>
             </div>
@@ -1116,6 +1122,19 @@
                         <div class="dropdown-option" data-value="family">Family</div>
                         <div class="dropdown-option" data-value="bachelor">Bachelor</div>
                         <div class="dropdown-option" data-value="any">Any</div>
+                    </div>
+                </div>
+            </div>
+            <div class="search-group">
+                <label class="search-label">Ownership Type</label>
+                <div class="dropdown" id="ownershipType">
+                    <div class="dropdown-btn">
+                        <span>Select Ownership Type</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-content">
+                        <div class="dropdown-option" data-value="owner">Owner</div>
+                        <div class="dropdown-option" data-value="agent">Agent</div>
                     </div>
                 </div>
             </div>
@@ -1149,7 +1168,8 @@
                         <th>Name</th>
                         <th>Contact</th>
                         <th>Tenant Choice</th>
-                        <th>Listed on Date</th>
+                        <th>Ownership Type</th>
+                        <th>Listed on Date(MM/DD/YYYY)</th>
                     </tr>
                 </thead>
                 <tbody id="propertiesBody">
@@ -1184,7 +1204,6 @@
                 <ul class="footer-nav">
                     <li><a href="#home"><i class="fas fa-home"></i> Home</a></li>
                     <li><a href="#about"><i class="fas fa-info-circle"></i> About</a></li>
-                    <li><a href="rentLogin.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
                 </ul>
             </div>
 
@@ -1329,16 +1348,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const filterLocation = filters.location ? filters.location.value.toLowerCase() : '';
         const filterType = filters.propertyType ? filters.propertyType.value.toLowerCase() : '';
         const filterTenant = filters.tenantType ? filters.tenantType.value.toLowerCase() : '';
+        const filterOwnership = filters.ownershipType ? filters.ownershipType.value.toLowerCase() : '';
         const priceValue = filters.priceInput ? filters.priceInput.value : '';
 
         filteredData = propertiesData.filter(property => {
             const rowLocation = (property.location || '').toLowerCase();
             const normalizedRowType = (property.propertyType || '').toLowerCase().replace(/\s+/g, '');
             const rowTenant = (property.tenantType || '').toLowerCase();
+            const rowOwnership = (property.ownershipType || '').toLowerCase();
 
             const matchLocation = !filterLocation || rowLocation.includes(filterLocation);
             const matchType = !filterType || normalizedRowType === filterType;
             const matchTenant = !filterTenant || rowTenant === filterTenant;
+            const matchOwnership = !filterOwnership || rowOwnership === filterOwnership;
 
             // --- CORRECTED NUMERICAL BUDGET FILTER LOGIC ---
             let matchPrice = true;
@@ -1353,7 +1375,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            return matchLocation && matchType && matchTenant && matchPrice;
+            return matchLocation && matchType && matchTenant && matchPrice && matchOwnership;
         });
     }
 
@@ -1400,6 +1422,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     displayPrice = `₹${Number(numericPrice).toLocaleString('en-IN')}`;
                 }
             }
+            if(property.contact.startsWith("91")){
+                property.contact = property.contact.replace(/^91/, '+91 ');
+
+            }
 
             row.innerHTML = `
                 <td data-label="Location">${property.location || ''}</td>
@@ -1408,6 +1434,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td data-label="Name">${property.userName || ''}</td>
                 <td data-label="Contact">${property.contact || ''}</td>
                 <td data-label="Tenant Type">${property.tenantType || ''}</td>
+                <td data-label="Ownership Type">${property.ownershipType || ''}</td>
                 <td data-label="Date">${property.date ? new Date(property.date).toLocaleDateString() : ''}</td>
             `;
             propertiesBody.appendChild(row);
@@ -1433,6 +1460,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="card-row"><span class="card-label">Name:</span> <span class="card-value">${property.userName || ''}</span></div>
                 <div class="card-row"><span class="card-label">Contact:</span> <span class="card-value">${property.contact || ''}</span></div>
                 <div class="card-row"><span class="card-label">Tenant Type:</span> <span class="card-value">${property.tenantType || ''}</span></div>
+                <div class="card-row"><span class="card-label">Ownership Type:</span> <span class="card-value">${property.ownershipType || ''}</span></div>
                 <div class="card-row"><span class="card-label">Date:</span> <span class="card-value">${property.date ? new Date(property.date).toLocaleDateString() : ''}</span></div>
             `;
             cardView.appendChild(card);
@@ -1463,6 +1491,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateSelectedFilters() {
+        if (!selectedFiltersContainer) return; // defensive: ensure element exists
         selectedFiltersContainer.innerHTML = '';
         const hasFilters = Object.values(filters).some(f => f && f.value);
 
@@ -1487,27 +1516,33 @@ document.addEventListener('DOMContentLoaded', function() {
     searchBtn.addEventListener('click', performSearch);
 
     dropdowns.forEach(dropdown => {
-        const btn = dropdown.querySelector('.dropdown-btn');
-        const options = dropdown.querySelectorAll('.dropdown-option');
+        try {
+            const btn = dropdown.querySelector('.dropdown-btn');
+            if (!btn) return;
+            const options = dropdown.querySelectorAll('.dropdown-option');
 
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const isActive = dropdown.classList.contains('active');
-            dropdowns.forEach(d => d.classList.remove('active'));
-            if (!isActive) dropdown.classList.add('active');
-        });
-
-        options.forEach(option => {
-            option.addEventListener('click', (e) => {
+            btn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                btn.querySelector('span').textContent = option.textContent;
-                options.forEach(opt => opt.classList.remove('selected'));
-                option.classList.add('selected');
-                filters[dropdown.id] = { value: option.dataset.value, text: option.textContent };
-                dropdown.classList.remove('active');
-                updateSelectedFilters();
+                const isActive = dropdown.classList.contains('active');
+                dropdowns.forEach(d => d.classList.remove('active'));
+                if (!isActive) dropdown.classList.add('active');
             });
-        });
+
+            options.forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const span = btn.querySelector('span');
+                    if (span) span.textContent = option.textContent;
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    filters[dropdown.id] = { value: option.dataset.value, text: option.textContent };
+                    dropdown.classList.remove('active');
+                    updateSelectedFilters();
+                });
+            });
+        } catch (err) {
+            console.error('Dropdown init error for', dropdown, err);
+        }
     });
 
     priceInput.addEventListener('input', () => {
@@ -1524,7 +1559,13 @@ document.addEventListener('DOMContentLoaded', function() {
         filters = {};
         priceInput.value = '';
         dropdowns.forEach(dropdown => {
-            dropdown.querySelector('.dropdown-btn span').textContent = dropdown.id === 'location' ? 'Select Location' : 'Select Property Type';
+            const btnSpan = dropdown.querySelector('.dropdown-btn span');
+            if (!btnSpan) return;
+            if (dropdown.id === 'location') btnSpan.textContent = 'Select Location';
+            else if (dropdown.id === 'propertyType') btnSpan.textContent = 'Select Property Type';
+            else if (dropdown.id === 'tenantType') btnSpan.textContent = 'Select Choice';
+            else if (dropdown.id === 'ownershipType') btnSpan.textContent = 'Select Choice';
+            else btnSpan.textContent = 'Select Choice';
             dropdown.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
         });
         updateSelectedFilters();

@@ -14,7 +14,7 @@
       font-family: Arial, sans-serif;
       background: #f6f6f6;
       margin: 0;
-      padding: 0;
+      padding: 80px 0 0 0; /* reserve space for fixed navbar (adjusted for larger logo) */
       text-align: center;
     }
 
@@ -22,6 +22,80 @@
       --primary-blue: #1e3a8a;
       --secondary-blue: #3b82f6;
       --bg-white: #fff;
+    }
+
+    /* --- Navbar Styles (aligned with other pages) --- */
+    .navbar {
+      background: var(--primary-blue);
+      padding: 0.9rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      gap: 1rem;
+    }
+
+    .navbar .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: #fff;
+      font-family: "Caprasimo", serif;
+      font-size: 24px; /* increased for better visibility */
+      font-weight: 400;
+      cursor: pointer;
+    }
+
+    .navbar .logo a {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .navbar .logo i {
+      font-size: 18px;
+      color: #fff;
+      padding: 6px 8px;
+      border-radius: 6px;
+      transition: background 0.2s, transform 0.15s;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .navbar .logo i:hover {
+      background: rgba(255,255,255,0.06);
+      transform: translateY(-1px);
+    }
+
+    .navbar .logo img {
+      width: 48px; /* slightly larger to match text */
+      height: 48px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.06);
+      object-fit: cover;
+    }
+
+    .navbar .logo span {
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.2rem; /* increased to match larger logo */
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 0.75rem 1rem;
+      }
+
+      .navbar .logo span {
+        display: none;
+      }
     }
 
     h1 {
@@ -163,6 +237,17 @@
 </head>
 
 <body>
+  <nav class="navbar">
+     <div class="logo">
+  <a onclick="history.back()">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+  <a>
+    <img src="img/DSA.png" alt="Logo">
+    <span>DSA Enterprise</span>
+  </a>
+</div>
+</nav>
 
   <h1>Choose Your Plan</h1>
 
