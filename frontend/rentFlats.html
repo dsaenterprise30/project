@@ -877,7 +877,9 @@ html {
         <form id="addPropertyForm" novalidate>
             <input type="hidden" id="propertyId" value="">
             <label for="propertyLocation">Location:</label>
-            <select id="propertyLocation" name="location" required><option value="">Select a Location</option><option value="Mira Road West">Mira Road West</option><option value="Dahisar West">Dahisar West</option><option value="Borivali West">Borivali West</option><option value="Kandivali West">Kandivali West</option><option value="Malad West">Malad West</option><option value="Ram Mandir West">Ram Mandir West</option><option value="Goregaon West">Goregaon West</option><option value="Andheri West">Andheri West</option><option value="Vile Parle West">Vile Parle West</option></select>
+            <select id="propertyLocation" name="location" required><option value="">Select a Location</option><option value="Mira Road East">Mira Road East</option><option value="Mira Road West">Mira Road West</option><option value="Dahisar West">Dahisar West</option><option value="Borivali West">Borivali West</option><option value="Kandivali West">Kandivali West</option><option value="Malad West">Malad West</option><option value="Ram Mandir West">Ram Mandir West</option><option value="Goregaon West">Goregaon West</option><option value="Andheri West">Andheri West</option><option value="Vile Parle West">Vile Parle West</option></select>
+            <label for="area">Area Name:</label>
+            <input type="text" id="area" name="area" placeholder="e.g., Kandivali West" required>
             <label for="propertyType">Property Type:</label>
             <select id="propertyType" name="propertyType" required><option value="">Select a Property Type</option><option value="1 RK">1 RK</option><option value="1 BHK">1 BHK</option><option value="1.5 BHK">1.5 BHK</option><option value="2 BHK">2 BHK</option><option value="2.5 BHK">2.5 BHK</option><option value="3 BHK">3 BHK</option><option value="3.5 BHK">3.5 BHK</option><option value="4 BHK">4 BHK</option></select>
             <label for="propertyPrice">Rent:</label>
@@ -912,14 +914,11 @@ html {
         <form class="search-form" onsubmit="return false;">
             <div class="search-group">
                 <label class="search-label">Select Location</label>
-                <div class="dropdown" id="location"><div class="dropdown-btn"><span>Select Location</span><i class="fas fa-chevron-down"></i></div><div class="dropdown-content"><div class="dropdown-option" data-value="Mira Road West">Mira Road West</div><div class="dropdown-option" data-value="Dahisar West">Dahisar West</div><div class="dropdown-option" data-value="Borivali West">Borivali West</div><div class="dropdown-option" data-value="Kandivali West">Kandivali West</div><div class="dropdown-option" data-value="Malad West">Malad West</div><div class="dropdown-option" data-value="Ram Mandir West">Ram Mandir West</div><div class="dropdown-option" data-value="Goregaon West">Goregaon West</div><div class="dropdown-option" data-value="Andheri West">Andheri West</div><div class="dropdown-option" data-value="Vile Parle West">Vile Parle West</div></div></div>
+                <div class="dropdown" id="location"><div class="dropdown-btn"><span>Select Location</span><i class="fas fa-chevron-down"></i></div><div class="dropdown-content"><div class="dropdown-option" data-value="Mira Road East">Mira Road East</div><div class="dropdown-option" data-value="Mira Road West">Mira Road West</div><div class="dropdown-option" data-value="Dahisar West">Dahisar West</div><div class="dropdown-option" data-value="Borivali West">Borivali West</div><div class="dropdown-option" data-value="Kandivali West">Kandivali West</div><div class="dropdown-option" data-value="Malad West">Malad West</div><div class="dropdown-option" data-value="Ram Mandir West">Ram Mandir West</div><div class="dropdown-option" data-value="Goregaon West">Goregaon West</div><div class="dropdown-option" data-value="Andheri West">Andheri West</div><div class="dropdown-option" data-value="Vile Parle West">Vile Parle West</div></div></div>
             </div>
             <div class="search-group">
                 <label class="search-label">Property Type</label>
                 <div class="dropdown" id="flatType"><div class="dropdown-btn"><span>Select Property Type</span><i class="fas fa-chevron-down"></i></div><div class="dropdown-content"><div class="dropdown-option" data-value="1 RK">1 RK</div><div class="dropdown-option" data-value="1 BHK">1 BHK</div><div class="dropdown-option" data-value="1.5 BHK">1.5 BHK</div><div class="dropdown-option" data-value="2 BHK">2 BHK</div><div class="dropdown-option" data-value="2.5 BHK">2.5 BHK</div><div class="dropdown-option" data-value="3 BHK">3 BHK</div><div class="dropdown-option" data-value="3.5 BHK">3.5 BHK</div><div class="dropdown-option" data-value="4 BHK">4 BHK</div></div></div>
-            <div class="search-group">
-                <label class="search-label">Enter Rent</label>
-                <div class="input-with-clear"><input type="text" class="search-input" id="price" placeholder="e.g., ₹25,000"><button type="button" class="clear-btn" data-target="price">&times;</button></div>
             </div>
             <div class="search-group">
                 <label class="search-label">Enter Rent</label>
@@ -928,6 +927,10 @@ html {
             <div class="search-group">
                 <label class="search-label">Enter Mobile No.</label>
                 <div class="input-with-clear"><input type="text" class="search-input" id="mobile" placeholder="e.g., 9876543210"><button type="button" class="clear-btn" data-target="mobile">&times;</button></div>
+            </div>
+            <div class="search-group">
+                <label class="search-label">Tenant Preference</label>
+                <div class="dropdown" id="tenantType"><div class="dropdown-btn"><span>Select Preference</span><i class="fas fa-chevron-down"></i></div><div class="dropdown-content"><div class="dropdown-option" data-value="Any">Any</div><div class="dropdown-option" data-value="Family">Family</div><div class="dropdown-option" data-value="Bachelors">Bachelors</div></div></div>
             </div>
             <div class="search-group">
                 <label class="search-label">Ownership Type</label>
@@ -943,7 +946,7 @@ html {
     <div class="property-container">
         <div class="property-header">
             <h2 class="property-title">Listed Properties for Rent</h2>
-            <button class="add-property-btn" id="addNewBtn"><i class="fas fa-plus"></i> Add New</button>
+            <button class="add-property-btn" id="addNewBtn"><i class="fas fa-plus"></i>Add New</button>
         </div>
         <div class="property-counters">
             <div class="counter-card"><h4>Total Properties</h4><div class="count" id="totalProperties">0</div></div>
@@ -952,7 +955,7 @@ html {
             <div class="counter-card"><h4>Agent Properties</h4><div class="count" id="agentProperties">0</div></div>
             <div class="counter-card"><h4>Owner Properties</h4><div class="count" id="ownerProperties">0</div></div>
         </div>
-        <div id="tableView" style="display: none;"><table class="property-table"><thead id="propertiesHeader"><tr><th>Location</th><th>Type</th><th>Rent</th><th>Name</th><th>Contact</th><th>Date(MM/DD/YYYY)</th><th>Preference</th><th>Ownership Type</th><th>Actions</th></tr></thead><tbody id="propertiesBody"></tbody></table></div>
+        <div id="tableView" style="display: none;"><table class="property-table"><thead id="propertiesHeader"><tr><th>Location</th><th>Area Name</th><th>Type</th><th>Rent</th><th>Name</th><th>Contact</th><th>Date(MM/DD/YYYY)</th><th>Preference</th><th>Ownership Type</th><th>Actions</th></tr></thead><tbody id="propertiesBody"></tbody></table></div>
         <div id="cardView" class="card-view" style="display: none;"></div>
     </div>
 </section>
@@ -1086,6 +1089,7 @@ function showCustomPopup(message, isConfirm = false, callback = null, duration =
 
         const formData = {
             location: propertyForm.elements['location'].value,
+            area: propertyForm.elements['area'].value,
             propertyType: propertyForm.elements['propertyType'].value,
             price: propertyForm.elements['price'].value,
             name: propertyForm.elements['userName'].value,
@@ -1138,6 +1142,7 @@ function showCustomPopup(message, isConfirm = false, callback = null, duration =
             if (property) {
                 propertyIdInput.value = property.id;
                 propertyForm.elements['location'].value = property.location;
+                propertyForm.elements['area'].value = property.area;
                 propertyForm.elements['propertyType'].value = property.propertyType;
                 propertyForm.elements['price'].value = property.price.replace(/[₹,]/g, '');
                 propertyForm.elements['userName'].value = property.userName;
@@ -1179,7 +1184,10 @@ function showCustomPopup(message, isConfirm = false, callback = null, duration =
                 const ownershipValue = p.ownershipType || 'Agent'; // Treat blank as Agent
                 if (ownershipValue !== filters.ownershipType.value) return false;
             }
-
+            if (filters.tenantType) {
+                const tenantValue = p.tenantType || 'Any';
+                if (tenantValue !== filters.tenantType.value) return false;
+            }
             // --- MODIFIED RENT FILTER LOGIC ---
             if (filters.price && filters.price.value) {
                 // Convert filter input and property price to numbers for comparison
@@ -1227,7 +1235,7 @@ function showCustomPopup(message, isConfirm = false, callback = null, duration =
             if (contact && contact.startsWith('91')) {
                 contact = contact.replace('91', '+91 ');
             }
-            row.innerHTML = `<td>${prop.location || ''}</td><td>${prop.propertyType || ''}</td><td>${prop.price || ''}</td><td>${prop.userName || ''}</td><td>${contact}</td><td>${new Date(prop.date).toLocaleDateString()}</td><td>${prop.tenantType || ''}</td><td>${prop.ownershipType || 'Agent'}</td><td class="actions-cell"><button class="action-btn edit-btn" data-id="${prop.id}"><i class="fas fa-edit"></i></button><button class="action-btn delete-btn" data-id="${prop.id}"><i class="fas fa-trash-alt"></i></button></td>`;
+            row.innerHTML = `<td>${prop.location || ''}</td><td>${prop.area || ''}</td><td>${prop.propertyType || ''}</td><td>${prop.price || ''}</td><td>${prop.userName || ''}</td><td>${contact}</td><td>${new Date(prop.date).toLocaleDateString()}</td><td>${prop.tenantType || ''}</td><td>${prop.ownershipType || 'Agent'}</td><td class="actions-cell"><button class="action-btn edit-btn" data-id="${prop.id}"><i class="fas fa-edit"></i></button><button class="action-btn delete-btn" data-id="${prop.id}"><i class="fas fa-trash-alt"></i></button></td>`;
         });
     }
 

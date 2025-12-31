@@ -127,6 +127,52 @@
         display: none;
       }
     }
+
+    /* Popup alert styles */
+    .popup {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.45);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 220ms ease, visibility 220ms;
+      z-index: 2000;
+      pointer-events: none;
+    }
+    .popup.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    .popup-content {
+      background: #fff;
+      padding: 18px 20px;
+      border-radius: 10px;
+      min-width: 280px;
+      max-width: 90%;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+      text-align: left;
+      position: relative;
+      border-left: 6px solid #1e3a8a;
+    }
+    .popup.success .popup-content { border-left-color: #16a34a; }
+    .popup.error .popup-content { border-left-color: #dc2626; }
+    .popup .popup-message { font-size: 16px; margin: 4px 0; color: #111827; }
+    .popup .popup-actions { margin-top: 12px; text-align: right; }
+    .popup .popup-actions .btn { width: auto; padding: 8px 12px; font-size: 14px; }
+    .popup .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      border: none;
+      background: transparent;
+      font-size: 18px;
+      cursor: pointer;
+      color: #6b7280;
+    }
   </style>
 </head>
 
@@ -154,7 +200,7 @@
       {
         name: "Monthly Plan",
         price: 1999,
-        interval: "mo"
+        interval: "month"
       },
       {
         name: "Half Yearly Plan",
@@ -166,7 +212,7 @@
         name: "Yearly Plan",
         price: 20000,
         interval: "yr",
-        promo: "2 months free",
+        promo: "Save ₹3,988",
         popular: true
       }
     ];
@@ -183,12 +229,67 @@
         <h2>${plan.name}</h2>
         <div class="plan-price">₹${plan.price.toLocaleString()} / ${plan.interval}</div>
         ${plan.promo ? `<div class="promo">${plan.promo}</div>` : ""}
-        <button class="btn" onclick="alert('Subscription coming soon')">
+        <button class="btn" onclick="showPopup('Please log in to subscribe', {type: 'info'})">
           Subscribe
         </button>
       `;
 
       plansContainer.appendChild(card);
+    });
+  </script>
+
+  <!-- Popup markup -->
+  <div id="alert-popup" class="popup hidden" aria-hidden="true" role="alert">
+    <div class="popup-content" role="document">
+      <button class="close-btn" aria-label="Close">&times;</button>
+      <div class="popup-message"></div>
+      <div class="popup-actions">
+        <button class="btn" onclick="hidePopup()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showPopup(message, {type = 'info', autoClose = true, duration = 3500} = {}) {
+      const popup = document.getElementById('alert-popup');
+      if (!popup) return;
+      const msg = popup.querySelector('.popup-message');
+      msg.textContent = message;
+      popup.classList.remove('success','error','info','hidden');
+      popup.classList.add('show', type);
+      popup.setAttribute('aria-hidden', 'false');
+      if (autoClose) {
+        clearTimeout(popup._timeout);
+        popup._timeout = setTimeout(hidePopup, duration);
+      }
+    }
+
+    function hidePopup() {
+      const popup = document.getElementById('alert-popup');
+      if (!popup) return;
+      popup.classList.remove('show');
+      popup.setAttribute('aria-hidden', 'true');
+      clearTimeout(popup._timeout);
+      setTimeout(() => popup.classList.add('hidden'), 220);
+    }
+
+    // close when clicking overlay (but not content)
+    document.addEventListener('click', (e) => {
+      const popup = document.getElementById('alert-popup');
+      if (!popup) return;
+      if (popup.classList.contains('show') && e.target === popup) {
+        hidePopup();
+      }
+    });
+
+    // close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') hidePopup();
+    });
+
+    // close on close button click
+    document.addEventListener('click', (e) => {
+      if (e.target.matches('.close-btn')) hidePopup();
     });
   </script>
 

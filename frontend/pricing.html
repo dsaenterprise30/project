@@ -289,7 +289,7 @@
 
       // Show interval label based on plan duration/interval
       const intervalLabel = (plan.interval === 'monthly')
-        ? (plan.duration > 1 ? `per ${plan.duration} month${plan.duration>1 ? 's' : ''}` : ' / mo')
+        ? (plan.duration > 1 ? `per ${plan.duration} month${plan.duration>1 ? 's' : ''}` : ' / month')
         : (plan.duration > 1 ? `per ${plan.duration} year${plan.duration>1 ? 's' : ''}` : ' / yr');
 
       const freeMonths = baselineMonthlyPrice ? Math.max(0, Math.round((originalPrice - discountedPrice) / baselineMonthlyPrice)) : 0;

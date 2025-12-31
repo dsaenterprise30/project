@@ -14,6 +14,9 @@ const sellFlatSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    area: {
+        type: String
+    },
     propertyType: {
         type: String,
         required: true

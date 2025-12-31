@@ -12,6 +12,7 @@ import {
   getUserByContact,
   createSubscription,
   getSubscriptionStatus,
+  deleteUserByAdmin,
 } from "../controllers/userController.js";
 
 import { verifyAccessToken } from "../middleware/userAuth.js";
@@ -77,5 +78,8 @@ router.get("/subscription-status", verifyAccessToken, getSubscriptionStatus);
 router.get("/premium-feature", verifyAccessToken, checkSubscription, (req, res) => {
   res.json({ success: true, message: "You have access to premium content 🎉" });
 });
+
+// Route 12 - delete user by admin 
+router.delete("/delete/:id", verifyAccessToken, checkAdminNumber, deleteUserByAdmin);
 
 export default router;
