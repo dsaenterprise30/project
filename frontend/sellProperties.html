@@ -1071,7 +1071,8 @@
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="dropdown-content">
-                        <div class="dropdown-option" data-value="mira road">Mira Road West</div>
+                        <div class="dropdown-option" data-value="mira road east">Mira Road East</div>
+                        <div class="dropdown-option" data-value="mira road west">Mira Road West</div>
                         <div class="dropdown-option" data-value="dahisar west">Dahisar West</div>
                         <div class="dropdown-option" data-value="borivali west">Borivali West</div>
                         <div class="dropdown-option" data-value="kandivali west">Kandivali West</div>
@@ -1148,6 +1149,7 @@
                 <thead>
                     <tr>
                         <th>Location</th>
+                        <th>Area Name</th>
                         <th>Property Type</th>
                         <th>Price</th>
                         <th>Name</th>
@@ -1280,7 +1282,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const result = await response.json();
             // preserve your existing data extraction:
             propertiesData = result.data || [];
-            console.log("Fetched properties:", propertiesData);
         } catch (error) {
             console.error('Error fetching properties:', error);
             showTableMessage('❌ Error loading properties. Please try again later.');
@@ -1335,6 +1336,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             row.innerHTML = `
                 <td data-label="Location">${property.location || ''}</td>
+                <td data-label="Area">${property.area || ''}</td>
                 <td data-label="Property Type">${property.propertyType || ''}</td>
                 <td data-label="Price">${displayPrice}</td>
                 <td data-label="Name">${property.userName || ''}</td>

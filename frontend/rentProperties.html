@@ -1070,6 +1070,7 @@
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="dropdown-content">
+                        <div class="dropdown-option" data-value="mira road east">Mira Road East</div>
                         <div class="dropdown-option" data-value="mira road west">Mira Road West</div>
                         <div class="dropdown-option" data-value="dahisar west">Dahisar West</div>
                         <div class="dropdown-option" data-value="borivali west">Borivali West</div>
@@ -1163,6 +1164,7 @@
                 <thead>
                     <tr>
                         <th>Location</th>
+                        <th>Area Name</th>
                         <th>Property Type</th>
                         <th>Rent</th>
                         <th>Name</th>
@@ -1429,6 +1431,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             row.innerHTML = `
                 <td data-label="Location">${property.location || ''}</td>
+                <td data-label="Area">${property.area || ''}</td>
                 <td data-label="Property Type">${property.propertyType || ''}</td>
                 <td data-label="Rent">${displayPrice}</td>
                 <td data-label="Name">${property.userName || ''}</td>

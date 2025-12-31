@@ -188,9 +188,11 @@ html{scroll-behavior:smooth}
         <form id="addPropertyForm" novalidate>
             <input type="hidden" id="propertyId" value="">
             <label for="propertyLocation">Location:</label>
-            <select id="propertyLocation" name="location" required><option value="">Select a Location</option><option value="Mira Road West">Mira Road West</option><option value="Dahisar West">Dahisar West</option><option value="Borivali West">Borivali West</option><option value="Kandivali West">Kandivali West</option><option value="Malad West">Malad West</option><option value="Ram Mandir West">Ram Mandir West</option><option value="Goregaon West">Goregaon West</option><option value="Andheri West">Andheri West</option><option value="Vile Parle West">Vile Parle West</option></select>
+            <select id="propertyLocation" name="location" required><option value="">Select a Location</option><option></option><option value="Mira Road East">Mira Road East</option><option value="Mira Road West">Mira Road West</option><option value="Dahisar West">Dahisar West</option><option value="Borivali West">Borivali West</option><option value="Kandivali West">Kandivali West</option><option value="Malad West">Malad West</option><option value="Ram Mandir West">Ram Mandir West</option><option value="Goregaon West">Goregaon West</option><option value="Andheri West">Andheri West</option><option value="Vile Parle West">Vile Parle West</option></select>
             <label for="propertyType">Property Type:</label>
             <select id="propertyType" name="propertyType" required><option value="">Select a Property Type</option><option value="1 RK">1 RK</option><option value="1 BHK">1 BHK</option><option value="1.5 BHK">1.5 BHK</option><option value="2 BHK">2 BHK</option><option value="2.5 BHK">2.5 BHK</option><option value="3 BHK">3 BHK</option><option value="3.5 BHK">3.5 BHK</option><option value="4 BHK">4 BHK</option></select>
+            <label for="area">Area Name:</label>
+            <input type="text" id="area" name="area" placeholder="e.g., Kandivali West" required>
             <label for="propertyPrice">Price:</label>
             <input type="text" id="propertyPrice" name="price" placeholder="e.g., ₹50,00,000" required>
             <label for="propertyName">Name:</label>
@@ -225,6 +227,7 @@ html{scroll-behavior:smooth}
                 <div class="dropdown" id="location" data-filter-key="location">
                     <div class="dropdown-btn"><span>Select Location</span><i class="fas fa-chevron-down"></i></div>
                     <div class="dropdown-content">
+                        <div class="dropdown-option" data-value="Mira Road East">Mira Road East</div>
                         <div class="dropdown-option" data-value="Mira Road West">Mira Road West</div>
                         <div class="dropdown-option" data-value="Dahisar West">Dahisar West</div>
                         <div class="dropdown-option" data-value="Borivali West">Borivali West</div>
@@ -295,7 +298,7 @@ html{scroll-behavior:smooth}
             <div class="counter-card"><h4>Owner Properties</h4><div class="count" id="ownerProperties">0</div></div>
             <div class="counter-card"><h4>Agent Properties</h4><div class="count" id="agentProperties">0</div></div>
         </div>
-        <div id="tableView" style="display: none;"><table class="property-table"><thead id="propertiesHeader"><tr><th>Location</th><th>Type</th><th>Price</th><th>Name</th><th>Contact</th><th>Date(MM/DD/YYYY)</th><th>Ownership</th><th>Actions</th></tr></thead><tbody id="propertiesBody"></tbody></table></div>
+        <div id="tableView" style="display: none;"><table class="property-table"><thead id="propertiesHeader"><tr><th>Location</th><th>Area Name</th><th>Type</th><th>Price</th><th>Name</th><th>Contact</th><th>Date(MM/DD/YYYY)</th><th>Ownership</th><th>Actions</th></tr></thead><tbody id="propertiesBody"></tbody></table></div>
         <div id="cardView" class="card-view" style="display: none;"></div>
     </div>
 </section>
@@ -467,6 +470,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (property) {
                 propertyIdInput.value = property.id;
                 propertyForm.elements['location'].value = property.location;
+                propertyForm.elements['area'].value = property.area;
                 propertyForm.elements['propertyType'].value = property.propertyType;
                 propertyForm.elements['price'].value = property.price.replace(/[₹,]/g, '');
                 propertyForm.elements['userName'].value = property.userName;
