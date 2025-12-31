@@ -1332,7 +1332,7 @@ function closeAllPanels() {
             if (!confirmed) return;
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch(`http://project-tbbc.onrender.com/api/users/delete/${userId}`, {
+                const res = await fetch(`https://project-tbbc.onrender.com/api/users/delete/${userId}`, {
                     method: 'delete',
                     headers: {
                         "Content-Type": "application/json",
