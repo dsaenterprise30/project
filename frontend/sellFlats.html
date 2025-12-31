@@ -427,6 +427,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!accessToken) { showCustomPopup('❌ Authentication failed. Please log in again.'); return; }
         const formData = {
             location: propertyForm.elements['location'].value,
+            area: propertyForm.elements['area'].value,
             propertyType: propertyForm.elements['propertyType'].value,
             price: propertyForm.elements['price'].value,
             name: propertyForm.elements['userName'].value,
