@@ -545,6 +545,7 @@ document.addEventListener('DOMContentLoaded', function() {
         data.forEach(prop => {
             const row = propertiesBody.insertRow();
             row.innerHTML = `<td>${prop.location || ''}</td>
+            <td>${prop.area || ''}</td>
             <td>${prop.propertyType || ''}</td>
             <td>${prop.price || ''}</td><td>${prop.userName || ''}</td>
             <td>${"+91 " + (prop.contact || '')}</td>
