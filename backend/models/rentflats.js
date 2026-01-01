@@ -9,6 +9,10 @@ const RentFlatSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    area: {
+        type: String,
+        required: true
+    },
     propertyType: {
         type: String,
         required: true
@@ -38,8 +42,8 @@ const RentFlatSchema = new mongoose.Schema({
         required: true,
         enum: ['Owner', 'Agent']
     },
-}, { 
-    timestamps: true 
+}, {
+    timestamps: true
 });
 
 const RentFlat = mongoose.model('RentFlat', RentFlatSchema);

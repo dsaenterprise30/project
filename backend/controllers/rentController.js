@@ -16,13 +16,13 @@ const cleanMobileNumber = (mobileString) => {
 
 // Route 1: Create a new rent listing
 export const createRentListing = async (req, res) => {
-    const { contact, location, propertyType, price, name, date, tenantType, ownershipType } = req.body || {};
+    const { contact, location, area, propertyType, price, name, date, tenantType, ownershipType } = req.body || {};
 
-    try { 
-        if (!contact || !location || !propertyType || !price || !name || !date || !tenantType || !ownershipType) {
+    try {
+        if (!contact || !location || !area || !propertyType || !price || !name || !date || !tenantType || !ownershipType) {
             return res.status(400).json({ message: "All required fields must be provided." });
         }
-        
+
         // Always normalize to 10 digits
         const sanitizedContact = '91' + contact.trim();
 
@@ -39,6 +39,7 @@ export const createRentListing = async (req, res) => {
         const duplicateListing = await RentFlat.findOne({
             contact: sanitizedContact,
             location,
+            area,
             propertyType,
             price: parsePrice(price),
             tenantType
@@ -53,6 +54,7 @@ export const createRentListing = async (req, res) => {
 
         const newListing = new RentFlat({
             location,
+            area,
             propertyType,
             price: parsePrice(price),
             contact: sanitizedContact, // always store only 10 digits
@@ -70,10 +72,10 @@ export const createRentListing = async (req, res) => {
             autoFilledFromUser: !!matchedUser
         });
 
-    } catch (error) { 
-         if (error.code === 11000 && error.keyPattern?.contact) {
-            return res.status(409).json({ 
-                message: "This contact number is already associated with an existing listing. Please use a different number." 
+    } catch (error) {
+        if (error.code === 11000 && error.keyPattern?.contact) {
+            return res.status(409).json({
+                message: "This contact number is already associated with an existing listing. Please use a different number."
             });
         }
         console.error("Error creating rent listing:", error.message);
@@ -86,7 +88,7 @@ export const createRentListing = async (req, res) => {
 export const getAllRentListings = async (req, res) => {
     try {
         const listings = await RentFlat.find().lean();
-        
+
         const formattedListings = listings.map(listing => {
             const formattedPrice = (typeof listing.price === 'number' && !isNaN(listing.price))
                 ? `₹${new Intl.NumberFormat('en-IN').format(listing.price)}`
@@ -98,7 +100,7 @@ export const getAllRentListings = async (req, res) => {
                 price: formattedPrice
             };
         });
-        
+
         res.status(200).json({
             message: "All the flats for rent are listed below.",
             count: formattedListings.length,
@@ -116,13 +118,14 @@ export const getAllRentListings = async (req, res) => {
 
 // Route 3: Update a rent listing by its ID
 export const updateRentListingById = async (req, res) => {
-    const { id } = req.params; 
+    const { id } = req.params;
     // ✅ CORRECTED: Destructure tenantType
-    const { location, propertyType, price, name, contact, date, tenantType, ownershipType } = req.body || {};
+    const { location, area, propertyType, price, name, contact, date, tenantType, ownershipType } = req.body || {};
 
     try {
         const update = {
             location,
+            area,
             propertyType,
             price: parsePrice(price),
             userName: name,
