@@ -405,3 +405,59 @@ export const getSubscriptionStatus = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+// Route 12 - Delete User (Admin only)
+export const deleteUser = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await User.findByIdAndDelete(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Also delete associated data if necessary (e.g., from RentFlat, SellFlat) if the logic requires it.
+    // For now, we just delete the user record as per request.
+
+    // Optionally remove from pendingUsers if it exists there (though pendingUsers is in-memory and might not persist across restarts)
+    // if (pendingUsers[user.mobileNumber]) delete pendingUsers[user.mobileNumber];
+
+    res.status(200).json({ message: "User deleted successfully." });
+  } catch (error) {
+    console.error("Delete User Error:", error);
+    res.status(500).json({ message: "Server error: " + error.message });
+  }
+};
+
+// Route 13 - Update User (Admin only)
+export const updateUser = async (req, res) => {
+  const { id } = req.params;
+  const { password, subscriptionExpiry } = req.body;
+
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    if (password && password.trim() !== "") {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+    }
+
+    if (subscriptionExpiry) {
+      user.subscriptionExpiry = new Date(subscriptionExpiry);
+      // Automatically activate if expiry is in future
+      if (user.subscriptionExpiry > new Date()) {
+        user.subscriptionActive = true;
+        user.subscriptionStatus = "Active";
+      }
+    }
+
+    await user.save();
+
+    res.status(200).json({ message: "User updated successfully." });
+  } catch (error) {
+    console.error("Update User Error:", error);
+    res.status(500).json({ message: "Server error: " + error.message });
+  }
+};

@@ -12,6 +12,8 @@ import {
   getUserByContact,
   createSubscription,
   getSubscriptionStatus,
+  deleteUser,
+  updateUser,
 } from "../controllers/userController.js";
 
 import { verifyAccessToken } from "../middleware/userAuth.js";
@@ -64,6 +66,12 @@ router.get("/contact/:mobileNumber", async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
+
+// Route 9 - Delete User (Admin only)
+router.delete("/delete/:id", verifyAccessToken, checkAdminNumber, deleteUser);
+
+// Route 13 - Update User (Admin only)
+router.put("/update/:id", verifyAccessToken, checkAdminNumber, updateUser);
 
 // Subscription routes
 
