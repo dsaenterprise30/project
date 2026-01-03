@@ -1204,6 +1204,11 @@
                     </div>
                 </div>
 
+                <div class="search-group">
+                    <label class="search-label">Contact Number</label>
+                    <input type="text" class="search-input" id="contactInput" placeholder="e.g., 9004053133">
+                </div>
+
                 <button type="button" class="search-btn" id="searchBtn">
                     <i class="fas fa-search"></i>
                     Search
@@ -1321,7 +1326,8 @@
             const tableContainer = document.getElementById('tableContainer');
             const tableMessage = document.getElementById('tableMessage');
             const priceInput = document.getElementById('priceInput');
-            const BASE_URL = `${window.API_BASE_URL}/api/sellflats`;
+            const contactInput = document.getElementById('contactInput');
+            const BASE_URL = `${window.API_BASE_URL}/api/sellflats`;            
 
             // --- SIDE PANEL LOGIC ---
             const overlay = document.getElementById('overlay');
@@ -1398,6 +1404,7 @@
                 const filterType = filters.propertyType ? filters.propertyType.value.toLowerCase() : '';
                 const priceValue = filters.priceInput ? filters.priceInput.value : '';
                 const filterOwnershipType = filters.ownershipType ? filters.ownershipType.value.toLowerCase() : '';
+                const filterContact = filters.contactInput ? String(filters.contactInput.value).replace(/\D/g, '') : ''; // digits-only contact filter
 
                 filteredData = propertiesData.filter(property => {
                     const rowLocation = (property.location || '').toLowerCase();
@@ -1419,7 +1426,14 @@
                         }
                     }
 
-                    return matchLocation && matchType && matchPrice && matchOwnershipType;
+                    // contact matching (digits-only, partial match supported)
+                    let matchContact = true;
+                    if (filterContact) {
+                        const propContact = String(property.contact || '').replace(/\D/g, '');
+                        matchContact = propContact.includes(filterContact);
+                    }
+
+                    return matchLocation && matchType && matchPrice && matchOwnershipType && matchContact;
                 });
             }
 
@@ -1444,7 +1458,7 @@
                 <td data-label="Property Type">${property.propertyType || ''}</td>
                 <td data-label="Price">${displayPrice}</td>
                 <td data-label="Name">${property.userName || ''}</td>
-                <td data-label="Contact">${property.contact || ''}</td>
+                <td data-label="Contact">${(function(){let c = property.contact || ''; if (typeof c === 'string' && c.startsWith('91')) c = c.replace(/^91/, '+91 '); return c; })() || ''}</td>
                 <td data-label="Date">${property.date ? new Date(property.date).toLocaleDateString() : ''}</td>
                 <td data-label="Ownership">${property.ownershipType || ''}</td>
             `;
@@ -1468,7 +1482,7 @@
                 <div class="card-row"><span class="card-label">Type:</span> <span class="card-value">${property.propertyType || ''}</span></div>
                 <div class="card-row"><span class="card-label">Price:</span> <span class="card-value">${displayPrice}</span></div>
                 <div class="card-row"><span class="card-label">Name:</span> <span class="card-value">${property.userName || ''}</span></div>
-                <div class="card-row"><span class="card-label">Contact:</span> <span class="card-value">${property.contact || ''}</span></div>
+                <div class="card-row"><span class="card-label">Contact:</span> <span class="card-value">${(function(){let c = property.contact || ''; if (typeof c === 'string' && c.startsWith('91')) c = c.replace(/^91/, '+91 '); return c; })() || ''}</span></div>
                 <div class="card-row"><span class="card-label">Date:</span> <span class="card-value">${property.date ? new Date(property.date).toLocaleDateString() : ''}</span></div>
                 <div class="card-row"><span class="card-label">Ownership:</span> <span class="card-value">${property.ownershipType || ''}</span></div>
             `;
@@ -1587,10 +1601,25 @@
                 updateSelectedFilters();
             });
 
+            // Contact filter input: accept partial numbers and keep digits-only for matching
+            if (contactInput) {
+                contactInput.addEventListener('input', () => {
+                    const raw = contactInput.value.trim();
+                    const digits = raw.replace(/\D/g, '');
+                    if (digits) {
+                        filters.contactInput = { value: digits, text: `Contact: ${raw}` };
+                    } else {
+                        delete filters.contactInput;
+                    }
+                    updateSelectedFilters();
+                });
+            }
+
             if (clearAllBtn) {
                 clearAllBtn.addEventListener('click', () => {
                     filters = {};
                     priceInput.value = '';
+                    if (contactInput) contactInput.value = '';
                     dropdowns.forEach(dropdown => {
                         dropdown.querySelector('.dropdown-btn span').textContent = dropdown.id === 'location' ? 'Select Location' : 'Select Property Type';
                         dropdown.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
@@ -1598,7 +1627,7 @@
                     updateSelectedFilters();
                     showTableMessage('⚠️ Please use the search filters above to find properties.');
                 });
-            }
+            } 
 
             document.addEventListener('click', () => dropdowns.forEach(d => d.classList.remove('active')));
 

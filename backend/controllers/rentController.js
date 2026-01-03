@@ -16,7 +16,7 @@ const cleanMobileNumber = (mobileString) => {
 
 // Route 1: Create a new rent listing
 export const createRentListing = async (req, res) => {
-    const { contact, location, propertyType, price, name, date, tenantType, ownershipType } = req.body || {};
+    const { contact, area, location, propertyType, price, name, date, tenantType, ownershipType } = req.body || {};
 
     try {
         if (!contact || !location || !propertyType || !price || !name || !date || !tenantType || !ownershipType) {

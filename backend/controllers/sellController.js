@@ -16,10 +16,10 @@ const cleanMobileNumber = (mobileString) => {
 
 // Route 1: Create a new sell listing
 export const createSellListing = async (req, res) => {
-    const { contact, location, propertyType, price, date, ownershipType, name } = req.body || {};
+    const { contact, area, location, propertyType, price, date, ownershipType, name } = req.body || {};
 
     try {
-        if (!contact || !location || !propertyType || !price || !date || !ownershipType || !name) {
+        if (!contact || !area || !location || !propertyType || !price || !date || !ownershipType || !name) {
             return res.status(400).json({ message: "All required fields must be provided." });
         }
 

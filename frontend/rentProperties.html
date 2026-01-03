@@ -1202,6 +1202,7 @@
                         </div>
                     </div>
                 </div>
+                
                 <div class="search-group">
                     <label class="search-label">Ownership Type</label>
                     <div class="dropdown" id="ownershipType">
@@ -1214,6 +1215,11 @@
                             <div class="dropdown-option" data-value="agent">Agent</div>
                         </div>
                     </div>
+                </div>
+
+                <div class="search-group">
+                    <label class="search-label">Contact Number</label>
+                    <input type="text" class="search-input" id="contactInput" placeholder="e.g., 9004053133">
                 </div>
 
                 <button type="button" class="search-btn" id="searchBtn">
@@ -1356,7 +1362,9 @@
             const tableContainer = document.getElementById('tableContainer');
             const tableMessage = document.getElementById('tableMessage');
             const priceInput = document.getElementById('priceInput');
-            const BASE_URL = `${window.API_BASE_URL}/api/rentflats`;
+            const contactInput = document.getElementById('contactInput');
+            const BASE_URL = `${window.API_BASE_URL}/api/rentflats`;            
+
 
             // --- SIDE PANEL LOGIC ---
             const overlay = document.getElementById('overlay');
@@ -1435,6 +1443,7 @@
                 const filterTenant = filters.tenantType ? filters.tenantType.value.toLowerCase() : '';
                 const filterOwnership = filters.ownershipType ? filters.ownershipType.value.toLowerCase() : '';
                 const priceValue = filters.priceInput ? filters.priceInput.value : '';
+                const filterContact = filters.contactInput ? String(filters.contactInput.value).replace(/\D/g, '') : ''; // digits-only contact filter
 
                 filteredData = propertiesData.filter(property => {
                     const rowLocation = (property.location || '').toLowerCase();
@@ -1446,6 +1455,13 @@
                     const matchType = !filterType || normalizedRowType === filterType;
                     const matchTenant = !filterTenant || rowTenant === filterTenant;
                     const matchOwnership = !filterOwnership || rowOwnership === filterOwnership;
+
+                    // contact matching (digits-only, allow partial matches)
+                    let matchContact = true;
+                    if (filterContact) {
+                        const propContact = String(property.contact || '').replace(/\D/g, '');
+                        matchContact = propContact.includes(filterContact);
+                    }
 
                     // --- CORRECTED NUMERICAL BUDGET FILTER LOGIC ---
                     let matchPrice = true;
@@ -1460,7 +1476,7 @@
                         }
                     }
 
-                    return matchLocation && matchType && matchTenant && matchPrice && matchOwnership;
+                    return matchLocation && matchType && matchTenant && matchPrice && matchOwnership && matchContact;
                 });
             }
 
@@ -1507,9 +1523,10 @@
                             displayPrice = `₹${Number(numericPrice).toLocaleString('en-IN')}`;
                         }
                     }
-                    if (property.contact.startsWith("91")) {
-                        property.contact = property.contact.replace(/^91/, '+91 ');
-
+                    // format contact for display without mutating original object
+                    let displayContact = property.contact || '';
+                    if (typeof displayContact === 'string' && displayContact.startsWith("91")) {
+                        displayContact = displayContact.replace(/^91/, '+91 ');
                     }
 
                     row.innerHTML = `
@@ -1518,9 +1535,9 @@
                 <td data-label="Property Type">${property.propertyType || ''}</td>
                 <td data-label="Rent">${displayPrice}</td>
                 <td data-label="Name">${property.userName || ''}</td>
-                <td data-label="Contact">${property.contact || ''}</td>
+                <td data-label="Contact">${displayContact || ''}</td>
                 <td data-label="Tenant Type">${property.tenantType || ''}</td>
-                <td data-label="Ownership Type">${property.ownershipType || ''}</td>
+                <td data-label="Ownership Type">${property.ownershipType || 'Agent'}</td>
                 <td data-label="Date">${property.date ? new Date(property.date).toLocaleDateString() : ''}</td>
             `;
                     propertiesBody.appendChild(row);
@@ -1641,9 +1658,22 @@
                 updateSelectedFilters();
             });
 
+            // Contact filter input: accept partial numbers and keep digits-only for matching
+            contactInput.addEventListener('input', () => {
+                const raw = contactInput.value.trim();
+                const digits = raw.replace(/\D/g, '');
+                if (digits) {
+                    filters.contactInput = { value: digits, text: `Contact: ${raw}` };
+                } else {
+                    delete filters.contactInput;
+                }
+                updateSelectedFilters();
+            });
+
             clearAllBtn.addEventListener('click', () => {
                 filters = {};
                 priceInput.value = '';
+                contactInput.value = '';
                 dropdowns.forEach(dropdown => {
                     const btnSpan = dropdown.querySelector('.dropdown-btn span');
                     if (!btnSpan) return;
