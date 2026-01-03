@@ -887,7 +887,7 @@
         }
 
         try {
-          const response = await fetch("http://project-tbbc.onrender.com/api/users/forgot", {
+          const response = await fetch("https://project-tbbc.onrender.com/api/users/forgot", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -1037,7 +1037,7 @@
     // ===== Razorpay Subscription Handler =====
 const handleSubscription = async (mobileNumber, mode = "registration", loginPassword = null) => {
   try {
-    const response = await fetch("http://localhost:3000/api/payment/create-subscription", {
+    const response = await fetch("https://localhost:3000/api/payment/create-subscription", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ mobileNumber: mobileNumber }),
