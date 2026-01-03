@@ -217,7 +217,7 @@ export const forgotPassword = async (req, res) => {
 
     res.status(200).json({
       status: "success",
-      message: "User exists. Proceed with OTP verification using Firebase.",
+      message: "User exists. Proceed with OTP verification.",
     });
 
   } catch (error) {
@@ -274,7 +274,7 @@ export const adminLogin = async (req, res) => {
       return res.status(400).json({ message: "Admin not found" });
     }
 
-    const adminNumber = process.env.ADMIN_NUMBER;
+    const adminNumber = process.env.ADMIN_NUMBER || "8591325875";
     const phoneNumber = user.mobileNumber;
     if (String(phoneNumber) !== String(adminNumber)) {
       return res.status(403).json({

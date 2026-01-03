@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caprasimo&display=swap" rel="stylesheet">
-    
+
     <style>
         /* --- Base & Reset Styles --- */
         * {
@@ -35,9 +36,10 @@
 
         main {
             flex-grow: 1;
-        } 
+        }
 
-        .data-section, .search-section {
+        .data-section,
+        .search-section {
             scroll-margin-top: 85px;
         }
 
@@ -101,7 +103,8 @@
             transition: all 0.3s ease;
         }
 
-        .nav-links a:hover, .nav-links a.active {
+        .nav-links a:hover,
+        .nav-links a.active {
             background: rgba(255, 255, 255, 0.1);
         }
 
@@ -162,7 +165,8 @@
             font-size: 0.875rem;
         }
 
-        .search-input, .dropdown-btn {
+        .search-input,
+        .dropdown-btn {
             height: 50px;
             padding: 0.75rem 1rem;
             border: 2px solid #e5e7eb;
@@ -173,7 +177,8 @@
             width: 100%;
         }
 
-        .search-input:focus, .dropdown.active .dropdown-btn {
+        .search-input:focus,
+        .dropdown.active .dropdown-btn {
             border-color: #1e3a8a;
             box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
         }
@@ -264,14 +269,16 @@
             border-radius: 8px;
             transition: background 0.2s, transform 0.1s;
         }
+
         .delete-btn:hover {
-            background: rgba(220,53,69,0.08);
+            background: rgba(220, 53, 69, 0.08);
             transform: translateY(-2px);
         }
+
         .delete-btn i {
             pointer-events: none;
         }
-        
+
         /* --- Data Section (Counters & Table) --- */
         .data-section {
             padding: 2rem;
@@ -310,7 +317,7 @@
             font-weight: 700;
             color: #1e3a8a;
         }
-        
+
         .data-header {
             display: flex;
             justify-content: space-between;
@@ -329,10 +336,11 @@
             background: white;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
             border-radius: 12px;
-            overflow: hidden; 
+            overflow: hidden;
         }
 
-        .data-table th, .data-table td {
+        .data-table th,
+        .data-table td {
             padding: 15px;
             text-align: left;
             border-bottom: 1px solid #e2e8f0;
@@ -355,7 +363,7 @@
         .data-table td {
             color: #374151;
         }
-        
+
         .status-active {
             color: #16a34a;
             background-color: #dcfce7;
@@ -364,7 +372,7 @@
             font-weight: 500;
             font-size: 0.875rem;
         }
-        
+
         .status-inactive {
             color: #dc2626;
             background-color: #fee2e2;
@@ -384,7 +392,7 @@
             background: #fff;
             overflow-x: hidden;
             transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            box-shadow: -2px 0 15px rgba(0,0,0,0.2);
+            box-shadow: -2px 0 15px rgba(0, 0, 0, 0.2);
             z-index: 2000;
             display: flex;
             flex-direction: column;
@@ -416,7 +424,7 @@
             overflow-y: auto;
             flex-grow: 1;
         }
-        
+
         .panel-content form {
             display: flex;
             flex-direction: column;
@@ -429,15 +437,17 @@
             font-size: 0.9rem;
         }
 
-        .panel-content input, .panel-content select {
+        .panel-content input,
+        .panel-content select {
             padding: 12px;
             font-size: 1rem;
             border-radius: 8px;
             border: 1px solid #ccc;
             width: 100%;
         }
-        
-        .panel-content input:focus, .panel-content select:focus {
+
+        .panel-content input:focus,
+        .panel-content select:focus {
             outline: none;
             border-color: #1e3a8a;
             box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
@@ -447,7 +457,8 @@
             position: relative;
         }
 
-        .password-container .fa-eye, .password-container .fa-eye-slash {
+        .password-container .fa-eye,
+        .password-container .fa-eye-slash {
             position: absolute;
             right: 15px;
             top: 50%;
@@ -455,13 +466,14 @@
             cursor: pointer;
             color: #888;
         }
+
         .button-row {
             display: flex;
             gap: 10px;
             margin-top: 1rem;
         }
 
-         .button-row button {
+        .button-row button {
             flex: 1;
             padding: 14px;
             border: none;
@@ -483,7 +495,7 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         #logoutBtn {
             width: 100%;
             margin-top: 1.5rem;
@@ -495,37 +507,46 @@
             transition: background-color 0.3s ease, transform 0.2s ease;
             cursor: pointer;
         }
+
         #logoutBtn:hover {
             background-color: #c82333;
             transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-.side-panel.open {
-    width: 400px; 
-}
 
-/* Media queries for responsiveness (applied to the open state) */
-@media (max-width: 1023px) {
-    .side-panel.open {
-        width: 400px; /* Adjust for medium screens */
-    }
-}
+        .side-panel.open {
+            width: 400px;
+        }
 
-@media (max-width: 425px) {
-    .side-panel.open {
-        width: 100%; /* Full width for mobile screens */
-    }
-}
+        /* Media queries for responsiveness (applied to the open state) */
+        @media (max-width: 1023px) {
+            .side-panel.open {
+                width: 400px;
+                /* Adjust for medium screens */
+            }
+        }
+
+        @media (max-width: 425px) {
+            .side-panel.open {
+                width: 100%;
+                /* Full width for mobile screens */
+            }
+        }
+
         /* --- Overlay for background dim --- */
         .overlay {
             position: fixed;
             display: none;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
             z-index: 1500;
             opacity: 0;
             transition: opacity 0.4s;
         }
+
         .overlay.show {
             display: block;
             opacity: 1;
@@ -533,7 +554,10 @@
 
         /* --- Responsive Styles --- */
         @media (max-width: 768px) {
-            .navbar { padding: 1rem; }
+            .navbar {
+                padding: 1rem;
+            }
+
             .nav-links {
                 display: none;
                 position: absolute;
@@ -544,11 +568,24 @@
                 flex-direction: column;
                 padding: 1rem 0;
             }
-            .nav-links.active { display: flex; }
-            .hamburger { display: flex; }
-            .search-form { flex-direction: column; align-items: stretch; }
-            .data-section { padding: 1rem; }
-            
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .search-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .data-section {
+                padding: 1rem;
+            }
+
             /* Mobile Table Styles */
             .data-table.mobile-table,
             .data-table.mobile-table thead,
@@ -581,7 +618,7 @@
             .data-table.mobile-table td:last-child {
                 border-bottom: none;
             }
-            
+
             .data-table.mobile-table td::before {
                 content: attr(data-label);
                 position: absolute;
@@ -599,11 +636,12 @@
                 justify-content: flex-start;
             }
         }
-        
+
         @media (min-width: 769px) {
             .data-table.mobile-table {
                 display: table;
             }
+
             .data-table.mobile-table thead,
             .data-table.mobile-table tbody,
             .data-table.mobile-table tr,
@@ -792,6 +830,7 @@
             font-size: 0.875rem;
             background: transparent;
         }
+
         @media (max-width: 768px) {
             .footer {
                 padding: 2rem 1rem 1rem;
@@ -836,7 +875,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1001; /* Ensure it's on top of other content */
+            z-index: 1001;
+            /* Ensure it's on top of other content */
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
 
@@ -864,7 +904,7 @@
             visibility: visible;
             opacity: 1;
         }
-        
+
         .custom-popup-content {
             margin-bottom: 1.5rem;
         }
@@ -885,7 +925,7 @@
             cursor: pointer;
             transition: background-color 0.2s, transform 0.2s;
         }
-        
+
         .btn-primary {
             background-color: #1e3a8a;
             color: #fff;
@@ -895,42 +935,42 @@
             background-color: #dc3545;
             color: #fff;
         }
-        
+
         .btn:hover {
             transform: translateY(-2px);
         }
-
     </style>
 </head>
-<body>
-<nav class="navbar">
-    <div class="logo">
-  <a onclick="history.back()">
-    <i class="fas fa-arrow-left"></i>
-  </a>
-  <a>
-    <img src="img/DSA.png" alt="Logo">
-    <span>DSA Enterprise</span>
-  </a>
-</div>
-    <ul class="nav-links">
-        <li><a href="#" id="addUserBtn" role="button"><i class="fas fa-user-plus"></i> Add User</a></li>
-        <li><a href="sellFlats.html">Sell Flats</a></li>
-        <li><a href="rentFlats.html">Rent Flats</a></li>
-        <li><a href="#home">Home</a></li>
-        <li>
-            <a href="admin.html" id="profileIcon"><i class="fa fa-user"></i></a>
-        </li>
-    </ul>
-    
-    <div class="hamburger">
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
-</nav>
 
-<div id="custom-popup-overlay" class="popup-hidden">
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <a onclick="history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <a>
+                <img src="img/DSA.png" alt="Logo">
+                <span>DSA Enterprise</span>
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" id="addUserBtn" role="button"><i class="fas fa-user-plus"></i> Add User</a></li>
+            <li><a href="sellFlats.html">Sell Flats</a></li>
+            <li><a href="rentFlats.html">Rent Flats</a></li>
+            <li><a href="#home">Home</a></li>
+            <li>
+                <a href="admin.html" id="profileIcon"><i class="fa fa-user"></i></a>
+            </li>
+        </ul>
+
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <div id="custom-popup-overlay" class="popup-hidden">
         <div class="custom-popup-card">
             <div class="custom-popup-content">
                 <h3 id="popup-title"></h3>
@@ -943,104 +983,106 @@
         </div>
     </div>
 
-<main>
-    <section class="search-section" id="home">
-        <div class="search-container">
-            <h2 class="search-title">Admin Dashboard</h2>
-            <form class="search-form" onsubmit="event.preventDefault();">
-                <div class="search-group">
-                    <label for="mobileSearch" class="search-label">Enter Mobile No.</label>
-                    <input type="tel" class="search-input" id="mobileSearch" name="mobile" placeholder="e.g., 9876543210" pattern="[6789]\d{9}" maxlength="10" title="Enter a valid 10-digit mobile number.">
-                </div>
-                <div class="search-group">
-                    <label class="search-label">Account Status</label>
-                    <div class="dropdown" id="accountStatusFilter">
-                        <div class="dropdown-btn">
-                            <span>All Statuses</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="dropdown-content">
-                            <div class="dropdown-option" data-value="">All Statuses</div>
-                            <div class="dropdown-option" data-value="active">Active</div>
-                            <div class="dropdown-option" data-value="inactive">Inactive</div>
+    <main>
+        <section class="search-section" id="home">
+            <div class="search-container">
+                <h2 class="search-title">Admin Dashboard</h2>
+                <form class="search-form" onsubmit="event.preventDefault();">
+                    <div class="search-group">
+                        <label for="mobileSearch" class="search-label">Enter Mobile No.</label>
+                        <input type="tel" class="search-input" id="mobileSearch" name="mobile"
+                            placeholder="e.g., 9876543210" pattern="[6789]\d{9}" maxlength="10"
+                            title="Enter a valid 10-digit mobile number.">
+                    </div>
+                    <div class="search-group">
+                        <label class="search-label">Account Status</label>
+                        <div class="dropdown" id="accountStatusFilter">
+                            <div class="dropdown-btn">
+                                <span>All Statuses</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="dropdown-content">
+                                <div class="dropdown-option" data-value="">All Statuses</div>
+                                <div class="dropdown-option" data-value="active">Active</div>
+                                <div class="dropdown-option" data-value="inactive">Inactive</div>
+                            </div>
                         </div>
                     </div>
+                    <button type="submit" class="search-btn" id="searchBtn">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <section class="data-section" id="home">
+            <div class="user-counters">
+                <div class="counter-card">
+                    <h4>Total Users</h4>
+                    <div class="count" id="totalUsers">0</div>
                 </div>
-                <button type="submit" class="search-btn" id="searchBtn">
-                    <i class="fas fa-search"></i> Search
-                </button>
-            </form>
-        </div>
-    </section>
+                <div class="counter-card">
+                    <h4>Agents</h4>
+                    <div class="count" id="agentUsers">0</div>
+                </div>
+                <div class="counter-card">
+                    <h4>Owners</h4>
+                    <div class="count" id="ownerUsers">0</div>
+                </div>
+                <div class="counter-card">
+                    <h4>Active Users</h4>
+                    <div class="count" id="activeUsers">0</div>
+                </div>
+                <div class="counter-card">
+                    <h4>Inactive Users</h4>
+                    <div class="count" id="inactiveUsers">0</div>
+                </div>
+            </div>
 
-    <section class="data-section" id="home">
-        <div class="user-counters">
-            <div class="counter-card">
-                <h4>Total Users</h4>
-                <div class="count" id="totalUsers">0</div>
+            <div class="data-header">
+                <h2 class="data-title">User Management</h2>
             </div>
-            <div class="counter-card">
-                <h4>Agents</h4>
-                <div class="count" id="agentUsers">0</div>
-            </div>
-            <div class="counter-card">
-                <h4>Owners</h4>
-                <div class="count" id="ownerUsers">0</div>
-            </div>
-            <div class="counter-card">
-                <h4>Active Users</h4>
-                <div class="count" id="activeUsers">0</div>
-            </div>
-            <div class="counter-card">
-                <h4>Inactive Users</h4>
-                <div class="count" id="inactiveUsers">0</div>
-            </div>
-        </div>
 
-        <div class="data-header">
-            <h2 class="data-title">User Management</h2>
-        </div>
-        
-        <div class="data-table-wrapper">
-             <table class="data-table" id="usersTable">
-                 <thead>
-                     <tr>
-                        <th>Name</th>
-                        <th>Contact</th>
-                        <th>Date Joined</th>
-                        <th>User Type</th>
-                        <th>Plan Expiry</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                     </tr>
-                 </thead>
-                 <tbody id="usersBody">
-                     </tbody>
-             </table>
-        </div>
-    </section>
-</main>
+            <div class="data-table-wrapper">
+                <table class="data-table" id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Contact</th>
+                            <th>Date Joined</th>
+                            <th>User Type</th>
+                            <th>Plan Expiry</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersBody">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
 
-<div id="profilePanel" class="side-panel">
-    <div class="panel-header">
-        <span>My Profile</span>
-        <button class="close-btn" id="closeProfileBtn">&times;</button>
+    <div id="profilePanel" class="side-panel">
+        <div class="panel-header">
+            <span>My Profile</span>
+            <button class="close-btn" id="closeProfileBtn">&times;</button>
+        </div>
+        <div class="panel-content">
+            <label for="profileName">Name:</label>
+            <input type="text" id="profileName" readonly>
+            <label for="profileMobile">Mobile Number:</label>
+            <input type="text" id="profileMobile" readonly>
+            <label for="profilePassword">Password:</label>
+            <div class="password-container">
+                <input type="password" id="profilePassword" value="*******" disabled>
+                <i class="fas fa-eye-slash" id="togglePassword"></i>
+            </div>
+            <button id="logoutBtn">Logout</button>
+        </div>
     </div>
-    <div class="panel-content">
-        <label for="profileName">Name:</label>
-        <input type="text" id="profileName" readonly>
-        <label for="profileMobile">Mobile Number:</label>
-        <input type="text" id="profileMobile" readonly>
-        <label for="profilePassword">Password:</label>
-        <div class="password-container">
-            <input type="password" id="profilePassword" value="*******" disabled>
-            <i class="fas fa-eye-slash" id="togglePassword"></i>
-        </div>
-        <button id="logoutBtn">Logout</button>
-    </div>
-</div>
 
- <!-- Add User Modal -->
+    <!-- Add User Modal -->
     <div id="addUserModal" class="side-panel">
         <div class="panel-header">
             <span>Add New User</span>
@@ -1093,9 +1135,9 @@
         </div>
     </div>
 
-<div id="overlay" class="overlay"></div>
+    <div id="overlay" class="overlay"></div>
 
-<footer class="footer">
+    <footer class="footer">
         <div class="footer-container">
             <div class="footer-content">
                 <div class="footer-left">
@@ -1104,7 +1146,8 @@
                         <span>DSA Enterprise</span>
                     </div>
                     <p class="footer-description">
-                        Your trusted partner in finding the perfect property. We combine years of experience with modern technology to help you buy, sell, or rent with confidence.
+                        Your trusted partner in finding the perfect property. We combine years of experience with modern
+                        technology to help you buy, sell, or rent with confidence.
                     </p>
                     <div class="footer-copyright">
                         © 2025 DSA Enterprise. All rights reserved.
@@ -1129,7 +1172,8 @@
                         <div class="contact-item">
                             <i class="fas fa-envelope"></i>
                             <span>
-                                <a href="mailto:dsaenterprise30@gmail.com" style="text-decoration: none; color: inherit;">dsaenterprise30@gmail.com</a>
+                                <a href="mailto:dsaenterprise30@gmail.com"
+                                    style="text-decoration: none; color: inherit;">dsaenterprise30@gmail.com</a>
                             </span>
                         </div>
                         <div class="contact-item">
@@ -1137,7 +1181,7 @@
                             <span>+91 9004053133</span>
                         </div>
                     </div>
-                    
+
                     <div class="social-links">
                         <a href="https://wa.link/qykos7" class="social-link" title="Whatsapp">
                             <i class="fab fa-whatsapp"></i>
@@ -1145,7 +1189,8 @@
                         <a href="https://www.facebook.com/share/14R1w7XsyMb/" class="social-link" title="Facebook">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="https://www.instagram.com/dsa.enterprise?igsh=N3pidmZ6YjY2MDc=&utm_source=ig_contact_invite" class="social-link" title="Instagram">
+                        <a href="https://www.instagram.com/dsa.enterprise?igsh=N3pidmZ6YjY2MDc=&utm_source=ig_contact_invite"
+                            class="social-link" title="Instagram">
                             <i class="fab fa-instagram"></i>
                         </a>
                     </div>
@@ -1156,91 +1201,95 @@
                 Privacy Policy | Terms of Service
             </div>
         </div>
-</footer>
+    </footer>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // --- Initial State & Data ---
+    <script type="module">
+        import { API_BASE_URL } from './config.js';
+        window.API_BASE_URL = API_BASE_URL;
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- Initial State & Data ---
 
-    // --- DOM Element Selectors ---
-    const usersTable = document.getElementById('usersTable');
-    const usersBody = document.getElementById('usersBody');
-    const hamburger = document.querySelector('.hamburger');
-    const navLinks = document.querySelector('.nav-links');
-    const overlay = document.getElementById('overlay');
-    
-    // Panels
-    const profilePanel = document.getElementById('profilePanel');
+            // --- DOM Element Selectors ---
+            const usersTable = document.getElementById('usersTable');
+            const usersBody = document.getElementById('usersBody');
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            const overlay = document.getElementById('overlay');
 
-    // Panel Triggers
-    const profileIcon = document.getElementById('profileIcon');
-    
-    // Panel Close Buttons
-    const closeProfileBtn = document.getElementById('closeProfileBtn');
-    
-    // Filtering
-    const mobileSearchInput = document.getElementById('mobileSearch');
-    const statusDropdown = document.getElementById('accountStatusFilter');
-    const togglePassword = document.getElementById('togglePassword');
-    const profilePasswordInput = document.getElementById('profilePassword');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const userData = JSON.parse(localStorage.getItem("admin"));
-    let allusers = [];
-    // Base URL for user API (use deployed host; change here if needed)
-    const API_BASE = "https://project-tbbc.onrender.com/api/users";
+            // Panels
+            const profilePanel = document.getElementById('profilePanel');
 
-    // --- Core Functions ---
-    
-    // Unified Custom Popup Function
-    function showCustomPopup(message, isConfirm = false, callback = null) {
-        const popupOverlay = document.getElementById('custom-popup-overlay');
-        const popupMessage = document.getElementById('popup-message');
-        const popupOkBtn = document.getElementById('popup-ok-btn');
-        const popupCloseBtn = document.getElementById('popup-close-btn');
+            // Panel Triggers
+            const profileIcon = document.getElementById('profileIcon');
 
-        popupMessage.textContent = message;
+            // Panel Close Buttons
+            const closeProfileBtn = document.getElementById('closeProfileBtn');
 
-        if (isConfirm) {
-            popupOkBtn.textContent = "Yes";
-            popupOkBtn.classList.remove('btn-primary');
-            popupOkBtn.classList.add('btn-success');
-            popupCloseBtn.style.display = 'inline-block';
-            popupCloseBtn.textContent = "No";
-        } else {
-            popupOkBtn.textContent = "OK";
-            popupOkBtn.classList.add('btn-primary');
-            popupOkBtn.classList.remove('btn-success');
-            popupCloseBtn.style.display = 'none';
-        }
+            // Filtering
+            const mobileSearchInput = document.getElementById('mobileSearch');
+            const statusDropdown = document.getElementById('accountStatusFilter');
+            const togglePassword = document.getElementById('togglePassword');
+            const profilePasswordInput = document.getElementById('profilePassword');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const userData = JSON.parse(localStorage.getItem("admin"));
+            let allusers = [];
+            // Base URL for user API (use deployed host; change here if needed)
+            const API_BASE = `${window.API_BASE_URL}/api/users`;
 
-        popupOkBtn.onclick = () => {
-            hideCustomPopup();
-            if (callback) callback(true);
-        };
+            // --- Core Functions ---
 
-        popupCloseBtn.onclick = () => {
-            hideCustomPopup();
-            if (callback) callback(false);
-        };
-        
-        popupOverlay.classList.remove('popup-hidden');
-        popupOverlay.classList.add('popup-visible');
-        document.querySelector('.custom-popup-card').style.transform = 'scale(1)';
-    }
+            // Unified Custom Popup Function
+            function showCustomPopup(message, isConfirm = false, callback = null) {
+                const popupOverlay = document.getElementById('custom-popup-overlay');
+                const popupMessage = document.getElementById('popup-message');
+                const popupOkBtn = document.getElementById('popup-ok-btn');
+                const popupCloseBtn = document.getElementById('popup-close-btn');
 
-    function hideCustomPopup() {
-        const overlay = document.getElementById('custom-popup-overlay');
-        overlay.classList.remove('popup-visible');
-        overlay.classList.add('popup-hidden');
-        document.querySelector('.custom-popup-card').style.transform = 'scale(0.9)';
-    }
+                popupMessage.textContent = message;
 
-    if (userData) {
-        document.getElementById("profileName").value = userData.fullName;
-        document.getElementById("profileMobile").value = userData.mobileNumber;
-    }
+                if (isConfirm) {
+                    popupOkBtn.textContent = "Yes";
+                    popupOkBtn.classList.remove('btn-primary');
+                    popupOkBtn.classList.add('btn-success');
+                    popupCloseBtn.style.display = 'inline-block';
+                    popupCloseBtn.textContent = "No";
+                } else {
+                    popupOkBtn.textContent = "OK";
+                    popupOkBtn.classList.add('btn-primary');
+                    popupOkBtn.classList.remove('btn-success');
+                    popupCloseBtn.style.display = 'none';
+                }
 
-    
+                popupOkBtn.onclick = () => {
+                    hideCustomPopup();
+                    if (callback) callback(true);
+                };
+
+                popupCloseBtn.onclick = () => {
+                    hideCustomPopup();
+                    if (callback) callback(false);
+                };
+
+                popupOverlay.classList.remove('popup-hidden');
+                popupOverlay.classList.add('popup-visible');
+                document.querySelector('.custom-popup-card').style.transform = 'scale(1)';
+            }
+
+            function hideCustomPopup() {
+                const overlay = document.getElementById('custom-popup-overlay');
+                overlay.classList.remove('popup-visible');
+                overlay.classList.add('popup-hidden');
+                document.querySelector('.custom-popup-card').style.transform = 'scale(0.9)';
+            }
+
+            if (userData) {
+                document.getElementById("profileName").value = userData.fullName;
+                document.getElementById("profileMobile").value = userData.mobileNumber;
+            }
+
+
             const addUserModal = document.getElementById('addUserModal');
             const editUserModal = document.getElementById('editUserModal');
             const addUserBtn = document.getElementById('addUserBtn');
@@ -1270,35 +1319,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Handle Add User Submit
             if (addUserForm) {
-            addUserForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const fullName = document.getElementById('newUserName').value;
-                const mobileNumber = document.getElementById('newUserMobile').value;
-                const password = document.getElementById('newUserPassword').value;
-                const type = document.getElementById('newUserType').value;
-                // currently backend registerUser only takes {fullName, mobileNumber, password}. 
-                // type is not handled but we pass basics.
+                addUserForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const fullName = document.getElementById('newUserName').value;
+                    const mobileNumber = document.getElementById('newUserMobile').value;
+                    const password = document.getElementById('newUserPassword').value;
+                    const type = document.getElementById('newUserType').value;
+                    // currently backend registerUser only takes {fullName, mobileNumber, password}. 
+                    // type is not handled but we pass basics.
 
-                try {
-                    const response = await fetch(`${API_BASE}/create`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ fullName, mobileNumber: "+91" + mobileNumber, password })
-                    });
+                    try {
+                        const response = await fetch(`${API_BASE}/create`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ fullName, mobileNumber: "+91" + mobileNumber, password })
+                        });
 
-                    const result = await response.json();
-                    if (!response.ok) throw new Error(result.msg || "Failed");
+                        const result = await response.json();
+                        if (!response.ok) throw new Error(result.msg || "Failed");
 
-                    showCustomPopup("✅ User created successfully!");
-                    if (addUserModal) addUserModal.classList.remove('open');
-                    overlay.classList.remove('show');
-                    addUserForm.reset();
-                    fetchUsers();
+                        showCustomPopup("✅ User created successfully!");
+                        if (addUserModal) addUserModal.classList.remove('open');
+                        overlay.classList.remove('show');
+                        addUserForm.reset();
+                        fetchUsers();
 
-                } catch (error) {
-                    showCustomPopup("❌ " + error.message);
-                }
-            });
+                    } catch (error) {
+                        showCustomPopup("❌ " + error.message);
+                    }
+                });
             }
 
             // Make Open Edit accessible globally
@@ -1329,91 +1378,90 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Handle Edit User Submit
             if (editUserForm) {
-            editUserForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const userId = document.getElementById('editUserId').value;
-                const password = document.getElementById('editUserPassword').value;
-                const subscriptionExpiry = document.getElementById('editUserExpiry').value;
+                editUserForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const userId = document.getElementById('editUserId').value;
+                    const password = document.getElementById('editUserPassword').value;
+                    const subscriptionExpiry = document.getElementById('editUserExpiry').value;
 
+                    try {
+                        const token = localStorage.getItem("token");
+                        const response = await fetch(`${API_BASE}/update/${userId}`, {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ password, subscriptionExpiry })
+                        });
+
+                        const result = await response.json();
+                        if (!response.ok) throw new Error(result.message || "Failed");
+
+                        showCustomPopup("✅ " + result.message);
+                        if (editUserModal) editUserModal.classList.remove('open');
+                        overlay.classList.remove('show');
+                        fetchUsers();
+
+                    } catch (error) {
+                        showCustomPopup("❌ " + error.message);
+                    }
+                });
+            }
+
+
+            // --- Fetch users from API ---
+            async function fetchUsers() {
                 try {
-                    const token = localStorage.getItem("token");
-                    const response = await fetch(`${API_BASE}/update/${userId}`, {
-                        method: "PUT",
+                    const token = localStorage.getItem("token"); // if JWT is required
+                    const response = await fetch(`${API_BASE}/all-users`, {
                         headers: {
                             "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`
-                        },
-                        body: JSON.stringify({ password, subscriptionExpiry })
+                            "Authorization": `Bearer ${token}` // send JWT if backend requires
+                        }
                     });
 
-                    const result = await response.json();
-                    if (!response.ok) throw new Error(result.message || "Failed");
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch users");
+                    }
 
-                    showCustomPopup("✅ " + result.message);
-                    if (editUserModal) editUserModal.classList.remove('open');
-                    overlay.classList.remove('show');
-                    fetchUsers();
-
+                    allusers = await response.json();
+                    renderTable(allusers); // Pass users to your table renderer
+                    updateCounters(allusers); // Pass fresh users to counters
                 } catch (error) {
-                    showCustomPopup("❌ " + error.message);
+                    console.error("Error fetching users:", error);
+                    showCustomPopup("❌ Error fetching users. Please try again." + error.message);
+                    usersBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px;">Error loading users.</td></tr>`;
                 }
-            });
             }
 
-
-    // --- Fetch users from API ---
-    async function fetchUsers() {
-        try {
-            const token = localStorage.getItem("token"); // if JWT is required
-            const response = await fetch(`${API_BASE}/all-users`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}` // send JWT if backend requires
+            function renderTable(data) {
+                usersBody.innerHTML = '';
+                if (data.length === 0) {
+                    usersBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px;">No users found.</td></tr>`;
+                    return;
                 }
-            });
+                data.forEach((user) => {
+                    const statusText = user.subscriptionStatus ? user.subscriptionStatus : "Unknown";
+                    const statusClass = `status-${user.subscriptionStatus ? user.subscriptionStatus.toLowerCase() : 'unknown'}`;
+                    let formattedMobile = String(user.mobileNumber || "N/A");
+                    if (formattedMobile !== "N/A" && formattedMobile.startsWith('91')) {
+                        formattedMobile = formattedMobile.replace('91', '+91 ');
+                    } else if (formattedMobile !== "N/A") {
+                        formattedMobile = '+91' + formattedMobile;
+                    }
+                    // Determine expiry value from multiple possible fields
+                    const expiryRaw = user.planExpiryDate || user.subscriptionExpiry || user.planExpiry || user.expiry || null;
+                    const expiryText = expiryRaw ? new Date(expiryRaw).toLocaleDateString() : "N/A";
 
-            if (!response.ok) {
-                throw new Error("Failed to fetch users");
-            }
-
-            allusers = await response.json();
-            renderTable(allusers); // Pass users to your table renderer
-            updateCounters(allusers); // Pass fresh users to counters
-        } catch (error) {
-            console.error("Error fetching users:", error);
-            showCustomPopup("❌ Error fetching users. Please try again." + error.message);
-            usersBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px;">Error loading users.</td></tr>`;
-        }
-    }
-
-    function renderTable(data) {
-        usersBody.innerHTML = '';
-        if (data.length === 0) {
-            usersBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px;">No users found.</td></tr>`;
-            return;
-        }
-        data.forEach((user) => {
-            const statusText = user.subscriptionStatus ? user.subscriptionStatus : "Unknown";
-            const statusClass = `status-${user.subscriptionStatus ? user.subscriptionStatus.toLowerCase() : 'unknown'}`;
-            let formattedMobile = String(user.mobileNumber || "N/A");
-            if (formattedMobile !== "N/A" && formattedMobile.startsWith('91')) {
-                formattedMobile = formattedMobile.replace('91', '+91 ');
-            } else if (formattedMobile !== "N/A") {
-                formattedMobile = '+91' + formattedMobile;
-            }
-            // Determine expiry value from multiple possible fields
-            const expiryRaw = user.planExpiryDate || user.subscriptionExpiry || user.planExpiry || user.expiry || null;
-            const expiryText = expiryRaw ? new Date(expiryRaw).toLocaleDateString() : "N/A";
-
-            const row = document.createElement('tr');
-            row.innerHTML = `
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
                 <td data-label="Name">${user.fullName || "N/A"}</td>
                 <td data-label="Contact">${formattedMobile}</td>
-                <td data-label="Date Joined">${
-                    user.registrationDate
-                    ? new Date(user.registrationDate).toLocaleDateString()
-                    : "N/A"
-                }</td>
+                <td data-label="Date Joined">${user.registrationDate
+                            ? new Date(user.registrationDate).toLocaleDateString()
+                            : "N/A"
+                        }</td>
                 <td data-label="User Type">${user.type || "N/A"}</td>
                 <td data-label="Plan Expiry">${expiryText}</td>
                 <td data-label="Status"><span class="${statusClass}">${statusText}</span></td>
@@ -1426,115 +1474,115 @@ document.addEventListener('DOMContentLoaded', function() {
                     </button>
                 </td>
             `;
-            usersBody.appendChild(row);
-        });
-        updateCounters(data);
-    }
-    
-    function updateCounters(data) {
-        document.getElementById('totalUsers').textContent = data.length;
-        document.getElementById('agentUsers').textContent = data.filter(u => u.type === 'Agent').length;
-        document.getElementById('ownerUsers').textContent = data.filter(u => u.type === 'Owner').length;
-        document.getElementById('activeUsers').textContent = data.filter(u => u.subscriptionStatus === 'Active').length;
-        document.getElementById('inactiveUsers').textContent = data.filter(u => u.subscriptionStatus === 'Inactive').length;
-    }
-    
-    function checkOrientation() {
-        if (window.innerWidth <= 768 && window.innerHeight > window.innerWidth) {
-            usersTable.classList.add('mobile-table');
-        } else {
-            usersTable.classList.remove('mobile-table');
-        }
-    }
+                    usersBody.appendChild(row);
+                });
+                updateCounters(data);
+            }
 
-    // --- Panel Management ---
-function openPanel() {
-    profilePanel.classList.add('open');
-    overlay.classList.add('show');
-}
+            function updateCounters(data) {
+                document.getElementById('totalUsers').textContent = data.length;
+                document.getElementById('agentUsers').textContent = data.filter(u => u.type === 'Agent').length;
+                document.getElementById('ownerUsers').textContent = data.filter(u => u.type === 'Owner').length;
+                document.getElementById('activeUsers').textContent = data.filter(u => u.subscriptionStatus === 'Active').length;
+                document.getElementById('inactiveUsers').textContent = data.filter(u => u.subscriptionStatus === 'Inactive').length;
+            }
 
-function closeAllPanels() {
-    profilePanel.classList.remove('open');
-    if (document.getElementById('addUserModal')) document.getElementById('addUserModal').classList.remove('open');
-    if (document.getElementById('editUserModal')) document.getElementById('editUserModal').classList.remove('open');
-    overlay.classList.remove('show');
-}
+            function checkOrientation() {
+                if (window.innerWidth <= 768 && window.innerHeight > window.innerWidth) {
+                    usersTable.classList.add('mobile-table');
+                } else {
+                    usersTable.classList.remove('mobile-table');
+                }
+            }
 
-    // --- Event Handlers ---
-    if (hamburger) {
-        hamburger.addEventListener('click', () => navLinks.classList.toggle('active'));
-    }
-    if (profileIcon) {
-        profileIcon.addEventListener('click', (e) => { e.preventDefault(); openPanel(profilePanel); });
-    }
-    
-    if (closeProfileBtn) {
-        closeProfileBtn.addEventListener('click', closeAllPanels);
-    }
-    if (overlay) {
-        overlay.addEventListener('click', closeAllPanels);
-    }
-    
-    // Toggle Password Visibility
-    if (togglePassword && profilePasswordInput) {
-        togglePassword.addEventListener('click', () => {
-            const type = profilePasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            profilePasswordInput.setAttribute('type', type);
-            togglePassword.classList.toggle('fa-eye');
-            togglePassword.classList.toggle('fa-eye-slash');
-        });
-    }
+            // --- Panel Management ---
+            function openPanel() {
+                profilePanel.classList.add('open');
+                overlay.classList.add('show');
+            }
 
-    // Logout Button
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", () => {
-            localStorage.removeItem("token");
-            localStorage.removeItem("admin");
-            window.location.href = "login.html"; // redirect to login page
-        });
-    }
+            function closeAllPanels() {
+                profilePanel.classList.remove('open');
+                if (document.getElementById('addUserModal')) document.getElementById('addUserModal').classList.remove('open');
+                if (document.getElementById('editUserModal')) document.getElementById('editUserModal').classList.remove('open');
+                overlay.classList.remove('show');
+            }
 
-    // --- Filtering Logic ---
-    let currentFilters = { mobile: '', subscriptionStatus: '' }; // Changed 'status' to 'subscriptionStatus' to match backend
+            // --- Event Handlers ---
+            if (hamburger) {
+                hamburger.addEventListener('click', () => navLinks.classList.toggle('active'));
+            }
+            if (profileIcon) {
+                profileIcon.addEventListener('click', (e) => { e.preventDefault(); openPanel(profilePanel); });
+            }
 
-    function filterAndRender() {
-        let filteredData = [...allusers];
+            if (closeProfileBtn) {
+                closeProfileBtn.addEventListener('click', closeAllPanels);
+            }
+            if (overlay) {
+                overlay.addEventListener('click', closeAllPanels);
+            }
 
-        if (currentFilters.mobile) {
-            filteredData = filteredData.filter(user => String(user.mobileNumber).includes(currentFilters.mobile));
-        }
-        if (currentFilters.subscriptionStatus) {
-            filteredData = filteredData.filter(user => user.subscriptionStatus && user.subscriptionStatus.toLowerCase() === currentFilters.subscriptionStatus.toLowerCase());
-        }
-        
-        renderTable(filteredData);
-        updateCounters(filteredData);
-    }
-    
-    mobileSearchInput.addEventListener('input', (e) => {
-        currentFilters.mobile = e.target.value.trim();
-        filterAndRender();
-    });
-    
-    // Custom Dropdown Logic
-    statusDropdown.addEventListener('click', (e) => {
-        if (e.target.classList.contains('dropdown-option')) {
-            const value = e.target.dataset.value;
-            statusDropdown.querySelector('.dropdown-btn span').textContent = e.target.textContent;
-            currentFilters.subscriptionStatus = value;
-            filterAndRender();
-        }
-        statusDropdown.classList.toggle('active');
-    });
+            // Toggle Password Visibility
+            if (togglePassword && profilePasswordInput) {
+                togglePassword.addEventListener('click', () => {
+                    const type = profilePasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    profilePasswordInput.setAttribute('type', type);
+                    togglePassword.classList.toggle('fa-eye');
+                    togglePassword.classList.toggle('fa-eye-slash');
+                });
+            }
 
-    // Close dropdowns when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!statusDropdown.contains(e.target)) {
-        statusDropdown.classList.remove('active');
-      }
-    });
+            // Logout Button
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", () => {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("admin");
+                    window.location.href = "login.html"; // redirect to login page
+                });
+            }
 
-           // Make deleteUser globally accessible so onclick works
+            // --- Filtering Logic ---
+            let currentFilters = { mobile: '', subscriptionStatus: '' }; // Changed 'status' to 'subscriptionStatus' to match backend
+
+            function filterAndRender() {
+                let filteredData = [...allusers];
+
+                if (currentFilters.mobile) {
+                    filteredData = filteredData.filter(user => String(user.mobileNumber).includes(currentFilters.mobile));
+                }
+                if (currentFilters.subscriptionStatus) {
+                    filteredData = filteredData.filter(user => user.subscriptionStatus && user.subscriptionStatus.toLowerCase() === currentFilters.subscriptionStatus.toLowerCase());
+                }
+
+                renderTable(filteredData);
+                updateCounters(filteredData);
+            }
+
+            mobileSearchInput.addEventListener('input', (e) => {
+                currentFilters.mobile = e.target.value.trim();
+                filterAndRender();
+            });
+
+            // Custom Dropdown Logic
+            statusDropdown.addEventListener('click', (e) => {
+                if (e.target.classList.contains('dropdown-option')) {
+                    const value = e.target.dataset.value;
+                    statusDropdown.querySelector('.dropdown-btn span').textContent = e.target.textContent;
+                    currentFilters.subscriptionStatus = value;
+                    filterAndRender();
+                }
+                statusDropdown.classList.toggle('active');
+            });
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!statusDropdown.contains(e.target)) {
+                    statusDropdown.classList.remove('active');
+                }
+            });
+
+            // Make deleteUser globally accessible so onclick works
             window.deleteUser = async function (userId) {
                 showCustomPopup("Are you sure you want to remove this user?", true, async (confirmed) => {
                     if (confirmed) {
@@ -1566,11 +1614,12 @@ function closeAllPanels() {
             };
 
 
-    fetchUsers(); // Render the initial table
-    checkOrientation(); // Initial check for mobile view
-    window.addEventListener('resize', checkOrientation); // Re-check on window resize
-});
-</script>
+            fetchUsers(); // Render the initial table
+            checkOrientation(); // Initial check for mobile view
+            window.addEventListener('resize', checkOrientation); // Re-check on window resize
+        });
+    </script>
 
 </body>
+
 </html>

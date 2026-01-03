@@ -29,7 +29,7 @@ export const createSellListing = async (req, res) => {
         // ✅ Lookup user with "91" prefix
         const matchedUser = await User.findOne({ mobileNumber: "91" + sanitizedContact });
 
-        let finalUserName = name; 
+        let finalUserName = name;
         if (matchedUser) {
             finalUserName = matchedUser.fullName; // auto-fill user name
         }
@@ -38,6 +38,7 @@ export const createSellListing = async (req, res) => {
         const duplicateListing = await SellFlat.findOne({
             contact: sanitizedContact,
             location,
+            area,
             propertyType,
             price: parsePrice(price),
             ownershipType
@@ -52,6 +53,7 @@ export const createSellListing = async (req, res) => {
 
         const newListing = new SellFlat({
             location,
+            area,
             propertyType,
             price: parsePrice(price),
             date,
@@ -111,12 +113,13 @@ export const getAllSellListings = async (req, res) => {
 
 // Route 3: Update a sell listing by its ID
 export const updateSellListingById = async (req, res) => {
-    const { id } = req.params; 
-    const { location, propertyType, price, name, contact, date, ownershipType } = req.body || {};
+    const { id } = req.params;
+    const { location, area, propertyType, price, name, contact, date, ownershipType } = req.body || {};
 
     try {
         const update = {
             location,
+            area,
             propertyType,
             price: parsePrice(price),
             userName: name,

@@ -1,564 +1,574 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Login</title>
-    <link rel="icon" href="img/DSA.png" type="image/png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Caprasimo&display=swap" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Login</title>
+  <link rel="icon" href="img/DSA.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caprasimo&display=swap" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-        :root {
-            --primary-blue: #1e3a8a;
-            --secondary-blue: #3b82f6;
-            --text-dark: #333;
-            --text-light: #f0f4f8;
-            --bg-white: #fff;
-            --border-grey: #ccc;
-            --shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
+    :root {
+      --primary-blue: #1e3a8a;
+      --secondary-blue: #3b82f6;
+      --text-dark: #333;
+      --text-light: #f0f4f8;
+      --bg-white: #fff;
+      --border-grey: #ccc;
+      --shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
 
-        /* --- Global & Layout Styles --- */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-        }
-        
-        .navbar {
-            background: #1e3a8a;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
+    /* --- Global & Layout Styles --- */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f4f7f6;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
 
-        .navbar .logo {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            font-size: 28px;
-            font-family: "Caprasimo", serif;
-            font-weight: 200;
-            font-style: normal;
-            color: #fff;
-        }
+    .navbar {
+      background: #1e3a8a;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
 
-        .navbar .logo a {
-            text-decoration: none;
-            color: inherit;
-        }
-        
-        .navbar .logo i {
-            vertical-align: middle;
-        }
+    .navbar .logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 28px;
+      font-family: "Caprasimo", serif;
+      font-weight: 200;
+      font-style: normal;
+      color: #fff;
+    }
 
-        main {
-            padding: 2.5rem 0;
-        }
+    .navbar .logo a {
+      text-decoration: none;
+      color: inherit;
+    }
 
-        /* This centers the container within the main content area */
-        .main-container {
-            display: flex;
-            width: 90%;
-            max-width: 1200px;
-            height: 80vh;
-            box-shadow: var(--shadow);
-            border-radius: 20px;
-            overflow: hidden;
-            margin: 0 auto; 
-        }
-        
-        .left-panel {
-            width: 50%;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: var(--text-light);
-            padding: 2rem;
-            background-image: url('img/image_login.webp');
-            background-size: cover;
-            background-position: center;
-            transition: width 0.3s ease;
-        }
+    .navbar .logo i {
+      vertical-align: middle;
+    }
 
-        .background-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-        }
+    main {
+      padding: 2.5rem 0;
+    }
 
-        .left-panel-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .left-panel h1 {
-            font-size: 2.8rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .left-panel p {
-            font-size: 1rem;
-            font-weight: 400;
-            margin-top: 0;
-        }
-
-        .right-panel {
-            background-color: var(--bg-white);
-            width: 60%;
-            display: flex;
-            position: relative;
-            transition: width 0.3s ease;
-        }
-
-        .form-container {
-            width: 100%;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .form-container h2 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 2rem;
-            color: var(--text-dark);
-        }
-
-        .input-group {
-            margin-bottom: 1.5rem;
-            position: relative;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--text-dark);
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-grey);
-            border-radius: 8px;
-            font-size: 1rem;
-            box-sizing: border-box;
-            transition: all 0.2s ease;
-        }
-
-        .input-group input:focus {
-            border-color: var(--secondary-blue);
-            box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
-            outline: none;
-        }
-
-        .phone-input {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .phone-input span {
-            padding: 0.75rem 1rem;
-            background: #f1f1f1;
-            border: 1px solid var(--border-grey);
-            border-radius: 8px;
-            font-weight: 500;
-            color: #555;
-        }
-
-        .password-input-container {
-            position: relative;
-            width: 100%;
-        }
-
-        .password-input-container i {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: var(--border-grey);
-        }
-
-        .form-links {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            margin-top: -0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .form-links a {
-            color: var(--primary-blue);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.2s ease;
-        }
-
-        .form-links a:hover {
-            text-decoration: underline;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 0.75rem;
-            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
-            color: var(--bg-white);
-            font-size: 1.1rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s ease, transform 0.2s ease;
-            margin-top: 1rem;
-        }
-
-        .btn:hover {
-            background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue));
-            transform: translateY(-2px);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .message-text {
-            text-align: center;
-            margin-top: 1rem;
-            color: var(--text-dark);
-        }
-
-        .message-text a {
-            color: var(--primary-blue);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .message-text a:hover {
-            text-decoration: underline;
-        }
-
-        /* --- OTP Form Specific Styles --- */
-        .otp-box {
-            text-align: center;
-            margin-top: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .otp-row {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .otp-input {
-            width: 45px;
-            height: 45px;
-            font-size: 1.5rem;
-            text-align: center;
-            border: 1px solid var(--border-grey);
-            border-radius: 8px;
-            transition: border-color 0.2s;
-        }
-
-        .otp-input:focus {
-            border-color: var(--secondary-blue);
-            outline: none;
-        }
-        
-        /* --- Responsive Design --- */
-        @media (max-width: 768px) {
-            .main-container {
-                flex-direction: column;
-                height: auto;
-                width: 95%;
-                border-radius: 12px;
-                margin: 0 auto;
-            }
-
-            .left-panel {
-                width: 100%;
-                height: 25vh;
-                padding: 1rem;
-            }
-
-            .left-panel h1 {
-                font-size: 1.6rem;
-            }
-
-            .left-panel p {
-                font-size: 0.8rem;
-            }
-
-            .right-panel {
-                width: 100%;
-            }
-
-            .form-container {
-                padding: 1.5rem;
-            }
-
-            .form-container h2 {
-                font-size: 1.5rem;
-                margin-bottom: 1.5rem;
-            }
-
-            /* Adjust OTP inputs for smaller screens */
-            .otp-row {
-                gap: 5px;
-            }
-            .otp-input {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
-            }
-        }
-
-        /* Pop-up Overlay styles */
-#custom-popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1001; /* Ensure it's on top of other content */
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-/* Pop-up Card styles */
-.custom-popup-card {
-    background-color: var(--bg-white);
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    transform: scale(0.9);
-    transition: transform 0.3s ease;
-}
-
-/* Hide the pop-up by default */
-.popup-hidden {
-    visibility: hidden;
-    opacity: 0;
-}
-
-/* Show the pop-up with a smooth animation */
-.popup-visible {
-    visibility: visible;
-    opacity: 1;
-}
-
-/* Adjust button styles to match your design */
-.custom-popup-buttons {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 1.5rem;
-}
-
-.custom-popup-buttons .btn {
-    width: 45%;
-    /* Add any other button styles */
-}
-
-@media (max-width: 768px) {
+    /* This centers the container within the main content area */
     .main-container {
-        flex-direction: column; /* Stacks panels vertically */
-        height: auto;
-        width: 95%; /* Adjusts width for a better fit on smaller screens */
-        border-radius: 12px;
-        margin: 0 auto;
+      display: flex;
+      width: 90%;
+      max-width: 1200px;
+      height: 80vh;
+      box-shadow: var(--shadow);
+      border-radius: 20px;
+      overflow: hidden;
+      margin: 0 auto;
     }
 
     .left-panel {
-        width: 100%; /* Makes the left panel take full width */
-        height: 25vh; /* Adjusts height for mobile view */
-        padding: 1rem;
+      width: 50%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: var(--text-light);
+      padding: 2rem;
+      background-image: url('img/image_login.webp');
+      background-size: cover;
+      background-position: center;
+      transition: width 0.3s ease;
+    }
+
+    .background-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .left-panel-content {
+      position: relative;
+      z-index: 1;
     }
 
     .left-panel h1 {
-        font-size: 1.6rem;
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
     }
 
     .left-panel p {
-        font-size: 0.8rem;
+      font-size: 1rem;
+      font-weight: 400;
+      margin-top: 0;
     }
 
     .right-panel {
-        width: 100%; /* Makes the right panel take full width */
+      background-color: var(--bg-white);
+      width: 60%;
+      display: flex;
+      position: relative;
+      transition: width 0.3s ease;
     }
 
     .form-container {
-        padding: 1.5rem;
+      width: 100%;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     .form-container h2 {
-        font-size: 1.5rem;
-        margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      color: var(--text-dark);
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border-grey);
+      border-radius: 8px;
+      font-size: 1rem;
+      box-sizing: border-box;
+      transition: all 0.2s ease;
+    }
+
+    .input-group input:focus {
+      border-color: var(--secondary-blue);
+      box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
+      outline: none;
+    }
+
+    .phone-input {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .phone-input span {
+      padding: 0.75rem 1rem;
+      background: #f1f1f1;
+      border: 1px solid var(--border-grey);
+      border-radius: 8px;
+      font-weight: 500;
+      color: #555;
+    }
+
+    .password-input-container {
+      position: relative;
+      width: 100%;
+    }
+
+    .password-input-container i {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--border-grey);
+    }
+
+    .form-links {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-top: -0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-links a {
+      color: var(--primary-blue);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s ease;
+    }
+
+    .form-links a:hover {
+      text-decoration: underline;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+      color: var(--bg-white);
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      margin-top: 1rem;
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue));
+      transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .message-text {
+      text-align: center;
+      margin-top: 1rem;
+      color: var(--text-dark);
+    }
+
+    .message-text a {
+      color: var(--primary-blue);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .message-text a:hover {
+      text-decoration: underline;
+    }
+
+    /* --- OTP Form Specific Styles --- */
+    .otp-box {
+      text-align: center;
+      margin-top: 1rem;
+      margin-bottom: 2rem;
     }
 
     .otp-row {
-        gap: 5px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
     }
-    
+
     .otp-input {
+      width: 45px;
+      height: 45px;
+      font-size: 1.5rem;
+      text-align: center;
+      border: 1px solid var(--border-grey);
+      border-radius: 8px;
+      transition: border-color 0.2s;
+    }
+
+    .otp-input:focus {
+      border-color: var(--secondary-blue);
+      outline: none;
+    }
+
+    /* --- Responsive Design --- */
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+        height: auto;
+        width: 95%;
+        border-radius: 12px;
+        margin: 0 auto;
+      }
+
+      .left-panel {
+        width: 100%;
+        height: 25vh;
+        padding: 1rem;
+      }
+
+      .left-panel h1 {
+        font-size: 1.6rem;
+      }
+
+      .left-panel p {
+        font-size: 0.8rem;
+      }
+
+      .right-panel {
+        width: 100%;
+      }
+
+      .form-container {
+        padding: 1.5rem;
+      }
+
+      .form-container h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      /* Adjust OTP inputs for smaller screens */
+      .otp-row {
+        gap: 5px;
+      }
+
+      .otp-input {
         width: 40px;
         height: 40px;
         font-size: 1.2rem;
+      }
     }
-}
 
-    </style>
+    /* Pop-up Overlay styles */
+    #custom-popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1001;
+      /* Ensure it's on top of other content */
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    /* Pop-up Card styles */
+    .custom-popup-card {
+      background-color: var(--bg-white);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+
+    /* Hide the pop-up by default */
+    .popup-hidden {
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    /* Show the pop-up with a smooth animation */
+    .popup-visible {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* Adjust button styles to match your design */
+    .custom-popup-buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 1.5rem;
+    }
+
+    .custom-popup-buttons .btn {
+      width: 45%;
+      /* Add any other button styles */
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+        /* Stacks panels vertically */
+        height: auto;
+        width: 95%;
+        /* Adjusts width for a better fit on smaller screens */
+        border-radius: 12px;
+        margin: 0 auto;
+      }
+
+      .left-panel {
+        width: 100%;
+        /* Makes the left panel take full width */
+        height: 25vh;
+        /* Adjusts height for mobile view */
+        padding: 1rem;
+      }
+
+      .left-panel h1 {
+        font-size: 1.6rem;
+      }
+
+      .left-panel p {
+        font-size: 0.8rem;
+      }
+
+      .right-panel {
+        width: 100%;
+        /* Makes the right panel take full width */
+      }
+
+      .form-container {
+        padding: 1.5rem;
+      }
+
+      .form-container h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .otp-row {
+        gap: 5px;
+      }
+
+      .otp-input {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <nav class="navbar">
-        <div class="logo">
-            <a href="index.html">
-                <i class="fas fa-arrow-left"></i>
-                <span>Back to Home</span>
-            </a>
-        </div>
-    </nav>
-
-    <main>
-        <div class="main-container">
-            <div class="left-panel">
-                <div class="background-overlay"></div>
-                <div class="left-panel-content">
-                    <h1>Find Your Dream Home</h1>
-                    <p>Your journey to the perfect property starts here.</p>
-                </div>
-            </div>
-            <div class="right-panel">
-                <div class="form-container" id="form-container">
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <div id="custom-popup-overlay" class="popup-hidden">
-        <div class="custom-popup-card">
-            <div class="custom-popup-content">
-                <h3 id="popup-title"></h3>
-                <p id="popup-message"></p>
-            </div>
-            <div class="custom-popup-buttons">
-                <button id="popup-ok-btn" class="btn">OK</button>
-                <button id="popup-close-btn" class="btn">Close</button>
-            </div>
-        </div>
+  <nav class="navbar">
+    <div class="logo">
+      <a href="index.html">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back to Home</span>
+      </a>
     </div>
+  </nav>
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <main>
+    <div class="main-container">
+      <div class="left-panel">
+        <div class="background-overlay"></div>
+        <div class="left-panel-content">
+          <h1>Find Your Dream Home</h1>
+          <p>Your journey to the perfect property starts here.</p>
+        </div>
+      </div>
+      <div class="right-panel">
+        <div class="form-container" id="form-container">
+        </div>
+      </div>
+    </div>
+  </main>
 
-<script type="module">
-  import { firebaseConfig } from "./firebaseConfig.js";
-  import { RAZORPAY_KEY_ID } from "./razorpayConfig.js";
+  <div id="custom-popup-overlay" class="popup-hidden">
+    <div class="custom-popup-card">
+      <div class="custom-popup-content">
+        <h3 id="popup-title"></h3>
+        <p id="popup-message"></p>
+      </div>
+      <div class="custom-popup-buttons">
+        <button id="popup-ok-btn" class="btn">OK</button>
+        <button id="popup-close-btn" class="btn">Close</button>
+      </div>
+    </div>
+  </div>
 
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-  import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+  <script type="module">
+    import { firebaseConfig } from "./firebaseConfig.js";
+    import { RAZORPAY_KEY_ID } from "./razorpayConfig.js";
+    import { API_BASE_URL } from "./config.js";
 
-  let recaptchaRegister, recaptchaForgot;
-  let tempFullName, tempMobileNumber, tempPassword;
-  let lastMode = null;
-  let confirmationResult;
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-  function setupFirebaseAndForms() {
-    const formContainer = document.getElementById('form-container');
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-    function setupRecaptchaRegister() {
-      if (window.recaptchaRegister) {
-        console.log("♻️ Re-using existing reCAPTCHA");
+    let recaptchaRegister, recaptchaForgot;
+    let tempFullName, tempMobileNumber, tempPassword;
+    let lastMode = null;
+    let confirmationResult;
+
+    function setupFirebaseAndForms() {
+      const formContainer = document.getElementById('form-container');
+
+      function setupRecaptchaRegister() {
+        if (window.recaptchaRegister) {
+          console.log("♻️ Re-using existing reCAPTCHA");
+          return window.recaptchaRegister;
+        }
+
+        const container = document.getElementById('recaptcha-container-register');
+        if (!container) {
+          console.error("❌ recaptcha-container-register not found in DOM!");
+          return null;
+        }
+
+        window.recaptchaRegister = new RecaptchaVerifier(container, {
+          size: 'invisible',
+          callback: (response) => {
+            console.log("✅ reCAPTCHA solved:", response);
+          },
+          'expired-callback': () => {
+            showCustomPopup("⚠️ reCAPTCHA expired, please try again.");
+          }
+        }, auth);
         return window.recaptchaRegister;
       }
 
-      const container = document.getElementById('recaptcha-container-register');
-      if (!container) {
-        console.error("❌ recaptcha-container-register not found in DOM!");
-        return null;
-      }
-
-      window.recaptchaRegister = new RecaptchaVerifier(container, {
-        size: 'invisible',
-        callback: (response) => {
-          console.log("✅ reCAPTCHA solved:", response);
-        },
-        'expired-callback': () => {
-          showCustomPopup("⚠️ reCAPTCHA expired, please try again.");
+      function setupRecaptchaForgot() {
+        if (window.recaptchaForgot) {
+          console.log("♻️ Re-using existing reCAPTCHA");
+          return window.recaptchaForgot;
         }
-      }, auth);
-      return window.recaptchaRegister;
-    }
 
-    function setupRecaptchaForgot() {
-      if (window.recaptchaForgot) {
-        console.log("♻️ Re-using existing reCAPTCHA");
+        const container = document.getElementById('recaptcha-container-forgot');
+        if (!container) {
+          console.error("❌ recaptcha-container-forgot not found in DOM!");
+          return null;
+        }
+
+        window.recaptchaForgot = new RecaptchaVerifier(container, {
+          size: 'invisible',
+          callback: (response) => {
+            console.log("✅ reCAPTCHA solved:", response);
+          },
+          'expired-callback': () => {
+            showCustomPopup("⚠️ reCAPTCHA expired, please try again.");
+          }
+        }, auth);
         return window.recaptchaForgot;
       }
 
-      const container = document.getElementById('recaptcha-container-forgot');
-      if (!container) {
-        console.error("❌ recaptcha-container-forgot not found in DOM!");
-        return null;
-      }
-
-      window.recaptchaForgot = new RecaptchaVerifier(container, {
-        size: 'invisible',
-        callback: (response) => {
-          console.log("✅ reCAPTCHA solved:", response);
-        },
-        'expired-callback': () => {
-          showCustomPopup("⚠️ reCAPTCHA expired, please try again.");
-        }
-      }, auth);
-      return window.recaptchaForgot;
-    }
-
-    const renderLoginForm = () => {
-      formContainer.innerHTML = `
+      const renderLoginForm = () => {
+        formContainer.innerHTML = `
         <h2>Login</h2>
         <form id="loginForm">
           <div class="input-group">
@@ -583,11 +593,11 @@
         </form>
         <p class="message-text">Don't have an account? <a href="#" id="showRegisterLink">Sign up</a></p>
       `;
-      setupEventListeners();
-    };
+        setupEventListeners();
+      };
 
-    const renderRegisterForm = () => {
-      formContainer.innerHTML = `
+      const renderRegisterForm = () => {
+        formContainer.innerHTML = `
         <h2>Register</h2>
         <form id="registerForm">
           <div class="input-group">
@@ -613,12 +623,12 @@
         </form>
         <p class="message-text">Already have an account? <a href="#" id="showLoginLink">Login</a></p>
       `;
-      setupEventListeners();
-      setupRecaptchaRegister();
-    };
+        setupEventListeners();
+        setupRecaptchaRegister();
+      };
 
-    const renderForgotPasswordForm = () => {
-      formContainer.innerHTML = `
+      const renderForgotPasswordForm = () => {
+        formContainer.innerHTML = `
         <h2>Forgot Password</h2>
         <p class="message-text">Enter your registered mobile number to reset your password.</p>
         <form id="forgotPasswordForm">
@@ -634,13 +644,13 @@
         </form>
         <p class="message-text"><a href="#" id="showLoginLink">Back to Login</a></p>
       `;
-      setupEventListeners();
-      setupRecaptchaForgot();
-    };
+        setupEventListeners();
+        setupRecaptchaForgot();
+      };
 
-    const renderOtpForm = (mode, phoneNumber) => {
-      lastMode = mode;
-      formContainer.innerHTML = `
+      const renderOtpForm = (mode, phoneNumber) => {
+        lastMode = mode;
+        formContainer.innerHTML = `
         <h2>Verify Your Mobile</h2>
         <p class="message-text">A 6-digit OTP has been sent to your mobile number.</p>
         <form id="otpForm">
@@ -662,48 +672,48 @@
         <p class="message-text"><a href="#" id="changeNumberLink">Change Number</a></p>
       `;
 
-      setupOtpLogic(mode, phoneNumber);
-      setupEventListeners();
+        setupOtpLogic(mode, phoneNumber);
+        setupEventListeners();
 
-      const resendOtpLink = document.getElementById('resendOtpLink');
-      if (resendOtpLink) {
-        resendOtpLink.addEventListener('click', async (e) => {
-          e.preventDefault();
-          const lastPhoneNumber = localStorage.getItem('tempMobileNumber');
-          if (!lastPhoneNumber) {
-            showCustomPopup('⚠️ Phone number not found. Please go back and enter your number again.');
-            return;
-          }
-
-          try {
-            let recaptcha;
-            if (mode === 'register') {
-              recaptcha = setupRecaptchaRegister();
-            } else if (mode === 'forgot') {
-              recaptcha = setupRecaptchaForgot();
-            } else {
-              showCustomPopup('❌ Invalid mode for resending OTP.');
+        const resendOtpLink = document.getElementById('resendOtpLink');
+        if (resendOtpLink) {
+          resendOtpLink.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const lastPhoneNumber = localStorage.getItem('tempMobileNumber');
+            if (!lastPhoneNumber) {
+              showCustomPopup('⚠️ Phone number not found. Please go back and enter your number again.');
               return;
             }
 
-            if (!recaptcha) {
-              showCustomPopup("❌ Could not initialize reCAPTCHA");
-              return;
+            try {
+              let recaptcha;
+              if (mode === 'register') {
+                recaptcha = setupRecaptchaRegister();
+              } else if (mode === 'forgot') {
+                recaptcha = setupRecaptchaForgot();
+              } else {
+                showCustomPopup('❌ Invalid mode for resending OTP.');
+                return;
+              }
+
+              if (!recaptcha) {
+                showCustomPopup("❌ Could not initialize reCAPTCHA");
+                return;
+              }
+
+              confirmationResult = await signInWithPhoneNumber(auth, lastPhoneNumber, recaptcha);
+              window.confirmationResult = confirmationResult;
+              showCustomPopup('✅ OTP resend successfully!');
+            } catch (error) {
+              console.error("Resend OTP error:", error);
+              showCustomPopup('❌ Error resending OTP: ' + error.message);
             }
+          });
+        }
+      };
 
-            confirmationResult = await signInWithPhoneNumber(auth, lastPhoneNumber, recaptcha);
-            window.confirmationResult = confirmationResult;
-            showCustomPopup('✅ OTP resend successfully!');
-          } catch (error) {
-            console.error("Resend OTP error:", error);
-            showCustomPopup('❌ Error resending OTP: ' + error.message);
-          }
-        });
-      }
-    };
-
-    const renderPasswordResetForm = () => {
-      formContainer.innerHTML = `
+      const renderPasswordResetForm = () => {
+        formContainer.innerHTML = `
         <h2>Set New Password</h2>
         <form id="newPasswordForm">
           <div class="input-group">
@@ -724,11 +734,11 @@
         </form>
         <p class="message-text"><a href="#" id="showLoginLink">Back to Login</a></p>
       `;
-      setupEventListeners();
-    };
+        setupEventListeners();
+      };
 
-    const renderVerificationPage = () => {
-      formContainer.innerHTML = `
+      const renderVerificationPage = () => {
+        formContainer.innerHTML = `
         <div style="text-align:center; padding: 2rem;">
           <i class="fa-solid fa-circle-check" style="font-size: 4rem; color: var(--secondary-blue); margin-bottom: 1rem;"></i>
           <h2>Password Changed!</h2>
@@ -737,14 +747,14 @@
         </div>
       `;
 
-      const backToLoginBtn = document.getElementById('backToLoginBtn');
-      if (backToLoginBtn) {
-        backToLoginBtn.addEventListener('click', renderLoginForm);
-      }
-    };
+        const backToLoginBtn = document.getElementById('backToLoginBtn');
+        if (backToLoginBtn) {
+          backToLoginBtn.addEventListener('click', renderLoginForm);
+        }
+      };
 
-    const renderRegistrationConfirmPage = () => {
-      formContainer.innerHTML = `
+      const renderRegistrationConfirmPage = () => {
+        formContainer.innerHTML = `
         <div style="text-align:center; padding: 2rem;">
           <i class="fa-solid fa-circle-check" style="font-size: 4rem; color: var(--secondary-blue); margin-bottom: 1rem;"></i>
           <h2>Registration Confirm!</h2>
@@ -753,400 +763,409 @@
         </div>
       `;
 
-      const backToLoginBtn = document.getElementById('backToLoginBtn');
-      if (backToLoginBtn) {
-        backToLoginBtn.addEventListener('click', renderLoginForm);
-      }
-    };
+        const backToLoginBtn = document.getElementById('backToLoginBtn');
+        if (backToLoginBtn) {
+          backToLoginBtn.addEventListener('click', renderLoginForm);
+        }
+      };
 
-    const setupEventListeners = () => {
-      const togglePasswordIcons = document.querySelectorAll('.toggle-password');
-      togglePasswordIcons.forEach(icon => {
-        icon.addEventListener('click', () => {
-          const passwordInput = icon.previousElementSibling;
-          const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-          passwordInput.setAttribute('type', type);
-          icon.classList.toggle('fa-eye');
-          icon.classList.toggle('fa-eye-slash');
+      const setupEventListeners = () => {
+        const togglePasswordIcons = document.querySelectorAll('.toggle-password');
+        togglePasswordIcons.forEach(icon => {
+          icon.addEventListener('click', () => {
+            const passwordInput = icon.previousElementSibling;
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+          });
         });
-      });
 
-      const showRegisterLink = document.getElementById('showRegisterLink');
-      if (showRegisterLink) showRegisterLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        renderRegisterForm();
-      });
+        const showRegisterLink = document.getElementById('showRegisterLink');
+        if (showRegisterLink) showRegisterLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderRegisterForm();
+        });
 
-      const showLoginLink = document.getElementById('showLoginLink');
-      if (showLoginLink) showLoginLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        renderLoginForm();
-      });
+        const showLoginLink = document.getElementById('showLoginLink');
+        if (showLoginLink) showLoginLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLoginForm();
+        });
 
-      const forgotPasswordLink = document.getElementById('forgotPasswordLink');
-      if (forgotPasswordLink) forgotPasswordLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        renderForgotPasswordForm();
-      });
+        const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+        if (forgotPasswordLink) forgotPasswordLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderForgotPasswordForm();
+        });
 
-      const loginForm = document.getElementById('loginForm');
-      if (loginForm) loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const mobileInput = document.getElementById('mobile').value;
-        const passwordInput = document.getElementById('password').value;
-        const phoneNumber = "+91" + mobileInput;
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) loginForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const mobileInput = document.getElementById('mobile').value;
+          const passwordInput = document.getElementById('password').value;
+          const phoneNumber = "+91" + mobileInput;
 
-        try {
-          const response = await fetch("https://project-tbbc.onrender.com/api/users/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              mobileNumber: phoneNumber,
-              password: passwordInput
-            })
+          try {
+            const response = await fetch(`${API_BASE_URL}/api/users/login`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                mobileNumber: phoneNumber,
+                password: passwordInput
+              })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              showCustomPopup("✅ " + data.message);
+              localStorage.setItem("userToken", data.token);
+              localStorage.setItem("userMobileNumber", phoneNumber);
+              localStorage.setItem("user", JSON.stringify(data.data));
+              window.location.href = "rentProperties.html";
+            } else if (response.status === 403 && data.subscriptionActive === false) {
+              // Subscription expired / not active – ask user to subscribe now
+              showCustomPopup(
+                data.message || "⚠️ Your subscription has expired. Please subscribe to continue.",
+                "Subscription Required",
+                () => {
+                  // Redirect to pricing page so user can choose a plan and renew
+                  localStorage.setItem("userMobileNumber", phoneNumber);
+                  window.location.href = `pricing.html?mode=renewal&mobile=${encodeURIComponent(phoneNumber)}`;
+                },
+                true
+              );
+            } else {
+              showCustomPopup("❌ " + (data.message || "Login failed"));
+            }
+          } catch (error) {
+            console.error("API error:", error);
+            showCustomPopup("❌ Error logging in: " + error.message);
+          }
+        });
+
+        const changeNumberLink = document.getElementById('changeNumberLink');
+        if (changeNumberLink) changeNumberLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (lastMode === "register") {
+            renderRegisterForm();
+          } else if (lastMode === "forgot") {
+            renderForgotPasswordForm();
+          }
+        });
+
+        const registerForm = document.getElementById('registerForm');
+        if (registerForm) registerForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const mobileInput = document.getElementById('regMobile').value;
+          const phoneNumber = "+91" + mobileInput;
+
+          if (!/^\+91[6-9]\d{9}$/.test(phoneNumber)) {
+            showCustomPopup("⚠️ Please enter a valid 10-digit mobile number.");
+            return;
+          }
+
+          try {
+            confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, setupRecaptchaRegister());
+            window.confirmationResult = confirmationResult;
+            showCustomPopup("✅ OTP sent for registration!");
+
+            tempFullName = document.getElementById("regName").value;
+            tempPassword = document.getElementById("regPassword").value;
+            tempMobileNumber = phoneNumber;
+
+            localStorage.setItem("tempFullName", tempFullName);
+            localStorage.setItem("tempPassword", tempPassword);
+            localStorage.setItem("tempMobileNumber", tempMobileNumber);
+
+            renderOtpForm("register", phoneNumber);
+          } catch (error) {
+            showCustomPopup("❌ Error sending OTP: " + error.message);
+          }
+        });
+
+        const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+        if (forgotPasswordForm) forgotPasswordForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const mobileInput = document.getElementById('fpMobile').value;
+          const phoneNumber = '+91' + mobileInput;
+
+          if (!/^\+91[6-9]\d{9}$/.test(phoneNumber)) {
+            showCustomPopup("⚠️ Please enter a valid 10-digit mobile number.");
+            return;
+          }
+
+          try {
+            const response = await fetch(`${API_BASE_URL}/api/users/forgot`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                contact: phoneNumber,
+              })
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+              showCustomPopup("❌ " + data.msg);
+              return;
+            }
+
+            showCustomPopup("✅ " + data.message);
+            confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, setupRecaptchaForgot());
+            window.confirmationResult = confirmationResult;
+            localStorage.setItem("tempMobileNumber", phoneNumber);
+            renderOtpForm("forgot", phoneNumber);
+          } catch (error) {
+            showCustomPopup("❌ Error sending OTP: " + error.message);
+          }
+        });
+
+        const newPasswordForm = document.getElementById('newPasswordForm');
+        if (newPasswordForm) newPasswordForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const newPass = document.getElementById('newPassword').value;
+          const confirmPass = document.getElementById('confirmPassword').value;
+          const mobileNumber = localStorage.getItem("tempMobileNumber");
+
+          if (newPass !== confirmPass) {
+            return showCustomPopup("⚠️ Passwords do not match.");
+          }
+
+          try {
+            const response = await fetch(`${API_BASE_URL}/api/users/reset-password`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                contact: mobileNumber,
+                confirmPassword: confirmPass,
+                newPassword: newPass
+              })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+              showCustomPopup("✅ " + data.message);
+              localStorage.removeItem("tempMobileNumber");
+              renderVerificationPage();
+            } else {
+              showCustomPopup("❌ " + data.msg);
+            }
+          } catch (err) {
+            console.error("API error:", err);
+            showCustomPopup("⚠️ Server error. Try again.");
+          }
+        });
+      };
+
+      const setupOtpLogic = (mode, phoneNumber) => {
+        const otpInputs = document.querySelectorAll('.otp-input');
+        const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+
+        otpInputs[0].focus();
+
+        otpInputs.forEach((input, index, arr) => {
+          input.addEventListener('input', () => {
+            input.value = input.value.replace(/[^0-9]/g, '').slice(0, 1);
+            if (input.value && index < arr.length - 1) {
+              arr[index + 1].focus();
+            }
+            checkOtpFilled();
           });
 
-          const data = await response.json();
+          input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !input.value && index > 0) {
+              arr[index - 1].focus();
+            }
+          });
+        });
 
-          if (response.ok) {
-            showCustomPopup("✅ " + data.message);
-            localStorage.setItem("userToken", data.token);
-            localStorage.setItem("userMobileNumber", phoneNumber);
-            localStorage.setItem("user", JSON.stringify(data.data));
-            window.location.href = "rentProperties.html";
-          } else if (response.status === 403 && data.subscriptionActive === false) {
-            // Subscription expired / not active – ask user to subscribe now
+        const checkOtpFilled = () => {
+          const allFilled = Array.from(otpInputs).every(input => input.value.length === 1);
+          verifyOtpBtn.disabled = !allFilled;
+        };
+
+        checkOtpFilled();
+
+        verifyOtpBtn.addEventListener('click', async (event) => {
+          event.preventDefault();
+          const otp = Array.from(otpInputs).map(input => input.value).join('');
+
+          if (otp.length !== 6) {
+            showCustomPopup("⚠️ Please enter a valid 6-digit OTP.");
+            return;
+          }
+
+          try {
+            await window.confirmationResult.confirm(otp);
+
+            if (mode === 'forgot') {
+              showCustomPopup("✅ OTP verified! Please set your new password.", "Success", () => {
+                renderPasswordResetForm();
+              });
+              return;
+            }
+
             showCustomPopup(
-              data.message || "⚠️ Your subscription has expired. Please subscribe to continue.",
+              "✅ OTP verified. To start your account, please pay the subscription fee now. You will 1 month subscription.",
               "Subscription Required",
-              () => {
-                // Redirect to pricing page so user can choose a plan and renew
-                localStorage.setItem("userMobileNumber", phoneNumber);
-                window.location.href = `pricing.html?mode=renewal&mobile=${encodeURIComponent(phoneNumber)}`;
+              async () => {
+                const fullName = localStorage.getItem("tempFullName");
+                const password = localStorage.getItem("tempPassword");
+                const mobileNumber = localStorage.getItem("tempMobileNumber");
+
+                if (!fullName || !password || !mobileNumber) {
+                  showCustomPopup("⚠️ Registration data not found. Please try again.");
+                  return;
+                }
+
+                try {
+                  const response = await fetch(`${API_BASE_URL}/api/users/create`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      fullName: fullName,
+                      mobileNumber: mobileNumber,
+                      password: password
+                    })
+                  });
+
+                  const data = await response.json();
+                  if (data.status === 'success') {
+                    // Save mobile and redirect to pricing page for plan selection
+                    localStorage.setItem("userMobileNumber", mobileNumber);
+                    window.location.href = `pricing.html?mode=registration&mobile=${encodeURIComponent(mobileNumber)}`;
+                  } else {
+                    showCustomPopup("❌ " + (data.msg || "Registration failed."));
+                  }
+                } catch (error) {
+                  console.error("API error:", error);
+                  showCustomPopup("❌ Error registering user: " + error.message);
+                }
               },
               true
             );
-          } else {
-            showCustomPopup("❌ " + (data.message || "Login failed"));
+          } catch (error) {
+            console.error("OTP verification failed:", error);
+            showCustomPopup("❌ OTP verification failed: " + error.message);
           }
-        } catch (error) {
-          console.error("API error:", error);
-          showCustomPopup("❌ Error logging in: " + error.message);
-        }
-      });
+        });
+      };
 
-      const changeNumberLink = document.getElementById('changeNumberLink');
-      if (changeNumberLink) changeNumberLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (lastMode === "register") {
-          renderRegisterForm();
-        } else if (lastMode === "forgot") {
-          renderForgotPasswordForm();
-        }
-      });
-
-      const registerForm = document.getElementById('registerForm');
-      if (registerForm) registerForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const mobileInput = document.getElementById('regMobile').value;
-        const phoneNumber = "+91" + mobileInput;
-
-        if (!/^\+91[6-9]\d{9}$/.test(phoneNumber)) {
-          showCustomPopup("⚠️ Please enter a valid 10-digit mobile number.");
-          return;
-        }
-
+      // ===== Razorpay Subscription Handler =====
+      const handleSubscription = async (mobileNumber, mode = "registration", loginPassword = null) => {
         try {
-          confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, setupRecaptchaRegister());
-          window.confirmationResult = confirmationResult;
-          showCustomPopup("✅ OTP sent for registration!");
-
-          tempFullName = document.getElementById("regName").value;
-          tempPassword = document.getElementById("regPassword").value;
-          tempMobileNumber = phoneNumber;
-
-          localStorage.setItem("tempFullName", tempFullName);
-          localStorage.setItem("tempPassword", tempPassword);
-          localStorage.setItem("tempMobileNumber", tempMobileNumber);
-
-          renderOtpForm("register", phoneNumber);
-        } catch (error) {
-          showCustomPopup("❌ Error sending OTP: " + error.message);
-        }
-      });
-
-      const forgotPasswordForm = document.getElementById('forgotPasswordForm');
-      if (forgotPasswordForm) forgotPasswordForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const mobileInput = document.getElementById('fpMobile').value;
-        const phoneNumber = '+91' + mobileInput;
-
-        if (!/^\+91[6-9]\d{9}$/.test(phoneNumber)) {
-          showCustomPopup("⚠️ Please enter a valid 10-digit mobile number.");
-          return;
-        }
-
-        try {
-          const response = await fetch("https://project-tbbc.onrender.com/api/users/forgot", {
+          const response = await fetch(`${API_BASE_URL}/api/payment/create-subscription`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              contact: phoneNumber,
-            })
+            body: JSON.stringify({ mobileNumber: mobileNumber }),
           });
 
           const data = await response.json();
           if (!response.ok) {
-            showCustomPopup("❌ " + data.msg);
-            return;
+            throw new Error(data.message || "⚠️ Failed to create subscription.");
           }
 
-          showCustomPopup("✅ " + data.message);
-          confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, setupRecaptchaForgot());
-          window.confirmationResult = confirmationResult;
-          localStorage.setItem("tempMobileNumber", phoneNumber);
-          renderOtpForm("forgot", phoneNumber);
-        } catch (error) {
-          showCustomPopup("❌ Error sending OTP: " + error.message);
-        }
-      });
-
-      const newPasswordForm = document.getElementById('newPasswordForm');
-      if (newPasswordForm) newPasswordForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const newPass = document.getElementById('newPassword').value;
-        const confirmPass = document.getElementById('confirmPassword').value;
-        const mobileNumber = localStorage.getItem("tempMobileNumber");
-
-        if (newPass !== confirmPass) {
-          return showCustomPopup("⚠️ Passwords do not match.");
-        }
-
-        try {
-          const response = await fetch("https://project-tbbc.onrender.com/api/users/reset-password", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              contact: mobileNumber,
-              confirmPassword: confirmPass,
-              newPassword: newPass
-            })
-          });
-
-          const data = await response.json();
-          if (response.ok) {
-            showCustomPopup("✅ " + data.message);
-            localStorage.removeItem("tempMobileNumber");
-            renderVerificationPage();
-          } else {
-            showCustomPopup("❌ " + data.msg);
-          }
-        } catch (err) {
-          console.error("API error:", err);
-          showCustomPopup("⚠️ Server error. Try again.");
-        }
-      });
-    };
-
-    const setupOtpLogic = (mode, phoneNumber) => {
-      const otpInputs = document.querySelectorAll('.otp-input');
-      const verifyOtpBtn = document.getElementById('verifyOtpBtn');
-
-      otpInputs[0].focus();
-
-      otpInputs.forEach((input, index, arr) => {
-        input.addEventListener('input', () => {
-          input.value = input.value.replace(/[^0-9]/g, '').slice(0, 1);
-          if (input.value && index < arr.length - 1) {
-            arr[index + 1].focus();
-          }
-          checkOtpFilled();
-        });
-
-        input.addEventListener('keydown', (e) => {
-          if (e.key === 'Backspace' && !input.value && index > 0) {
-            arr[index - 1].focus();
-          }
-        });
-      });
-
-      const checkOtpFilled = () => {
-        const allFilled = Array.from(otpInputs).every(input => input.value.length === 1);
-        verifyOtpBtn.disabled = !allFilled;
-      };
-
-      checkOtpFilled();
-
-      verifyOtpBtn.addEventListener('click', async (event) => {
-        event.preventDefault();
-        const otp = Array.from(otpInputs).map(input => input.value).join('');
-
-        if (otp.length !== 6) {
-          showCustomPopup("⚠️ Please enter a valid 6-digit OTP.");
-          return;
-        }
-
-        try {
-          await window.confirmationResult.confirm(otp);
-          showCustomPopup(
-            "✅ OTP verified. To start your account, please pay the subscription fee now. You will 1 month subscription.",
-            "Subscription Required",
-            async () => {
-              const fullName = localStorage.getItem("tempFullName");
-              const password = localStorage.getItem("tempPassword");
-              const mobileNumber = localStorage.getItem("tempMobileNumber");
-
-              if (!fullName || !password || !mobileNumber) {
-                showCustomPopup("⚠️ Registration data not found. Please try again.");
-                return;
-              }
-
-              try {
-                const response = await fetch("https://project-tbbc.onrender.com/api/users/create", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    fullName: fullName,
-                    mobileNumber: mobileNumber,
-                    password: password
-                  })
-                });
-
-                const data = await response.json();
-                if (data.status === 'success') {
-                  // Save mobile and redirect to pricing page for plan selection
-                  localStorage.setItem("userMobileNumber", mobileNumber);
-                  window.location.href = `pricing.html?mode=registration&mobile=${encodeURIComponent(mobileNumber)}`;
-                } else {
-                  showCustomPopup("❌ " + (data.msg || "Registration failed."));
-                }
-              } catch (error) {
-                console.error("API error:", error);
-                showCustomPopup("❌ Error registering user: " + error.message);
+          const options = {
+            key: RAZORPAY_KEY_ID,
+            subscription_id: data.subscriptionId,
+            handler: async function (response) {
+              if (mode === "registration") {
+                showCustomPopup(
+                  "✅ Payment Successful! Your 1 month subscription is now active.",
+                  "Subscription Confirmed",
+                  () => renderRegistrationConfirmPage()
+                );
+              } else if (mode === "renewal") {
+                showCustomPopup(
+                  "✅ Payment Successful! Your subscription has been renewed. Logging you in...",
+                  "Subscription Renewed",
+                  async () => {
+                    try {
+                      // Re-login after renewal
+                      const loginRes = await fetch(`${API_BASE_URL}/api/users/login`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          mobileNumber: mobileNumber,
+                          password: loginPassword
+                        })
+                      });
+                      const loginData = await loginRes.json();
+                      if (loginRes.ok) {
+                        localStorage.setItem("userToken", loginData.token);
+                        localStorage.setItem("userMobileNumber", mobileNumber);
+                        localStorage.setItem("user", JSON.stringify(loginData.data));
+                        window.location.href = "rentProperties.html";
+                      } else {
+                        showCustomPopup("⚠️ " + (loginData.message || "Please try to login again manually."));
+                      }
+                    } catch (err) {
+                      console.error("Login after renewal failed:", err);
+                      showCustomPopup("⚠️ Payment done but automatic login failed. Please try logging in again.");
+                    }
+                  }
+                );
               }
             },
-            true
-          );
+          };
+
+          const rzp = new Razorpay(options);
+          rzp.open();
         } catch (error) {
-          console.error("OTP verification failed:", error);
-          showCustomPopup("❌ OTP verification failed: " + error.message);
+          console.error("Error starting subscription:", error);
+          showCustomPopup("❌ Error starting subscription: " + error.message);
         }
-      });
-    };
+      };
 
-    // ===== Razorpay Subscription Handler =====
-const handleSubscription = async (mobileNumber, mode = "registration", loginPassword = null) => {
-  try {
-    const response = await fetch("https://localhost:3000/api/payment/create-subscription", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mobileNumber: mobileNumber }),
-    });
-
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.message || "⚠️ Failed to create subscription.");
+      renderLoginForm();
     }
 
-    const options = {
-      key: RAZORPAY_KEY_ID,        
-      subscription_id: data.subscriptionId,
-      handler: async function (response) {
-        if (mode === "registration") {
-          showCustomPopup(
-            "✅ Payment Successful! Your 1 month subscription is now active.",
-            "Subscription Confirmed",
-            () => renderRegistrationConfirmPage()
-          );
-        } else if (mode === "renewal") {
-          showCustomPopup(
-            "✅ Payment Successful! Your subscription has been renewed. Logging you in...",
-            "Subscription Renewed",
-            async () => {
-              try {
-                // Re-login after renewal
-                const loginRes = await fetch("https://project-tbbc.onrender.com/api/users/login", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    mobileNumber: mobileNumber,
-                    password: loginPassword
-                  })
-                });
-                const loginData = await loginRes.json();
-                if (loginRes.ok) {
-                  localStorage.setItem("userToken", loginData.token);
-                  localStorage.setItem("userMobileNumber", mobileNumber);
-                  localStorage.setItem("user", JSON.stringify(loginData.data));
-                  window.location.href = "rentProperties.html";
-                } else {
-                  showCustomPopup("⚠️ " + (loginData.message || "Please try to login again manually."));
-                }
-              } catch (err) {
-                console.error("Login after renewal failed:", err);
-                showCustomPopup("⚠️ Payment done but automatic login failed. Please try logging in again.");
-              }
-            }
-          );
+    document.addEventListener('DOMContentLoaded', setupFirebaseAndForms);
+
+    function showCustomPopup(message, title = "Notification", onOk = null, showClose = false) {
+      const overlay = document.getElementById('custom-popup-overlay');
+      const popupTitle = document.getElementById('popup-title');
+      const popupMessage = document.getElementById('popup-message');
+      const okBtn = document.getElementById('popup-ok-btn');
+      const closeBtn = document.getElementById('popup-close-btn');
+
+      popupTitle.textContent = title;
+      popupMessage.textContent = message;
+
+      closeBtn.style.display = showClose ? 'inline-block' : 'none';
+      okBtn.textContent = (onOk && showClose) ? "Continue" : "OK";
+      closeBtn.textContent = "Discard";
+
+      okBtn.onclick = null;
+      closeBtn.onclick = null;
+
+      okBtn.onclick = () => {
+        if (onOk) {
+          hideCustomPopup();
+          onOk();
+        } else {
+          hideCustomPopup();
         }
-      },
-    };
+      };
 
-    const rzp = new Razorpay(options);
-    rzp.open();
-  } catch (error) {
-    console.error("Error starting subscription:", error);
-    showCustomPopup("❌ Error starting subscription: " + error.message);
-  }
-};
-
-    renderLoginForm();
-  }
-
-  document.addEventListener('DOMContentLoaded', setupFirebaseAndForms);
-
-  function showCustomPopup(message, title = "Notification", onOk = null, showClose = false) {
-    const overlay = document.getElementById('custom-popup-overlay');
-    const popupTitle = document.getElementById('popup-title');
-    const popupMessage = document.getElementById('popup-message');
-    const okBtn = document.getElementById('popup-ok-btn');
-    const closeBtn = document.getElementById('popup-close-btn');
-
-    popupTitle.textContent = title;
-    popupMessage.textContent = message;
-
-    closeBtn.style.display = showClose ? 'inline-block' : 'none';
-    okBtn.textContent = (onOk && showClose) ? "Continue" : "OK";
-    closeBtn.textContent = "Discard";
-
-    okBtn.onclick = null;
-    closeBtn.onclick = null;
-
-    okBtn.onclick = () => {
-      if (onOk) {
+      closeBtn.onclick = () => {
         hideCustomPopup();
-        onOk();
-      } else {
-        hideCustomPopup();
-      }
-    };
+      };
 
-    closeBtn.onclick = () => {
-      hideCustomPopup();
-    };
+      overlay.classList.remove('popup-hidden');
+      overlay.classList.add('popup-visible');
+      document.querySelector('.custom-popup-card').style.transform = 'scale(1)';
+    }
 
-    overlay.classList.remove('popup-hidden');
-    overlay.classList.add('popup-visible');
-    document.querySelector('.custom-popup-card').style.transform = 'scale(1)';
-  }
-
-  function hideCustomPopup() {
-    const overlay = document.getElementById('custom-popup-overlay');
-    overlay.classList.remove('popup-visible');
-    overlay.classList.add('popup-hidden');
-    document.querySelector('.custom-popup-card').style.transform = 'scale(0.9)';
-  }
-</script>      
+    function hideCustomPopup() {
+      const overlay = document.getElementById('custom-popup-overlay');
+      overlay.classList.remove('popup-visible');
+      overlay.classList.add('popup-hidden');
+      document.querySelector('.custom-popup-card').style.transform = 'scale(0.9)';
+    }
+  </script>
 
 </body>
+
 </html>

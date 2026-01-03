@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,7 +15,8 @@
       font-family: Arial, sans-serif;
       background: #f6f6f6;
       margin: 0;
-      padding: 80px 0 0 0; /* reserve space for fixed navbar (adjusted for larger logo) */
+      padding: 80px 0 0 0;
+      /* reserve space for fixed navbar (adjusted for larger logo) */
       text-align: center;
     }
 
@@ -36,7 +38,7 @@
       left: 0;
       right: 0;
       z-index: 1000;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
       gap: 1rem;
     }
 
@@ -46,7 +48,8 @@
       gap: 0.75rem;
       color: #fff;
       font-family: "Caprasimo", serif;
-      font-size: 24px; /* increased for better visibility */
+      font-size: 24px;
+      /* increased for better visibility */
       font-weight: 400;
       cursor: pointer;
     }
@@ -70,22 +73,24 @@
     }
 
     .navbar .logo i:hover {
-      background: rgba(255,255,255,0.06);
+      background: rgba(255, 255, 255, 0.06);
       transform: translateY(-1px);
     }
 
     .navbar .logo img {
-      width: 48px; /* slightly larger to match text */
+      width: 48px;
+      /* slightly larger to match text */
       height: 48px;
       border-radius: 8px;
-      background: rgba(255,255,255,0.06);
+      background: rgba(255, 255, 255, 0.06);
       object-fit: cover;
     }
 
     .navbar .logo span {
       color: #fff;
       font-weight: 700;
-      font-size: 1.2rem; /* increased to match larger logo */
+      font-size: 1.2rem;
+      /* increased to match larger logo */
     }
 
     @media (max-width: 768px) {
@@ -136,7 +141,7 @@
       border-radius: 10px;
       padding: 25px;
       width: 260px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
       position: relative;
     }
 
@@ -183,7 +188,8 @@
     }
 
     .promo-text {
-      color: #047857; /* green */
+      color: #047857;
+      /* green */
       font-size: 0.9rem;
       margin-top: 6px;
     }
@@ -197,57 +203,92 @@
       width: 100%;
       max-width: 320px;
       flex: 1 1 260px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
       position: relative;
       box-sizing: border-box;
     }
 
-        /* Use global .btn styles for consistency */
-        .plan-card .btn {
-            margin-top: 1rem;
-            transition: transform 0.2s ease;
-            min-height: 44px;
-        }
+    /* Use global .btn styles for consistency */
+    .plan-card .btn {
+      margin-top: 1rem;
+      transition: transform 0.2s ease;
+      min-height: 44px;
+    }
 
-        .plan-card .btn:hover {
-            transform: translateY(-2px);
-        }
+    .plan-card .btn:hover {
+      transform: translateY(-2px);
+    }
 
-        .plan-card .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
+    .plan-card .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
 
     /* Responsive rules */
     @media (max-width: 768px) {
-      .plans-container { gap: 16px; margin: 24px; padding: 0 12px; }
-      .plan-card { padding: 20px; max-width: 380px; }
-      h1 { font-size: 1.6rem; margin-top: 24px; }
+      .plans-container {
+        gap: 16px;
+        margin: 24px;
+        padding: 0 12px;
+      }
+
+      .plan-card {
+        padding: 20px;
+        max-width: 380px;
+      }
+
+      h1 {
+        font-size: 1.6rem;
+        margin-top: 24px;
+      }
     }
 
     @media (max-width: 480px) {
-      .plans-container { flex-direction: column; gap: 12px; margin: 16px; padding: 0 12px; }
-      .plan-card { padding: 16px; border-radius: 8px; max-width: 100%; }
-      .plan-price { font-size: 20px; }
-      .badge { top: -8px; right: -8px; padding: 4px 8px; font-size: 11px; }
-      .btn { padding: 0.85rem; font-size: 1rem; }
+      .plans-container {
+        flex-direction: column;
+        gap: 12px;
+        margin: 16px;
+        padding: 0 12px;
+      }
+
+      .plan-card {
+        padding: 16px;
+        border-radius: 8px;
+        max-width: 100%;
+      }
+
+      .plan-price {
+        font-size: 20px;
+      }
+
+      .badge {
+        top: -8px;
+        right: -8px;
+        padding: 4px 8px;
+        font-size: 11px;
+      }
+
+      .btn {
+        padding: 0.85rem;
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
 
 <body>
   <nav class="navbar">
-     <div class="logo">
-  <a onclick="history.back()">
-    <i class="fas fa-arrow-left"></i>
-  </a>
-  <a>
-    <img src="img/DSA.png" alt="Logo">
-    <span>DSA Enterprise</span>
-  </a>
-</div>
-</nav>
+    <div class="logo">
+      <a onclick="history.back()">
+        <i class="fas fa-arrow-left"></i>
+      </a>
+      <a>
+        <img src="img/DSA.png" alt="Logo">
+        <span>DSA Enterprise</span>
+      </a>
+    </div>
+  </nav>
 
   <h1>Choose Your Plan</h1>
 
@@ -257,46 +298,47 @@
 
   <!-- ================= JS ================= -->
   <script type="module">
-  import { RAZORPAY_KEY_ID } from './razorpayConfig.js';
+    import { RAZORPAY_KEY_ID } from './razorpayConfig.js';
+    import { API_BASE_URL } from "./config.js";
 
-  const plansContainer = document.getElementById("plans");
+    const plansContainer = document.getElementById("plans");
 
-  // If redirected with ?mobile=, persist it to localStorage for the subscribe flow
-  const params = new URLSearchParams(window.location.search);
-  const incomingMobile = params.get('mobile');
-  if (incomingMobile) localStorage.setItem('userMobileNumber', incomingMobile);
+    // If redirected with ?mobile=, persist it to localStorage for the subscribe flow
+    const params = new URLSearchParams(window.location.search);
+    const incomingMobile = params.get('mobile');
+    if (incomingMobile) localStorage.setItem('userMobileNumber', incomingMobile);
 
-  async function loadPlans() {
-    const res = await fetch("https://project-tbbc.onrender.com/api/plans");
-    const plans = await res.json();
+    async function loadPlans() {
+      const res = await fetch(`${API_BASE_URL}/api/plans`);
+      const plans = await res.json();
 
-    plansContainer.innerHTML = "";
+      plansContainer.innerHTML = "";
 
-    const baselineMonthlyPlan = plans.find(p => p.duration === 1 && p.interval === "monthly");
-    const baselineMonthlyPrice = baselineMonthlyPlan ? baselineMonthlyPlan.price : null;
+      const baselineMonthlyPlan = plans.find(p => p.duration === 1 && p.interval === "monthly");
+      const baselineMonthlyPrice = baselineMonthlyPlan ? baselineMonthlyPlan.price : null;
 
-    plans.forEach(plan => {
-      const card = document.createElement("div");
-      card.className = "plan-card";
+      plans.forEach(plan => {
+        const card = document.createElement("div");
+        card.className = "plan-card";
 
-      if (plan.planType === "YEARLY") {
-        card.innerHTML += `<div class="badge">Most Popular Plan</div>`;
-      }
+        if (plan.planType === "YEARLY") {
+          card.innerHTML += `<div class="badge">Most Popular Plan</div>`;
+        }
 
-      const monthsTotal = plan.interval === 'yearly' ? (plan.duration * 12) : plan.duration;
-      const originalPrice = baselineMonthlyPrice ? baselineMonthlyPrice * monthsTotal : plan.price;
-      const discountedPrice = plan.price;
+        const monthsTotal = plan.interval === 'yearly' ? (plan.duration * 12) : plan.duration;
+        const originalPrice = baselineMonthlyPrice ? baselineMonthlyPrice * monthsTotal : plan.price;
+        const discountedPrice = plan.price;
 
-      // Show interval label based on plan duration/interval
-      const intervalLabel = (plan.interval === 'monthly')
-        ? (plan.duration > 1 ? `per ${plan.duration} month${plan.duration>1 ? 's' : ''}` : ' / month')
-        : (plan.duration > 1 ? `per ${plan.duration} year${plan.duration>1 ? 's' : ''}` : ' / yr');
+        // Show interval label based on plan duration/interval
+        const intervalLabel = (plan.interval === 'monthly')
+          ? (plan.duration > 1 ? `per ${plan.duration} month${plan.duration > 1 ? 's' : ''}` : ' / month')
+          : (plan.duration > 1 ? `per ${plan.duration} year${plan.duration > 1 ? 's' : ''}` : ' / yr');
 
-      const freeMonths = baselineMonthlyPrice ? Math.max(0, Math.round((originalPrice - discountedPrice) / baselineMonthlyPrice)) : 0;
-      const buyMonths = Math.max(monthsTotal - freeMonths, 0);
-      const promoText = plan.description ? plan.description : (freeMonths >= 1 ? `Buy ${buyMonths} month${buyMonths>1? 's' : ''} get ${freeMonths} month${freeMonths>1? 's' : ''} free.` : '');
+        const freeMonths = baselineMonthlyPrice ? Math.max(0, Math.round((originalPrice - discountedPrice) / baselineMonthlyPrice)) : 0;
+        const buyMonths = Math.max(monthsTotal - freeMonths, 0);
+        const promoText = plan.description ? plan.description : (freeMonths >= 1 ? `Buy ${buyMonths} month${buyMonths > 1 ? 's' : ''} get ${freeMonths} month${freeMonths > 1 ? 's' : ''} free.` : '');
 
-      card.innerHTML += `
+        card.innerHTML += `
         <h2>${plan.name}</h2>
         <div class="plan-price">
           <div class="price-block">
@@ -309,53 +351,54 @@
         <button class="btn">Subscribe</button>
       `;
 
-      const btn = card.querySelector(".btn");
-      btn.addEventListener("click", () => subscribe(plan.planType, btn));
+        const btn = card.querySelector(".btn");
+        btn.addEventListener("click", () => subscribe(plan.planType, btn));
 
-      plansContainer.appendChild(card);
-    });
-  }
-
-  async function subscribe(planType, btn) {
-    btn.disabled = true;
-    btn.innerText = "Processing...";
-
-    // Support both keys depending on where we saved it
-    const mobileNumber = localStorage.getItem("userMobileNumber") || localStorage.getItem("mobileNumber");
-    if (!mobileNumber) {
-      alert("Please login or register first");
-      btn.disabled = false;
-      btn.innerText = "Subscribe";
-      return;
+        plansContainer.appendChild(card);
+      });
     }
 
-    const res = await fetch("https://project-tbbc.onrender.com/api/payment/create-subscription", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mobileNumber, planType }),
-    });
+    async function subscribe(planType, btn) {
+      btn.disabled = true;
+      btn.innerText = "Processing...";
 
-    const data = await res.json();
-    if (!res.ok) {
-      alert(data.message || "Subscription failed");
-      btn.disabled = false;
-      btn.innerText = "Subscribe";
-      return;
+      // Support both keys depending on where we saved it
+      const mobileNumber = localStorage.getItem("userMobileNumber") || localStorage.getItem("mobileNumber");
+      if (!mobileNumber) {
+        alert("Please login or register first");
+        btn.disabled = false;
+        btn.innerText = "Subscribe";
+        return;
+      }
+
+      const res = await fetch(`${API_BASE_URL}/api/payment/create-subscription`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobileNumber, planType }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.message || "Subscription failed");
+        btn.disabled = false;
+        btn.innerText = "Subscribe";
+        return;
+      }
+
+      const rzp = new Razorpay({
+        key: RAZORPAY_KEY_ID,
+        subscription_id: data.subscriptionId,
+        name: "Your App Name",
+        handler: () => alert("Payment successful"),
+      });
+
+      rzp.open();
     }
 
-    const rzp = new Razorpay({
-      key: RAZORPAY_KEY_ID,
-      subscription_id: data.subscriptionId,
-      name: "Your App Name",
-      handler: () => alert("Payment successful"),
-    });
-
-    rzp.open();
-  }
-
-  loadPlans();
-</script>
+    loadPlans();
+  </script>
 
 
 </body>
+
 </html>
