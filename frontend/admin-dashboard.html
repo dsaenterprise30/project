@@ -1337,7 +1337,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 try {
                     const token = localStorage.getItem("token");
-                    const response = await fetch(`http://localhost:3000/api/users/update/${userId}`, {
+                    const response = await fetch(`${API_BASE}/update/${userId}`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
@@ -1540,7 +1540,7 @@ function closeAllPanels() {
                     if (confirmed) {
                         try {
                             const token = localStorage.getItem("token");
-                            const response = await fetch(`https://project-tbbc.onrender.com/api/users/delete/${userId}`, {
+                            const response = await fetch(`${API_BASE}/delete/${userId}`, {
                                 method: 'DELETE',
                                 headers: {
                                     'Authorization': `Bearer ${token}`
