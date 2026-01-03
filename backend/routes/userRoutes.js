@@ -13,6 +13,7 @@ import {
   createSubscription,
   getSubscriptionStatus,
   deleteUserByAdmin,
+  updateUser,
 } from "../controllers/userController.js";
 
 import { verifyAccessToken } from "../middleware/userAuth.js";
@@ -81,5 +82,8 @@ router.get("/premium-feature", verifyAccessToken, checkSubscription, (req, res) 
 
 // Route 12 - delete user by admin 
 router.delete("/delete/:id", verifyAccessToken, checkAdminNumber, deleteUserByAdmin);
+
+// Route 13 - Update User (Admin only)
+router.put("/update/:id", verifyAccessToken, checkAdminNumber, updateUser);
 
 export default router;

@@ -461,15 +461,27 @@
             margin-top: 1rem;
         }
 
-        .button-row button {
+         .button-row button {
             flex: 1;
-            padding: 12px;
+            padding: 14px;
             border: none;
             border-radius: 8px;
             font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
             transition: background-color 0.3s;
+        }
+
+        /* Increase height and tap target for create/update buttons inside side panels */
+        .side-panel .panel-content .btn {
+            padding: 14px 16px;
+            height: 56px;
+            min-height: 48px;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         
         #logoutBtn {
@@ -901,8 +913,8 @@
     <span>DSA Enterprise</span>
   </a>
 </div>
-
     <ul class="nav-links">
+        <li><a href="#" id="addUserBtn" role="button"><i class="fas fa-user-plus"></i> Add User</a></li>
         <li><a href="sellFlats.html">Sell Flats</a></li>
         <li><a href="rentFlats.html">Rent Flats</a></li>
         <li><a href="#home">Home</a></li>
@@ -910,6 +922,7 @@
             <a href="admin.html" id="profileIcon"><i class="fa fa-user"></i></a>
         </li>
     </ul>
+    
     <div class="hamburger">
         <span></span>
         <span></span>
@@ -992,12 +1005,13 @@
              <table class="data-table" id="usersTable">
                  <thead>
                      <tr>
-                         <th>Name</th>
-                         <th>Contact</th>
-                         <th>Date Joined</th>
-                         <th>User Type</th>
-                         <th>Status</th>
-                         <th>Actions</th>
+                        <th>Name</th>
+                        <th>Contact</th>
+                        <th>Date Joined</th>
+                        <th>User Type</th>
+                        <th>Plan Expiry</th>
+                        <th>Status</th>
+                        <th>Action</th>
                      </tr>
                  </thead>
                  <tbody id="usersBody">
@@ -1025,6 +1039,59 @@
         <button id="logoutBtn">Logout</button>
     </div>
 </div>
+
+ <!-- Add User Modal -->
+    <div id="addUserModal" class="side-panel">
+        <div class="panel-header">
+            <span>Add New User</span>
+            <button class="close-btn" id="closeAddUserBtn">&times;</button>
+        </div>
+        <div class="panel-content">
+            <form id="addUserForm">
+                <label for="newUserName">Full Name:</label>
+                <input type="text" id="newUserName" required>
+
+                <label for="newUserMobile">Mobile Number:</label>
+                <input type="tel" id="newUserMobile" pattern="[6789]\d{9}" maxlength="10" required>
+
+                <label for="newUserPassword">Password:</label>
+                <input type="password" id="newUserPassword" required minlength="6">
+
+                <label for="newUserType">User Type:</label>
+                <select id="newUserType">
+                    <option value="User">User</option>
+                    <option value="Agent">Agent</option>
+                    <option value="Owner">Owner</option>
+                </select>
+
+                <button type="submit" class="btn btn-primary"
+                    style="margin-top: 1rem; background: #1e3a8a; color: white;">Create User</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="side-panel">
+        <div class="panel-header">
+            <span>Edit User</span>
+            <button class="close-btn" id="closeEditUserBtn">&times;</button>
+        </div>
+        <div class="panel-content">
+            <form id="editUserForm">
+                <input type="hidden" id="editUserId">
+                <label>User: <span id="editUserNameDisplay" style="font-weight:bold;"></span></label>
+
+                <label for="editUserPassword">New Password (leave blank to keep current):</label>
+                <input type="text" id="editUserPassword" placeholder="Enter new password">
+
+                <label for="editUserExpiry">Plan Expiry Date:</label>
+                <input type="date" id="editUserExpiry">
+
+                <button type="submit" class="btn btn-primary"
+                    style="margin-top: 1rem; background: #1e3a8a; color: white;">Update User</button>
+            </form>
+        </div>
+    </div>
 
 <div id="overlay" class="overlay"></div>
 
@@ -1119,6 +1186,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const logoutBtn = document.getElementById('logoutBtn');
     const userData = JSON.parse(localStorage.getItem("admin"));
     let allusers = [];
+    // Base URL for user API (use deployed host; change here if needed)
+    const API_BASE = "https://project-tbbc.onrender.com/api/users";
 
     // --- Core Functions ---
     
@@ -1171,11 +1240,132 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById("profileMobile").value = userData.mobileNumber;
     }
 
+    
+            const addUserModal = document.getElementById('addUserModal');
+            const editUserModal = document.getElementById('editUserModal');
+            const addUserBtn = document.getElementById('addUserBtn');
+            const closeAddUserBtn = document.getElementById('closeAddUserBtn');
+            const closeEditUserBtn = document.getElementById('closeEditUserBtn');
+            const addUserForm = document.getElementById('addUserForm');
+            const editUserForm = document.getElementById('editUserForm');
+
+            // --- Logic for Add/Edit User ---
+
+            // Open/Close Add User Modal
+            if (addUserBtn) {
+                addUserBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (addUserModal) addUserModal.classList.add('open');
+                    overlay.classList.add('show');
+                });
+            }
+
+            if (closeAddUserBtn) {
+                closeAddUserBtn.addEventListener('click', () => {
+                    if (addUserModal) addUserModal.classList.remove('open');
+                    overlay.classList.remove('show');
+                    if (addUserForm) addUserForm.reset();
+                });
+            }
+
+            // Handle Add User Submit
+            if (addUserForm) {
+            addUserForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const fullName = document.getElementById('newUserName').value;
+                const mobileNumber = document.getElementById('newUserMobile').value;
+                const password = document.getElementById('newUserPassword').value;
+                const type = document.getElementById('newUserType').value;
+                // currently backend registerUser only takes {fullName, mobileNumber, password}. 
+                // type is not handled but we pass basics.
+
+                try {
+                    const response = await fetch(`${API_BASE}/create`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ fullName, mobileNumber: "+91" + mobileNumber, password })
+                    });
+
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.msg || "Failed");
+
+                    showCustomPopup("✅ User created successfully!");
+                    if (addUserModal) addUserModal.classList.remove('open');
+                    overlay.classList.remove('show');
+                    addUserForm.reset();
+                    fetchUsers();
+
+                } catch (error) {
+                    showCustomPopup("❌ " + error.message);
+                }
+            });
+            }
+
+            // Make Open Edit accessible globally
+            window.openEditUserModal = function (id, name, expiry) {
+                document.getElementById('editUserId').value = id;
+                document.getElementById('editUserNameDisplay').textContent = name;
+                document.getElementById('editUserPassword').value = ''; // clear
+
+                // Format expiry for date input (YYYY-MM-DD)
+                if (expiry && expiry !== "null" && expiry !== "undefined") {
+                    const d = new Date(expiry);
+                    const dateString = d.toISOString().split('T')[0];
+                    document.getElementById('editUserExpiry').value = dateString;
+                } else {
+                    document.getElementById('editUserExpiry').value = '';
+                }
+
+                editUserModal.classList.add('open');
+                overlay.classList.add('show');
+            };
+
+            if (closeEditUserBtn) {
+                closeEditUserBtn.addEventListener('click', () => {
+                    if (editUserModal) editUserModal.classList.remove('open');
+                    overlay.classList.remove('show');
+                });
+            }
+
+            // Handle Edit User Submit
+            if (editUserForm) {
+            editUserForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const userId = document.getElementById('editUserId').value;
+                const password = document.getElementById('editUserPassword').value;
+                const subscriptionExpiry = document.getElementById('editUserExpiry').value;
+
+                try {
+                    const token = localStorage.getItem("token");
+                    const response = await fetch(`http://localhost:3000/api/users/update/${userId}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ password, subscriptionExpiry })
+                    });
+
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.message || "Failed");
+
+                    showCustomPopup("✅ " + result.message);
+                    if (editUserModal) editUserModal.classList.remove('open');
+                    overlay.classList.remove('show');
+                    fetchUsers();
+
+                } catch (error) {
+                    showCustomPopup("❌ " + error.message);
+                }
+            });
+            }
+
+
     // --- Fetch users from API ---
     async function fetchUsers() {
         try {
             const token = localStorage.getItem("token"); // if JWT is required
-            const response = await fetch("https://project-tbbc.onrender.com/api/users/all-users", {
+            const response = await fetch(`${API_BASE}/all-users`, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}` // send JWT if backend requires
@@ -1211,6 +1401,10 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (formattedMobile !== "N/A") {
                 formattedMobile = '+91' + formattedMobile;
             }
+            // Determine expiry value from multiple possible fields
+            const expiryRaw = user.planExpiryDate || user.subscriptionExpiry || user.planExpiry || user.expiry || null;
+            const expiryText = expiryRaw ? new Date(expiryRaw).toLocaleDateString() : "N/A";
+
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td data-label="Name">${user.fullName || "N/A"}</td>
@@ -1221,9 +1415,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     : "N/A"
                 }</td>
                 <td data-label="User Type">${user.type || "N/A"}</td>
+                <td data-label="Plan Expiry">${expiryText}</td>
                 <td data-label="Status"><span class="${statusClass}">${statusText}</span></td>
                 <td data-label="Actions">
-                    <button class="delete-btn" data-id="${user._id}" title="Delete user" aria-label="Delete user">
+                    <button class="btn btn-primary btn-sm" onclick="openEditUserModal('${user._id}', '${user.fullName}', '${expiryRaw || ''}')" style="padding: 5px 10px; font-size: 0.8rem; background-color: #3b82f6; margin-right: 5px;">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteUser('${user._id}')" style="padding: 5px 10px; font-size: 0.8rem;">
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>
@@ -1257,30 +1455,44 @@ function openPanel() {
 
 function closeAllPanels() {
     profilePanel.classList.remove('open');
+    if (document.getElementById('addUserModal')) document.getElementById('addUserModal').classList.remove('open');
+    if (document.getElementById('editUserModal')) document.getElementById('editUserModal').classList.remove('open');
     overlay.classList.remove('show');
 }
 
     // --- Event Handlers ---
-    hamburger.addEventListener('click', () => navLinks.classList.toggle('active'));
-    profileIcon.addEventListener('click', (e) => { e.preventDefault(); openPanel(profilePanel); });
+    if (hamburger) {
+        hamburger.addEventListener('click', () => navLinks.classList.toggle('active'));
+    }
+    if (profileIcon) {
+        profileIcon.addEventListener('click', (e) => { e.preventDefault(); openPanel(profilePanel); });
+    }
     
-    closeProfileBtn.addEventListener('click', closeAllPanels);
-    overlay.addEventListener('click', closeAllPanels);
+    if (closeProfileBtn) {
+        closeProfileBtn.addEventListener('click', closeAllPanels);
+    }
+    if (overlay) {
+        overlay.addEventListener('click', closeAllPanels);
+    }
     
     // Toggle Password Visibility
-    togglePassword.addEventListener('click', () => {
-        const type = profilePasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        profilePasswordInput.setAttribute('type', type);
-        togglePassword.classList.toggle('fa-eye');
-        togglePassword.classList.toggle('fa-eye-slash');
-    });
+    if (togglePassword && profilePasswordInput) {
+        togglePassword.addEventListener('click', () => {
+            const type = profilePasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            profilePasswordInput.setAttribute('type', type);
+            togglePassword.classList.toggle('fa-eye');
+            togglePassword.classList.toggle('fa-eye-slash');
+        });
+    }
 
     // Logout Button
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("admin");
-        window.location.href = "login.html"; // redirect to login page
-    });
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("admin");
+            window.location.href = "login.html"; // redirect to login page
+        });
+    }
 
     // --- Filtering Logic ---
     let currentFilters = { mobile: '', subscriptionStatus: '' }; // Changed 'status' to 'subscriptionStatus' to match backend
@@ -1322,37 +1534,37 @@ function closeAllPanels() {
       }
     });
 
-    // Delete button handler (event delegation)
-    usersBody.addEventListener('click', (e) => {
-        const btn = e.target.closest('.delete-btn');
-        if (!btn) return;
-        const userId = btn.dataset.id;
-        // Confirm via custom popup (Yes/No)
-        showCustomPopup('Are you sure you want to delete this user?', true, async (confirmed) => {
-            if (!confirmed) return;
-            try {
-                const token = localStorage.getItem('token');
-                const res = await fetch(`https://project-tbbc.onrender.com/api/users/delete/${userId}`, {
-                    method: 'delete',
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`
+           // Make deleteUser globally accessible so onclick works
+            window.deleteUser = async function (userId) {
+                showCustomPopup("Are you sure you want to remove this user?", true, async (confirmed) => {
+                    if (confirmed) {
+                        try {
+                            const token = localStorage.getItem("token");
+                            const response = await fetch(`https://project-tbbc.onrender.com/api/users/delete/${userId}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Authorization': `Bearer ${token}`
+                                }
+                            });
+
+                            const result = await response.json();
+
+                            if (!response.ok) {
+                                throw new Error(result.message || "Failed to delete user");
+                            }
+
+                            showCustomPopup("✅ " + result.message);
+
+                            // Refresh the list
+                            fetchUsers();
+                        } catch (error) {
+                            console.error("Error deleting user:", error);
+                            showCustomPopup("❌ " + error.message);
+                        }
                     }
                 });
-                if (!res.ok) {
-                    const errText = await res.text();
-                    showCustomPopup('Failed to delete user');
-                }
-                // Remove user locally and refresh view
-                allusers = allusers.filter(u => u._id !== userId);
-                filterAndRender();
-                showCustomPopup('✅ User deleted successfully.');
-            } catch (error) {
-                console.error('Delete user error:', error);
-                showCustomPopup('❌ Error deleting user: ' + (error.message || 'Unknown error'));
-            }
-        });
-    });
+            };
+
 
     fetchUsers(); // Render the initial table
     checkOrientation(); // Initial check for mobile view
