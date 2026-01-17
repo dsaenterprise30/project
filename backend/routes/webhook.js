@@ -100,6 +100,11 @@ router.post(
             user.subscriptionStatus = "Active";
             user.subscriptionExpiry = expiry;
 
+            // Update Payment ID if available
+            if (invoiceEntity.payment_id) {
+              user.paymentId = invoiceEntity.payment_id;
+            }
+
             if (invoiceEntity.customer_email && !user.email) {
               user.email = invoiceEntity.customer_email;
             }
@@ -108,6 +113,40 @@ router.post(
             console.log(`📅 Invoice paid: extended subscription for ${user.mobileNumber} to ${user.subscriptionExpiry}`);
           } else {
             console.warn("invoice.paid: user not found for subscriptionId:", invoiceEntity.subscription_id);
+          }
+        }
+      }
+
+      // Subscription charged (Backup/Alternative for renewal)
+      if (event === "subscription.charged") {
+        const subscriptionEntity = payload.subscription?.entity;
+        const paymentEntity = payload.payment?.entity; // Payment details often included
+
+        if (subscriptionEntity) {
+          const subscriptionId = subscriptionEntity.id;
+          const user = await User.findOne({ subscriptionId });
+          if (user) {
+            const now = new Date();
+            const base = user.subscriptionExpiry && user.subscriptionExpiry > now ? user.subscriptionExpiry : now;
+            const expiry = addOneMonth(base);
+
+            user.subscriptionActive = true;
+            user.subscriptionStatus = "Active";
+            user.subscriptionExpiry = expiry;
+
+            // Update Payment ID from payment entity
+            if (paymentEntity && paymentEntity.id) {
+              user.paymentId = paymentEntity.id;
+            }
+
+            if (subscriptionEntity.customer_email && !user.email) {
+              user.email = subscriptionEntity.customer_email;
+            }
+
+            await user.save();
+            console.log(`✅ Subscription charged: extended for ${user.mobileNumber} to ${user.subscriptionExpiry}`);
+          } else {
+            console.warn("subscription.charged: user not found for subscriptionId:", subscriptionId);
           }
         }
       }
