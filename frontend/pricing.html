@@ -388,8 +388,12 @@
       const rzp = new Razorpay({
         key: RAZORPAY_KEY_ID,
         subscription_id: data.subscriptionId,
-        name: "Your App Name",
-        handler: () => alert("Payment successful"),
+        name: "DSA Enterprise",
+        description: "Subscription Payment",
+        handler: function (response) {
+          alert("Payment successful! Please login to continue.");
+          window.location.href = "rentLogin.html";
+        },
       });
 
       rzp.open();

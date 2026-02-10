@@ -258,7 +258,7 @@
             box-shadow: 0 8px 25px rgba(30, 58, 138, 0.3);
         }
 
-       
+
 
         /* --- Data Section (Counters & Table) --- */
         .data-section {
@@ -1107,11 +1107,23 @@
                 <label for="editUserPassword">New Password (leave blank to keep current):</label>
                 <input type="text" id="editUserPassword" placeholder="Enter new password">
 
-                <label for="editUserExpiry">Plan Expiry Date:</label>
-                <input type="date" id="editUserExpiry">
+                <label for="editExpiry">Subscription Expiry:</label>
+                <input type="datetime-local" id="editExpiry">
 
-                <button type="submit" class="btn btn-primary"
-                    style="margin-top: 1rem; background: #1e3a8a; color: white;">Update User</button>
+                <label for="editPlanType">Assign Plan:</label>
+                <select id="editPlanType">
+                    <option value="">Select Plan (Optional)</option>
+                    <!-- Options populated via JS -->
+                </select>
+                <small style="color: #666; font-size: 0.8rem; margin-top: 5px; display: block;">
+                    ⚠️ Note: Only use this for corrections or existing subscribers. <br>
+                    <strong>For new payments:</strong> Do NOT select a plan here. Ask the user to log in and pay.
+                </small>
+
+                <div class="button-row">
+                    <button type="submit" class="btn btn-primary"
+                        style="margin-top: 1rem; background: #1e3a8a; color: white;">Update User</button>
+                </div>
             </form>
         </div>
     </div>
@@ -1332,23 +1344,67 @@
             }
 
             // Make Open Edit accessible globally
-            window.openEditUserModal = function (id, name, expiry) {
-                document.getElementById('editUserId').value = id;
-                document.getElementById('editUserNameDisplay').textContent = name;
-                document.getElementById('editUserPassword').value = ''; // clear
-
-                // Format expiry for date input (YYYY-MM-DD)
-                if (expiry && expiry !== "null" && expiry !== "undefined") {
-                    const d = new Date(expiry);
-                    const dateString = d.toISOString().split('T')[0];
-                    document.getElementById('editUserExpiry').value = dateString;
-                } else {
-                    document.getElementById('editUserExpiry').value = '';
+            // Make Open Edit accessible globally
+            window.openEditUserModal = function (id) {
+                // Find user from the local allusers array
+                const user = allusers.find(u => u._id === id);
+                if (!user) {
+                    console.error("User not found for editing:", id);
+                    return;
                 }
 
-                editUserModal.classList.add('open');
-                overlay.classList.add('show');
+                document.getElementById('editUserId').value = user._id;
+                document.getElementById('editUserNameDisplay').textContent = user.fullName;
+                document.getElementById('editUserPassword').value = ''; // clear
+
+                // Format expiry for date input (YYYY-MM-DD or datetime-local)
+                // Note: The input type in HTML is 'datetime-local' (from step 547) or 'date' (from step 1356 in view?)
+                // Step 547 changed it to datetime-local id="editExpiry" but step 603 shows id="editUserExpiry" used in JS.
+                // Let's check the HTML for the input ID.
+
+                // Converting to datetime-local format: YYYY-MM-DDTHH:mm
+                let expiryValue = "";
+                if (user.subscriptionExpiry) {
+                    const date = new Date(user.subscriptionExpiry);
+                    // Adjust to local ISO string
+                    const offset = date.getTimezoneOffset() * 60000;
+                    expiryValue = (new Date(date - offset)).toISOString().slice(0, 16);
+                }
+
+                // Try setting both IDs just in case (I recall an ID change in previous steps)
+                const expiryInput = document.getElementById('editExpiry') || document.getElementById('editUserExpiry');
+                if (expiryInput) expiryInput.value = expiryValue;
+
+                // Set current plan
+                const planSelect = document.getElementById('editPlanType');
+                if (planSelect) {
+                    planSelect.value = user.planType || "";
+                }
+
+                if (editUserModal) editUserModal.classList.add('open');
+                if (overlay) overlay.classList.add('show');
             };
+
+            // Fetch and Populate Plans for Dropdown
+            async function fetchPlansForDropdown() {
+                try {
+                    const response = await fetch(`${API_BASE}/plans`); // Assuming get all plans route
+                    if (response.ok) {
+                        const plans = await response.json();
+                        const select = document.getElementById('editPlanType');
+                        // Keep first option
+                        select.innerHTML = '<option value="">Select Plan (Keep Current)</option>';
+                        plans.forEach(plan => {
+                            const option = document.createElement('option');
+                            option.value = plan.planType;
+                            option.textContent = `${plan.name} (₹${plan.price})`;
+                            select.appendChild(option);
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error fetching plans:", error);
+                }
+            }
 
             if (closeEditUserBtn) {
                 closeEditUserBtn.addEventListener('click', () => {
@@ -1364,16 +1420,22 @@
                     const userId = document.getElementById('editUserId').value;
                     const password = document.getElementById('editUserPassword').value;
                     const subscriptionExpiry = document.getElementById('editUserExpiry').value;
+                    const planType = document.getElementById('editPlanType').value;
+
+                    const payload = {};
+                    if (password) payload.password = password;
+                    if (subscriptionExpiry) payload.subscriptionExpiry = subscriptionExpiry;
+                    if (planType) payload.planType = planType; // Send plan type
 
                     try {
                         const token = localStorage.getItem("token");
-                        const response = await fetch(`${API_BASE}/update/${userId}`, {
+                        const response = await fetch(`${API_BASE}/users/update/${userId}`, {
                             method: "PUT",
                             headers: {
                                 "Content-Type": "application/json",
                                 "Authorization": `Bearer ${token}`
                             },
-                            body: JSON.stringify({ password, subscriptionExpiry })
+                            body: JSON.stringify(payload)
                         });
 
                         const result = await response.json();
@@ -1447,6 +1509,9 @@
                 <td data-label="Plan Expiry">${expiryText}</td>
                 <td data-label="Status"><span class="${statusClass}">${statusText}</span></td>
                 <td data-label="Actions"> 
+                    <button class="btn btn-primary btn-sm" onclick="openEditUserModal('${user._id}', '${user.fullName}', '${user.subscriptionExpiry}')" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px; background: #3b82f6; border: none;">
+                        <i class="fas fa-edit"></i>
+                    </button>
                     <button class="btn btn-danger btn-sm" onclick="deleteUser('${user._id}')" style="padding: 5px 10px; font-size: 0.8rem;">
                         <i class="fas fa-trash-alt"></i>
                     </button>
