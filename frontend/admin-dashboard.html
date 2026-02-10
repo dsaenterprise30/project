@@ -1495,14 +1495,14 @@
                     }
                     // Determine expiry value from multiple possible fields
                     const expiryRaw = user.planExpiryDate || user.subscriptionExpiry || user.planExpiry || user.expiry || null;
-                    const expiryText = expiryRaw ? new Date(expiryRaw).toLocaleDateString() : "N/A";
+                    const expiryText = expiryRaw ? new Date(expiryRaw).toLocaleDateString('en-GB') : "N/A";
 
                     const row = document.createElement('tr');
                     row.innerHTML = `
                 <td data-label="Name">${user.fullName || "N/A"}</td>
                 <td data-label="Contact">${formattedMobile}</td>
                 <td data-label="Date Joined">${user.registrationDate
-                            ? new Date(user.registrationDate).toLocaleDateString()
+                            ? new Date(user.registrationDate).toLocaleDateString('en-GB')
                             : "N/A"
                         }</td>
                 <td data-label="User Type">${user.type || "N/A"}</td>
