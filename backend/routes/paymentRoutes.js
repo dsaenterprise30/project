@@ -45,8 +45,26 @@ router.post("/create-subscription", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Check for active subscription
     if (user.subscriptionStatus === "Active") {
-      return res.status(400).json({ message: "User already has an active subscription" });
+      // If user is trying to subscribe to the SAME plan, block it
+      if (user.planType === planType) {
+        return res.status(400).json({ message: "You are already subscribed to this plan." });
+      }
+
+      // If different plan (Upgrade/Downgrade):
+      // 1. Cancel the OLD subscription (stop auto-renewal)
+      if (user.subscriptionId) {
+        try {
+          await razorpay.subscriptions.cancel(user.subscriptionId);
+          console.log(`Cancelled old subscription ${user.subscriptionId} for upgrade/downgrade.`);
+        } catch (err) {
+          console.warn("Failed to cancel old subscription (might be already cancelled):", err.message);
+          // Continue anyway to allow new subscription
+        }
+      }
+
+      // 2. Proceed to create NEW subscription below... (User pays NOW)
     }
 
     const plan = await SubscriptionPlan.findOne({ planType, isActive: true });

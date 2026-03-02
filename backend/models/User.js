@@ -55,6 +55,20 @@ const UserSchema = new mongoose.Schema({
     default: null,
   },
 
+  // Plan Details
+  planType: {
+    type: String,
+    default: null
+  },
+  planName: {
+    type: String,
+    default: null
+  },
+  planPrice: {
+    type: Number,
+    default: null
+  },
+
   // Whether 7 days free trial benefit has already been used
   hasUsedTrial: {
     type: Boolean,

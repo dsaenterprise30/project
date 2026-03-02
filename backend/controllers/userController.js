@@ -1,6 +1,8 @@
 import User from '../models/User.js';
 import RentFlat from '../models/rentflats.js';
 import SellFlat from '../models/sellflats.js';
+import SubscriptionPlan from '../models/subscriptionPlan.js';
+import razorpay from "../config/razorpay.js";
 import bcrypt from "bcrypt";
 import express from 'express';
 import jwt from "jsonwebtoken";
@@ -305,7 +307,22 @@ export const adminLogin = async (req, res) => {
 //Route 7 - Get All Users
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find();
+    // 1️⃣ Run lazy check: Set all expired users to "Inactive"
+    await User.updateMany(
+      {
+        subscriptionExpiry: { $lt: new Date() },
+        subscriptionStatus: "Active"
+      },
+      {
+        $set: {
+          subscriptionStatus: "Inactive",
+          subscriptionActive: false
+        }
+      }
+    );
+
+    // 2️⃣ Fetch fresh list (now updated)
+    const users = await User.find().sort({ registrationDate: -1 }); // Sorted for convenience
     res.json(users);
   } catch (err) {
     console.error(err.message);
@@ -436,6 +453,46 @@ export const updateUser = async (req, res) => {
     if (password && password.trim() !== "") {
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
+    }
+
+    // Handle Plan Update
+    const { planType } = req.body;
+    if (planType) {
+      const plan = await SubscriptionPlan.findOne({ planType });
+      if (plan) {
+        user.planType = plan.planType;
+        user.planName = plan.name;
+        user.planPrice = plan.price;
+
+        // If admin assigns a plan, we assume they want it active immediately
+        user.subscriptionActive = true;
+        user.subscriptionStatus = "Active";
+
+        // 🔄 KEY CHANGE: Update Razorpay if subscription exists
+        if (user.subscriptionId && user.subscriptionStatus !== "Inactive") {
+          try {
+            await razorpay.subscriptions.update(user.subscriptionId, {
+              plan_id: plan.razorpayPlanId,
+              schedule_change_at: 'now', // Switch immediately
+              quantity: 1
+            });
+            console.log(`✅ Admin updated Razorpay Subscription ${user.subscriptionId} to plan ${plan.name}`);
+          } catch (err) {
+            console.warn("⚠️ Failed to update Razorpay subscription (User may be updated locally only):", err.message);
+          }
+        }
+
+        // If user had no expiry or it was past, maybe set to 1 month from now?
+        // For now, let's respect the existing expiry unless the Admin explicitly changes it via the date picker
+        // But if expiry is null/past and we are activating, we should probably give them time.
+        if (!user.subscriptionExpiry || user.subscriptionExpiry < new Date()) {
+          const now = new Date();
+          const duration = plan.duration || 1; // Default 1 month if not specified
+          const nextMonth = new Date(now);
+          nextMonth.setMonth(now.getMonth() + (plan.interval === 'yearly' ? 12 : duration));
+          user.subscriptionExpiry = nextMonth;
+        }
+      }
     }
 
     if (subscriptionExpiry) {
