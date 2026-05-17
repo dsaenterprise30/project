@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -275,6 +275,15 @@
       }
     }
   </style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YS2N7C27EC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-YS2N7C27EC');
+  </script>
 </head>
 
 <body>
@@ -342,8 +351,8 @@
         <h2>${plan.name}</h2>
         <div class="plan-price">
           <div class="price-block">
-            ${discountedPrice < originalPrice ? `<span class="original-price">₹${originalPrice.toLocaleString('en-IN')}</span>` : ''}
-            <span class="discounted-price">₹${discountedPrice.toLocaleString('en-IN')}</span>
+            ${discountedPrice < originalPrice ? `<span class="original-price">â‚¹${originalPrice.toLocaleString('en-IN')}</span>` : ''}
+            <span class="discounted-price">â‚¹${discountedPrice.toLocaleString('en-IN')}</span>
             <span class="price-interval"> ${intervalLabel}</span>
           </div>
         </div>
@@ -406,3 +415,4 @@
 </body>
 
 </html>
+

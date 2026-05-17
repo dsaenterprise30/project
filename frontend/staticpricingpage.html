@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -174,6 +174,15 @@
       color: #6b7280;
     }
   </style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YS2N7C27EC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-YS2N7C27EC');
+  </script>
 </head>
 
 <body>
@@ -206,13 +215,13 @@
         name: "Half Yearly Plan",
         price: 2499,
         interval: "6 months",
-        promo: "Save ₹495"
+        promo: "Save â‚¹495"
       },
       {
         name: "Yearly Plan",
         price: 4999,
         interval: "yr",
-        promo: "Save ₹990",
+        promo: "Save â‚¹990",
         popular: true
       }
     ];
@@ -227,7 +236,7 @@
 
       card.innerHTML += `
         <h2>${plan.name}</h2>
-        <div class="plan-price">₹${plan.price.toLocaleString()} / ${plan.interval}</div>
+        <div class="plan-price">â‚¹${plan.price.toLocaleString()} / ${plan.interval}</div>
         ${plan.promo ? `<div class="promo">${plan.promo}</div>` : ""}
         <button class="btn" onclick="showPopup('Please log in to subscribe', {type: 'info'})">
           Subscribe
@@ -295,3 +304,5 @@
 
 </body>
 </html>
+
+

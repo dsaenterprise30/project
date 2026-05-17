@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -310,6 +310,15 @@
       }
     }
   </style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YS2N7C27EC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-YS2N7C27EC');
+  </script>
 </head>
 
 <body>
@@ -461,15 +470,15 @@
           if (response.ok && data.token) {
             localStorage.setItem("token", data.token);
             localStorage.setItem("admin", JSON.stringify(data.data));
-            showCustomPopup("✅ Admin Logged-in successfully!", "Success", () => {
+            showCustomPopup("âœ… Admin Logged-in successfully!", "Success", () => {
               window.location.href = "admin-dashboard.html";
             });
           } else {
-            showCustomPopup(data.message || "⚠️ Invalid login credentials", "Error");
+            showCustomPopup(data.message || "âš ï¸ Invalid login credentials", "Error");
           }
         } catch (error) {
           console.error("Error:", error.message);
-          showCustomPopup(`❌ Error: ${error.message}. Check console for details.`, "Error");
+          showCustomPopup(`âŒ Error: ${error.message}. Check console for details.`, "Error");
         }
       });
     });
@@ -520,3 +529,4 @@
 </body>
 
 </html>
+
