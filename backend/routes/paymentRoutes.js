@@ -1,5 +1,6 @@
 // paymentRoutes.js
 import express from "express";
+import crypto from "crypto";
 import razorpay from "../config/razorpay.js";
 import User from "../models/User.js";
 import dotenv from "dotenv";
@@ -109,5 +110,72 @@ router.post("/create-subscription", async (req, res) => {
   }
 });
 
+
+// Route to verify a subscription payment manually
+router.post("/verify-subscription", async (req, res) => {
+  const { razorpay_payment_id, razorpay_subscription_id, razorpay_signature } = req.body;
+
+  try {
+    const secret = process.env.RAZORPAY_KEY_SECRET;
+    if (!secret) {
+      console.error("RAZORPAY_KEY_SECRET is missing");
+      return res.status(500).json({ status: "failed", message: "Server misconfiguration" });
+    }
+
+    const shasum = crypto.createHmac("sha256", secret);
+    shasum.update(razorpay_payment_id + "|" + razorpay_subscription_id);
+    const expectedSignature = shasum.digest("hex");
+
+    if (expectedSignature !== razorpay_signature) {
+      return res.status(400).json({ status: "failed", message: "Invalid signature" });
+    }
+
+    const user = await User.findOne({ subscriptionId: razorpay_subscription_id });
+    if (!user) {
+      return res.status(404).json({ status: "failed", message: "User not found" });
+    }
+
+    // Check if it's already active (e.g. webhook was faster)
+    if (user.subscriptionStatus !== "Active") {
+      // Determine the duration of the plan
+      let duration = 1;
+      if (user.planType) {
+        const plan = await SubscriptionPlan.findOne({ planType: user.planType });
+        if (plan) duration = plan.duration || 1;
+      }
+
+      // Calculate expiry
+      const now = new Date();
+      const addMonths = (date, months) => {
+        const d = new Date(date);
+        const day = d.getDate();
+        d.setMonth(d.getMonth() + months);
+        if (d.getDate() < day) d.setDate(0);
+        return d;
+      };
+
+      let expiry;
+      if (!user.hasUsedTrial) {
+        expiry = addMonths(now, duration);
+        user.hasUsedTrial = true;
+      } else {
+        const base = user.subscriptionExpiry && user.subscriptionExpiry > now ? user.subscriptionExpiry : now;
+        expiry = addMonths(base, duration);
+      }
+
+      user.subscriptionActive = true;
+      user.subscriptionStatus = "Active";
+      user.subscriptionExpiry = expiry;
+      user.paymentId = razorpay_payment_id;
+
+      await user.save();
+    }
+
+    res.json({ status: "success", message: "Payment verified successfully" });
+  } catch (error) {
+    console.error("Error verifying payment:", error);
+    res.status(500).json({ status: "failed", message: "Server error" });
+  }
+});
 
 export default router;
