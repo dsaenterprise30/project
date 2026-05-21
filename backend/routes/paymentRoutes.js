@@ -89,15 +89,17 @@ router.post("/create-subscription", async (req, res) => {
       return d;
     };
 
-    const durationInMonths = plan.interval === "yearly" ? plan.duration * 12 : plan.duration;
-    const endAtDate = addMonths(now, durationInMonths);
-    const endAtTimestamp = Math.floor(endAtDate.getTime() / 1000);
+    // Set a standard 10-year validity for recurring subscriptions
+    // (This ensures the UPI mandate remains valid for ongoing automatic renewals)
+    let totalCount = 120; // Default: 120 months (10 years)
+    if (plan.interval === "yearly") {
+      totalCount = 10; // 10 years (10 cycles)
+    }
 
     const subscription = await razorpay.subscriptions.create({
       plan_id: plan.razorpayPlanId,
       customer_notify: 1,
-      total_count: plan.duration === 1 ? 2 : plan.duration, // Greater than 1 to bypass GPay 4-day one-time mandate limit
-      end_at: endAtTimestamp, // Exact date matching the purchased plan duration (e.g. 1 month, 6 months, 12 months)
+      total_count: totalCount,
       customer_id: razorCustomer.id,
     });
 
