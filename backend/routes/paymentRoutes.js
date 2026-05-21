@@ -89,11 +89,13 @@ router.post("/create-subscription", async (req, res) => {
       return d;
     };
 
-    // Set a standard 10-year validity for recurring subscriptions
-    // (This ensures the UPI mandate remains valid for ongoing automatic renewals)
-    let totalCount = 120; // Default: 120 months (10 years)
+    // Set a minimal validity window that still allows ongoing automatic renewals
+    // (This ensures the UPI mandate remains valid for automatic renewals, but keeps the window as short as possible)
+    let totalCount = 12; // Default: 12 cycles (e.g., 1 year of monthly charges)
     if (plan.interval === "yearly") {
-      totalCount = 10; // 10 years (10 cycles)
+      totalCount = 2; // 2 years (2 yearly cycles)
+    } else if (plan.interval === "monthly" && plan.duration === 6) {
+      totalCount = 2; // 1 year (2 half-yearly cycles)
     }
 
     const subscription = await razorpay.subscriptions.create({
