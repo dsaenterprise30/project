@@ -96,8 +96,8 @@ router.post("/create-subscription", async (req, res) => {
     const subscription = await razorpay.subscriptions.create({
       plan_id: plan.razorpayPlanId,
       customer_notify: 1,
-      total_count: 1, // Billed exactly once upfront
-      end_at: endAtTimestamp, // Sets the exact mandate validity end date on Google Pay (e.g. exactly 1 month later)
+      total_count: plan.duration === 1 ? 2 : plan.duration, // Greater than 1 to bypass GPay 4-day one-time mandate limit
+      end_at: endAtTimestamp, // Exact date matching the purchased plan duration (e.g. 1 month, 6 months, 12 months)
       customer_id: razorCustomer.id,
     });
 
