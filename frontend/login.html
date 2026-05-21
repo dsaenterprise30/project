@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -470,11 +470,11 @@
           if (response.ok && data.token) {
             localStorage.setItem("token", data.token);
             localStorage.setItem("admin", JSON.stringify(data.data));
-            showCustomPopup("âœ… Admin Logged-in successfully!", "Success", () => {
+            showCustomPopup("\u2705 Admin Logged-in successfully!", "Success", () => {
               window.location.href = "admin-dashboard.html";
             });
           } else {
-            showCustomPopup(data.message || "âš ï¸ Invalid login credentials", "Error");
+            showCustomPopup(data.message || "\u26A0 Invalid login credentials", "Error");
           }
         } catch (error) {
           console.error("Error:", error.message);

@@ -1125,7 +1125,7 @@
                     <!-- Options populated via JS -->
                 </select>
                 <small style="color: #666; font-size: 0.8rem; margin-top: 5px; display: block;">
-                    âš ï¸ Note: Only use this for corrections or existing subscribers. <br>
+                    \u26A0 Note: Only use this for corrections or existing subscribers. <br>
                     <strong>For new payments:</strong> Do NOT select a plan here. Ask the user to log in and pay.
                 </small>
 
@@ -1340,7 +1340,7 @@
                         const result = await response.json();
                         if (!response.ok) throw new Error(result.msg || "Failed");
 
-                        showCustomPopup("âœ… User created successfully!");
+                        showCustomPopup("\u2705 User created successfully!");
                         if (addUserModal) addUserModal.classList.remove('open');
                         overlay.classList.remove('show');
                         addUserForm.reset();
@@ -1451,7 +1451,7 @@
                         const result = await response.json();
                         if (!response.ok) throw new Error(result.message || "Failed");
 
-                        showCustomPopup("âœ… " + result.message);
+                        showCustomPopup("\u2705 " + result.message);
                         if (editUserModal) editUserModal.classList.remove('open');
                         overlay.classList.remove('show');
                         fetchUsers();
@@ -1654,7 +1654,7 @@
                                 throw new Error(result.message || "Failed to delete user");
                             }
 
-                            showCustomPopup("âœ… " + result.message);
+                            showCustomPopup("\u2705 " + result.message);
 
                             // Refresh the list
                             fetchUsers();

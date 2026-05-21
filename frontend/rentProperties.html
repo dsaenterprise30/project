@@ -1352,7 +1352,7 @@
             // --- LOGIN CHECK ---
             const token = localStorage.getItem("userToken");
             if (!token) {
-                showCustomPopup("âš ï¸ You must be logged in to view properties. Redirecting to login page...");
+                showCustomPopup("\u26A0 You must be logged in to view properties. Redirecting to login page...");
                 window.location.href = "rentLogin.html";
                 return;
             }
@@ -1500,7 +1500,7 @@
             // --- SEARCH / RENDER FLOW ---
             function performSearch() {
                 if (Object.keys(filters).length === 0 || Object.values(filters).every(f => !f.value)) {
-                    showTableMessage("âš ï¸ Please select at least one filter to start a search.");
+                    showTableMessage("\u26A0 Please select at least one filter to start a search.");
                     return;
                 }
 
@@ -1698,7 +1698,7 @@
                     dropdown.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
                 });
                 updateSelectedFilters();
-                showTableMessage('âš ï¸ Please use the search filters above to find properties.');
+                showTableMessage('\u26A0 Please use the search filters above to find properties.');
             });
 
             document.addEventListener('click', () => dropdowns.forEach(d => d.classList.remove('active')));
@@ -1724,7 +1724,7 @@
             }
 
             // --- INITIALIZATION ---
-            showTableMessage('âš ï¸ Please use the search filters above to find properties.');
+            showTableMessage('\u26A0 Please use the search filters above to find properties.');
             fetchProperties();
         });
 
