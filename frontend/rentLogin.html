@@ -846,11 +846,11 @@
                 true
               );
             } else {
-              showCustomPopup("âŒ " + (data.message || "Login failed"));
+              showCustomPopup("\u274C " + (data.message || "Login failed"));
             }
           } catch (error) {
             console.error("API error:", error);
-            showCustomPopup("âŒ Error logging in: " + error.message);
+            showCustomPopup("\u274C Error logging in: " + error.message);
           }
         });
 
