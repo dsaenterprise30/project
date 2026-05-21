@@ -206,13 +206,13 @@
         name: "Half Yearly Plan",
         price: 2499,
         interval: "6 months",
-        promo: "Save ₹495"
+        promo: "Save \u20B9495"
       },
       {
         name: "Yearly Plan",
         price: 4999,
         interval: "yr",
-        promo: "Save ₹990",
+        promo: "Save \u20B9990",
         popular: true
       }
     ];
@@ -227,7 +227,7 @@
 
       card.innerHTML += `
         <h2>${plan.name}</h2>
-        <div class="plan-price">₹${plan.price.toLocaleString()} / ${plan.interval}</div>
+        <div class="plan-price">\u20B9${plan.price.toLocaleString()} / ${plan.interval}</div>
         ${plan.promo ? `<div class="promo">${plan.promo}</div>` : ""}
         <button class="btn" onclick="showPopup('Please log in to subscribe', {type: 'info'})">
           Subscribe

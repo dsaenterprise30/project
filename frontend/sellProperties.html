@@ -1185,7 +1185,7 @@
                 <div class="search-group">
                     <label class="search-label">Enter Your Budget</label>
                     <div class="price-input-group">
-                        <span class="input-icon">₹</span>
+                        <span class="input-icon">&#8377;</span>
                         <input type="text" class="search-input" id="priceInput" placeholder="e.g., 5000000">
                     </div>
                 </div>
@@ -1448,7 +1448,7 @@
                     if (property.price) {
                         const numericPrice = String(property.price).replace(/\D/g, '');
                         if (numericPrice) {
-                            displayPrice = `₹${Number(numericPrice).toLocaleString('en-IN')}`;
+                            displayPrice = `\u20B9${Number(numericPrice).toLocaleString('en-IN')}`;
                         }
                     }
 
@@ -1475,7 +1475,7 @@
                     let displayPrice = '';
                     if (property.price) {
                         const numericPrice = String(property.price).replace(/\D/g, '');
-                        if (numericPrice) displayPrice = `₹${Number(numericPrice).toLocaleString('en-IN')}`;
+                        if (numericPrice) displayPrice = `\u20B9${Number(numericPrice).toLocaleString('en-IN')}`;
                     }
                     card.innerHTML = `
                 <div class="card-row"><span class="card-label">Location:</span> <span class="card-value">${property.location || ''}</span></div>
@@ -1594,7 +1594,7 @@
             priceInput.addEventListener('input', () => {
                 const priceValue = priceInput.value.trim();
                 if (priceValue) {
-                    filters.priceInput = { value: priceValue, text: `Budget: ₹${priceValue}` };
+                    filters.priceInput = { value: priceValue, text: `Budget: \u20B9${priceValue}` };
                 } else {
                     delete filters.priceInput;
                 }

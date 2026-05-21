@@ -342,8 +342,8 @@
         <h2>${plan.name}</h2>
         <div class="plan-price">
           <div class="price-block">
-            ${discountedPrice < originalPrice ? `<span class="original-price">₹${originalPrice.toLocaleString('en-IN')}</span>` : ''}
-            <span class="discounted-price">₹${discountedPrice.toLocaleString('en-IN')}</span>
+            ${discountedPrice < originalPrice ? `<span class="original-price">\u20B9${originalPrice.toLocaleString('en-IN')}</span>` : ''}
+            <span class="discounted-price">\u20B9${discountedPrice.toLocaleString('en-IN')}</span>
             <span class="price-interval"> ${intervalLabel}</span>
           </div>
         </div>

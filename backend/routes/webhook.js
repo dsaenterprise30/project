@@ -58,7 +58,8 @@ router.post(
           // Avoid circular dependency issues if possible, or just standard import
           // SubscriptionPlan is imported at top
           const plan = await SubscriptionPlan.findOne({ razorpayPlanId: planId });
-          return plan ? plan.duration : 1;
+          if (!plan) return 1;
+          return plan.interval === "yearly" ? plan.duration * 12 : plan.duration;
         } catch (e) {
           console.error("Error finding plan duration:", e);
           return 1;

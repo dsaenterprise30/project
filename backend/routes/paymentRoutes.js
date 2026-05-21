@@ -79,13 +79,25 @@ router.post("/create-subscription", async (req, res) => {
       email: user.email,
     });
 
-    const totalCount =
-      plan.interval === "yearly" ? 1 : plan.duration;
+    // Calculate the exact end date based on plan duration in months
+    const now = new Date();
+    const addMonths = (date, months) => {
+      const d = new Date(date);
+      const day = d.getDate();
+      d.setMonth(d.getMonth() + months);
+      if (d.getDate() < day) d.setDate(0);
+      return d;
+    };
+
+    const durationInMonths = plan.interval === "yearly" ? plan.duration * 12 : plan.duration;
+    const endAtDate = addMonths(now, durationInMonths);
+    const endAtTimestamp = Math.floor(endAtDate.getTime() / 1000);
 
     const subscription = await razorpay.subscriptions.create({
       plan_id: plan.razorpayPlanId,
       customer_notify: 1,
-      total_count: totalCount,
+      total_count: 1, // Billed exactly once upfront
+      end_at: endAtTimestamp, // Sets the exact mandate validity end date on Google Pay (e.g. exactly 1 month later)
       customer_id: razorCustomer.id,
     });
 
@@ -137,11 +149,13 @@ router.post("/verify-subscription", async (req, res) => {
 
     // Check if it's already active (e.g. webhook was faster)
     if (user.subscriptionStatus !== "Active") {
-      // Determine the duration of the plan
+      // Determine the duration of the plan in months
       let duration = 1;
       if (user.planType) {
         const plan = await SubscriptionPlan.findOne({ planType: user.planType });
-        if (plan) duration = plan.duration || 1;
+        if (plan) {
+          duration = plan.interval === "yearly" ? plan.duration * 12 : plan.duration;
+        }
       }
 
       // Calculate expiry

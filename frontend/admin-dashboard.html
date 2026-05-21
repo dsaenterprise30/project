@@ -1397,7 +1397,7 @@
                         plans.forEach(plan => {
                             const option = document.createElement('option');
                             option.value = plan.planType;
-                            option.textContent = `${plan.name} (₹${plan.price})`;
+                            option.textContent = `${plan.name} (\u20B9${plan.price})`;
                             select.appendChild(option);
                         });
                     }

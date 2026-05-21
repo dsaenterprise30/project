@@ -73,6 +73,9 @@ export const createRentListing = async (req, res) => {
         });
 
     } catch (error) {
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ message: error.message });
+        }
         if (error.code === 11000 && error.keyPattern?.contact) {
             return res.status(409).json({
                 message: "This contact number is already associated with an existing listing. Please use a different number."
@@ -91,7 +94,7 @@ export const getAllRentListings = async (req, res) => {
 
         const formattedListings = listings.map(listing => {
             const formattedPrice = (typeof listing.price === 'number' && !isNaN(listing.price))
-                ? `₹${new Intl.NumberFormat('en-IN').format(listing.price)}`
+                ? `\u20B9${new Intl.NumberFormat('en-IN').format(listing.price)}`
                 : "N/A";
 
             return {

@@ -73,9 +73,13 @@ export const createSellListing = async (req, res) => {
     } catch (error) {
         console.error("Error creating sell listing:", error.message);
 
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ message: error.message });
+        }
+
         // ✅ Handle duplicate contact gracefully
         if (error.code === 11000 && error.keyPattern?.contact) {
-            return res.status(409).json({ message: "❌ This contact number is already used in another sale listing." });
+            return res.status(409).json({ message: "\u274C This contact number is already used in another sale listing." });
         }
 
         res.status(500).json({ message: "Server error while creating sell listing. " + error.message });
@@ -90,7 +94,7 @@ export const getAllSellListings = async (req, res) => {
         const formattedListings = listings.map(listing => {
             // ✅ Defensive check for price
             const formattedPrice = (typeof listing.price === 'number' && !isNaN(listing.price))
-                ? `₹${new Intl.NumberFormat('en-IN').format(listing.price)}`
+                ? `\u20B9${new Intl.NumberFormat('en-IN').format(listing.price)}`
                 : "Price on request"; // Provide a default value for invalid prices
 
             return {

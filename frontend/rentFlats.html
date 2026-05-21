@@ -953,7 +953,7 @@
                     <option value="4 BHK">4 BHK</option>
                 </select>
                 <label for="propertyPrice">Rent:</label>
-                <input type="text" id="propertyPrice" name="price" placeholder="e.g., ₹25,000" required>
+                <input type="text" id="propertyPrice" name="price" placeholder="e.g., &#8377;25,000" required>
                 <label for="propertyName">Name:</label>
                 <input type="text" id="propertyName" name="userName" placeholder="e.g., John Doe" required>
                 <label for="propertyContact">Contact:</label>
@@ -1030,7 +1030,7 @@
                 <div class="search-group">
                     <label class="search-label">Enter Rent</label>
                     <div class="input-with-clear"><input type="text" class="search-input" id="price"
-                            placeholder="e.g., ₹25,000"><button type="button" class="clear-btn"
+                            placeholder="e.g., &#8377;25,000"><button type="button" class="clear-btn"
                             data-target="price">&times;</button></div>
                 </div>
                 <div class="search-group">
@@ -1207,18 +1207,18 @@
 
                         if (res.ok && data.fullName) {
                             userNameInput.value = data.fullName;
-                            showCustomPopup(`✅ Data is fetched successfully: ${data.message}`);
+                            showCustomPopup(`\u2705 Data is fetched successfully: ${data.message}`);
                         } else if (res.status === 403) {
                             userNameInput.value = "";
-                            showCustomPopup("⚠️ " + data.message);
+                            showCustomPopup("\u26A0 " + data.message);
                             closePanel();
                         } else {
                             userNameInput.value = "";
-                            showCustomPopup("⚠️ " + data.message);
+                            showCustomPopup("\u26A0 " + data.message);
                         }
                     } catch (err) {
                         console.error("Error checking user:", err);
-                        showCustomPopup("❌ Error fetching user details: " + err.message);
+                        showCustomPopup("\u274C Error fetching user details: " + err.message);
                     }
                 }
             });
@@ -1227,7 +1227,7 @@
             async function fetchAndRenderProperties() {
                 try {
                     const accessToken = localStorage.getItem('token');
-                    if (!accessToken) { showCustomPopup("⚠️ Please log in as admin."); return; }
+                    if (!accessToken) { showCustomPopup("\u26A0 Please log in as admin."); return; }
                     const response = await fetch(`${BASE_URL}/all`, { headers: { 'Content-Type': 'application/json', 'authorization': `Bearer ${accessToken}` } });
                     if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); }
                     const data = await response.json();
@@ -1235,7 +1235,7 @@
                     filterAndRender();
                 } catch (error) {
                     console.error("Error fetching rental properties:", error);
-                    showCustomPopup("❌ Could not fetch listings. Please log in again.");
+                    showCustomPopup("\u274C Could not fetch listings. Please log in again.");
                 }
             }
 
@@ -1243,12 +1243,17 @@
                 e.preventDefault();
                 for (const element of propertyForm.elements) {
                     if (element.required && !element.value) {
-                        showCustomPopup(`⚠️ Please fill out the "${element.labels[0].textContent.replace(':', '')}" field.`);
+                        showCustomPopup(`\u26A0 Please fill out the "${element.labels[0].textContent.replace(':', '')}" field.`);
                         return;
                     }
                 }
+                const contactValue = propertyForm.elements['contact'].value.trim();
+                if (!/^[0-9]{10}$/.test(contactValue)) {
+                    showCustomPopup('\u26A0 Please enter a valid 10-digit mobile number.');
+                    return;
+                }
                 const accessToken = localStorage.getItem('token');
-                if (!accessToken) { showCustomPopup('❌ Authentication failed. Please log in again.'); return; }
+                if (!accessToken) { showCustomPopup('\u274C Authentication failed. Please log in again.'); return; }
 
                 const formData = {
                     location: propertyForm.elements['location'].value,
@@ -1256,7 +1261,7 @@
                     propertyType: propertyForm.elements['propertyType'].value,
                     price: propertyForm.elements['price'].value,
                     name: propertyForm.elements['userName'].value,
-                    contact: propertyForm.elements['contact'].value,
+                    contact: contactValue,
                     date: propertyForm.elements['date'].value,
                     tenantType: propertyForm.elements['tenantType'].value,
                     ownershipType: propertyForm.elements['ownershipType'].value
@@ -1281,20 +1286,20 @@
 
                         // Check for the 409 Conflict status code and display its message
                         if (response.status === 409) {
-                            showCustomPopup(`❌ ${errorData.message}`);
+                            showCustomPopup(`\u274C ${errorData.message}`);
                             return;
                         }
 
                         throw new Error(errorData.message);
                     }
 
-                    showCustomPopup(isCreating ? '✅ New rental property added!' : '✅ Rental property updated!');
+                    showCustomPopup(isCreating ? '\u2705 New rental property added!' : '\u2705 Rental property updated!');
                     await fetchAndRenderProperties();
                     closePanel();
 
                 } catch (error) {
                     console.error("Error submitting form:", error);
-                    showCustomPopup(`❌ An error occurred: ${error.message}`);
+                    showCustomPopup(`\u274C An error occurred: ${error.message}`);
                 }
             });
 
@@ -1307,7 +1312,7 @@
                         propertyForm.elements['location'].value = property.location;
                         propertyForm.elements['area'].value = property.area || '';
                         propertyForm.elements['propertyType'].value = property.propertyType;
-                        propertyForm.elements['price'].value = property.price.replace(/[₹,]/g, '');
+                        propertyForm.elements['price'].value = property.price.replace(/[\u20B9,]/g, '');
                         propertyForm.elements['userName'].value = property.userName;
                         propertyForm.elements['contact'].value = property.contact;
                         propertyForm.elements['date'].value = new Date(property.date).toISOString().substring(0, 10);
@@ -1320,18 +1325,18 @@
                 }
                 const deleteBtn = e.target.closest('.delete-btn');
                 if (deleteBtn) {
-                    showCustomPopup('⚠️ Are you sure you want to delete this rental property?', true, async (confirmed) => {
+                    showCustomPopup('\u26A0 Are you sure you want to delete this rental property?', true, async (confirmed) => {
                         if (confirmed) {
                             try {
                                 const accessToken = localStorage.getItem('token');
-                                if (!accessToken) { showCustomPopup('❌ Authentication error.'); return; }
+                                if (!accessToken) { showCustomPopup('\u274C Authentication error.'); return; }
                                 const response = await fetch(`${BASE_URL}/delete/${deleteBtn.dataset.id}`, { method: 'DELETE', headers: { 'authorization': `Bearer ${accessToken}` } });
                                 if (!response.ok) throw new Error('Failed to delete property.');
-                                showCustomPopup('✅ Rental property deleted successfully!');
+                                showCustomPopup('\u2705 Rental property deleted successfully!');
                                 await fetchAndRenderProperties();
                             } catch (error) {
                                 console.error("Error deleting property:", error);
-                                showCustomPopup("❌ Failed to delete rental property.");
+                                showCustomPopup("\u274C Failed to delete rental property.");
                             }
                         }
                     });
