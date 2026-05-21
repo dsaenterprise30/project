@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -921,6 +921,15 @@
             transform: translateY(-2px);
         }
     </style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YS2N7C27EC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-YS2N7C27EC');
+  </script>
 </head>
 
 <body>
@@ -1116,7 +1125,7 @@
                     <!-- Options populated via JS -->
                 </select>
                 <small style="color: #666; font-size: 0.8rem; margin-top: 5px; display: block;">
-                    ⚠️ Note: Only use this for corrections or existing subscribers. <br>
+                    âš ï¸ Note: Only use this for corrections or existing subscribers. <br>
                     <strong>For new payments:</strong> Do NOT select a plan here. Ask the user to log in and pay.
                 </small>
 
@@ -1143,7 +1152,7 @@
                         technology to help you buy, sell, or rent with confidence.
                     </p>
                     <div class="footer-copyright">
-                        © 2025 DSA Enterprise. All rights reserved.
+                        Â© 2025 DSA Enterprise. All rights reserved.
                     </div>
                 </div>
 
@@ -1331,14 +1340,14 @@
                         const result = await response.json();
                         if (!response.ok) throw new Error(result.msg || "Failed");
 
-                        showCustomPopup("✅ User created successfully!");
+                        showCustomPopup("âœ… User created successfully!");
                         if (addUserModal) addUserModal.classList.remove('open');
                         overlay.classList.remove('show');
                         addUserForm.reset();
                         fetchUsers();
 
                     } catch (error) {
-                        showCustomPopup("❌ " + error.message);
+                        showCustomPopup("âŒ " + error.message);
                     }
                 });
             }
@@ -1397,6 +1406,7 @@
                         plans.forEach(plan => {
                             const option = document.createElement('option');
                             option.value = plan.planType;
+
                             option.textContent = `${plan.name} (\u20B9${plan.price})`;
                             select.appendChild(option);
                         });
@@ -1441,13 +1451,13 @@
                         const result = await response.json();
                         if (!response.ok) throw new Error(result.message || "Failed");
 
-                        showCustomPopup("✅ " + result.message);
+                        showCustomPopup("âœ… " + result.message);
                         if (editUserModal) editUserModal.classList.remove('open');
                         overlay.classList.remove('show');
                         fetchUsers();
 
                     } catch (error) {
-                        showCustomPopup("❌ " + error.message);
+                        showCustomPopup("âŒ " + error.message);
                     }
                 });
             }
@@ -1473,7 +1483,7 @@
                     updateCounters(allusers); // Pass fresh users to counters
                 } catch (error) {
                     console.error("Error fetching users:", error);
-                    showCustomPopup("❌ Error fetching users. Please try again." + error.message);
+                    showCustomPopup("âŒ Error fetching users. Please try again." + error.message);
                     usersBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px;">Error loading users.</td></tr>`;
                 }
             }
@@ -1644,13 +1654,13 @@
                                 throw new Error(result.message || "Failed to delete user");
                             }
 
-                            showCustomPopup("✅ " + result.message);
+                            showCustomPopup("âœ… " + result.message);
 
                             // Refresh the list
                             fetchUsers();
                         } catch (error) {
                             console.error("Error deleting user:", error);
-                            showCustomPopup("❌ " + error.message);
+                            showCustomPopup("âŒ " + error.message);
                         }
                     }
                 });
@@ -1666,3 +1676,4 @@
 </body>
 
 </html>
+

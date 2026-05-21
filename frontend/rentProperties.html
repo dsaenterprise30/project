@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -1077,6 +1077,15 @@
             }
         }
     </style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YS2N7C27EC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-YS2N7C27EC');
+  </script>
 </head>
 
 <body>
@@ -1183,6 +1192,7 @@
                 <div class="search-group">
                     <label class="search-label">Enter Your Budget</label>
                     <div class="price-input-group">
+
                         <span class="input-icon">&#8377;</span>
                         <input type="text" class="search-input" id="priceInput" placeholder="e.g., 10,000 - 15,000">
                     </div>
@@ -1280,7 +1290,7 @@
                         technology to help you buy, sell, or rent with confidence.
                     </p>
                     <div class="footer-copyright">
-                        © 2025 DSA Enterprise. All rights reserved.
+                        Â© 2025 DSA Enterprise. All rights reserved.
                     </div>
                 </div>
 
@@ -1342,7 +1352,7 @@
             // --- LOGIN CHECK ---
             const token = localStorage.getItem("userToken");
             if (!token) {
-                showCustomPopup("⚠️ You must be logged in to view properties. Redirecting to login page...");
+                showCustomPopup("âš ï¸ You must be logged in to view properties. Redirecting to login page...");
                 window.location.href = "rentLogin.html";
                 return;
             }
@@ -1432,7 +1442,7 @@
                     propertiesData = result.rentFlatsList || [];
                 } catch (error) {
                     console.error('Error fetching properties:', error);
-                    showTableMessage('❌ Error loading properties. Please try again later.' + (error.message || ''));
+                    showTableMessage('âŒ Error loading properties. Please try again later.' + (error.message || ''));
                 }
             }
 
@@ -1490,7 +1500,7 @@
             // --- SEARCH / RENDER FLOW ---
             function performSearch() {
                 if (Object.keys(filters).length === 0 || Object.values(filters).every(f => !f.value)) {
-                    showTableMessage("⚠️ Please select at least one filter to start a search.");
+                    showTableMessage("âš ï¸ Please select at least one filter to start a search.");
                     return;
                 }
 
@@ -1506,7 +1516,7 @@
                     }
                 } else {
                     hideTable();
-                    showTableMessage("❌ No properties found matching your criteria.");
+                    showTableMessage("âŒ No properties found matching your criteria.");
                 }
             }
 
@@ -1520,6 +1530,7 @@
                     if (property.price) {
                         const numericPrice = String(property.price).replace(/\D/g, '');
                         if (numericPrice) {
+
                             displayPrice = `\u20B9${Number(numericPrice).toLocaleString('en-IN')}`;
                         }
                     }
@@ -1553,6 +1564,7 @@
                     let displayPrice = '';
                     if (property.price) {
                         const numericPrice = String(property.price).replace(/\D/g, '');
+
                         if (numericPrice) displayPrice = `\u20B9${Number(numericPrice).toLocaleString('en-IN')}`;
                     }
 
@@ -1651,6 +1663,7 @@
             priceInput.addEventListener('input', () => {
                 const priceValue = priceInput.value.trim();
                 if (priceValue) {
+
                     filters.priceInput = { value: priceValue, text: `Budget: \u20B9${priceValue}` };
                 } else {
                     delete filters.priceInput;
@@ -1685,7 +1698,7 @@
                     dropdown.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
                 });
                 updateSelectedFilters();
-                showTableMessage('⚠️ Please use the search filters above to find properties.');
+                showTableMessage('âš ï¸ Please use the search filters above to find properties.');
             });
 
             document.addEventListener('click', () => dropdowns.forEach(d => d.classList.remove('active')));
@@ -1711,7 +1724,7 @@
             }
 
             // --- INITIALIZATION ---
-            showTableMessage('⚠️ Please use the search filters above to find properties.');
+            showTableMessage('âš ï¸ Please use the search filters above to find properties.');
             fetchProperties();
         });
 
@@ -1763,3 +1776,4 @@
 </body>
 
 </html>
+

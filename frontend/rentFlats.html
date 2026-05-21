@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -882,6 +882,15 @@
             }
         }
     </style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YS2N7C27EC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-YS2N7C27EC');
+  </script>
 </head>
 
 <body>
@@ -953,6 +962,7 @@
                     <option value="4 BHK">4 BHK</option>
                 </select>
                 <label for="propertyPrice">Rent:</label>
+
                 <input type="text" id="propertyPrice" name="price" placeholder="e.g., &#8377;25,000" required>
                 <label for="propertyName">Name:</label>
                 <input type="text" id="propertyName" name="userName" placeholder="e.g., John Doe" required>
@@ -1030,6 +1040,7 @@
                 <div class="search-group">
                     <label class="search-label">Enter Rent</label>
                     <div class="input-with-clear"><input type="text" class="search-input" id="price"
+
                             placeholder="e.g., &#8377;25,000"><button type="button" class="clear-btn"
                             data-target="price">&times;</button></div>
                 </div>
@@ -1207,6 +1218,7 @@
 
                         if (res.ok && data.fullName) {
                             userNameInput.value = data.fullName;
+
                             showCustomPopup(`\u2705 Data is fetched successfully: ${data.message}`);
                         } else if (res.status === 403) {
                             userNameInput.value = "";
@@ -1227,6 +1239,7 @@
             async function fetchAndRenderProperties() {
                 try {
                     const accessToken = localStorage.getItem('token');
+
                     if (!accessToken) { showCustomPopup("\u26A0 Please log in as admin."); return; }
                     const response = await fetch(`${BASE_URL}/all`, { headers: { 'Content-Type': 'application/json', 'authorization': `Bearer ${accessToken}` } });
                     if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); }
@@ -1235,6 +1248,7 @@
                     filterAndRender();
                 } catch (error) {
                     console.error("Error fetching rental properties:", error);
+
                     showCustomPopup("\u274C Could not fetch listings. Please log in again.");
                 }
             }
@@ -1243,6 +1257,7 @@
                 e.preventDefault();
                 for (const element of propertyForm.elements) {
                     if (element.required && !element.value) {
+
                         showCustomPopup(`\u26A0 Please fill out the "${element.labels[0].textContent.replace(':', '')}" field.`);
                         return;
                     }
@@ -1253,6 +1268,7 @@
                     return;
                 }
                 const accessToken = localStorage.getItem('token');
+
                 if (!accessToken) { showCustomPopup('\u274C Authentication failed. Please log in again.'); return; }
 
                 const formData = {
@@ -1280,12 +1296,13 @@
                         body: JSON.stringify(formData)
                     });
 
-                    // ✅ MODIFIED: Handle the 409 status code
+                    // âœ… MODIFIED: Handle the 409 status code
                     if (!response.ok) {
                         const errorData = await response.json().catch(() => ({ message: 'Failed to save data.' }));
 
                         // Check for the 409 Conflict status code and display its message
                         if (response.status === 409) {
+
                             showCustomPopup(`\u274C ${errorData.message}`);
                             return;
                         }
@@ -1293,12 +1310,14 @@
                         throw new Error(errorData.message);
                     }
 
+
                     showCustomPopup(isCreating ? '\u2705 New rental property added!' : '\u2705 Rental property updated!');
                     await fetchAndRenderProperties();
                     closePanel();
 
                 } catch (error) {
                     console.error("Error submitting form:", error);
+
                     showCustomPopup(`\u274C An error occurred: ${error.message}`);
                 }
             });
@@ -1312,6 +1331,7 @@
                         propertyForm.elements['location'].value = property.location;
                         propertyForm.elements['area'].value = property.area || '';
                         propertyForm.elements['propertyType'].value = property.propertyType;
+
                         propertyForm.elements['price'].value = property.price.replace(/[\u20B9,]/g, '');
                         propertyForm.elements['userName'].value = property.userName;
                         propertyForm.elements['contact'].value = property.contact;
@@ -1325,6 +1345,7 @@
                 }
                 const deleteBtn = e.target.closest('.delete-btn');
                 if (deleteBtn) {
+
                     showCustomPopup('\u26A0 Are you sure you want to delete this rental property?', true, async (confirmed) => {
                         if (confirmed) {
                             try {
@@ -1474,7 +1495,7 @@
                     if (filters[key] && filters[key].value) {
                         const tag = document.createElement('div');
                         tag.className = 'filter-tag';
-                        tag.innerHTML = `<span>${filters[key].text}</span><div class="remove" data-filter="${key}">×</div>`;
+                        tag.innerHTML = `<span>${filters[key].text}</span><div class="remove" data-filter="${key}">Ã—</div>`;
                         selectedFiltersContainer.appendChild(tag);
                     }
                 });
@@ -1514,3 +1535,4 @@
 </body>
 
 </html>
+

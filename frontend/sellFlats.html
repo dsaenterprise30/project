@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -901,6 +901,15 @@
             }
         }
     </style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YS2N7C27EC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-YS2N7C27EC');
+  </script>
 </head>
 
 <body>
@@ -972,6 +981,7 @@
                 <label for="area">Area Name:</label>
                 <input type="text" id="area" name="area" placeholder="e.g., Kandivali West">
                 <label for="propertyPrice">Price:</label>
+
                 <input type="text" id="propertyPrice" name="price" placeholder="e.g., &#8377;50,00,000" required>
                 <label for="propertyName">Name:</label>
                 <input type="text" id="propertyName" name="userName" placeholder="e.g., John Doe" required>
@@ -1045,6 +1055,7 @@
                 <div class="search-group">
                     <label class="search-label">Enter Budget</label>
                     <div class="input-with-clear"><input type="text" class="search-input" id="price"
+
                             placeholder="e.g., &#8377;50,00,000"><button type="button" class="clear-btn"
                             data-target="price">&times;</button></div>
                 </div>
@@ -1204,6 +1215,7 @@
 
                         if (res.ok && data.fullName) {
                             userNameInput.value = data.fullName;
+
                             showCustomPopup(`\u2705 Data is fetched successfully: ${data.message}`);
                         } else if (res.status === 403) {
                             userNameInput.value = "";
@@ -1231,6 +1243,7 @@
                     filterAndRender();
                 } catch (error) {
                     console.error("Error fetching sell properties:", error);
+
                     showCustomPopup("\u274C Could not fetch listings. Please log in again." + error.message);
                 }
             }
@@ -1239,6 +1252,7 @@
                 e.preventDefault();
                 for (const element of propertyForm.elements) {
                     if (element.required && !element.value) {
+
                         showCustomPopup(`\u26A0 Please fill out the "${element.labels[0].textContent.replace(':', '')}" field.`);
                         return;
                     }
@@ -1249,6 +1263,7 @@
                     return;
                 }
                 const accessToken = localStorage.getItem('token');
+
                 if (!accessToken) { showCustomPopup('\u274C Authentication failed. Please log in again.'); return; }
                 const formData = {
                     location: propertyForm.elements['location'].value,
@@ -1279,12 +1294,14 @@
                         throw new Error(errorData.message);
                     }
 
+
                     showCustomPopup(isCreating ? '\u2705 New property for sale added!' : '\u2705 Property for sale updated!');
                     await fetchAndRenderProperties();
                     closePanel();
 
                 } catch (error) {
                     console.error("Error submitting form:", error);
+
                     showCustomPopup(`\u274C An error occurred: ${error.message}`);
                 }
             });
@@ -1298,6 +1315,7 @@
                         propertyForm.elements['location'].value = property.location;
                         propertyForm.elements['area'].value = property.area || '';
                         propertyForm.elements['propertyType'].value = property.propertyType;
+
                         propertyForm.elements['price'].value = property.price.replace(/[\u20B9,]/g, '');
                         propertyForm.elements['userName'].value = property.userName;
                         propertyForm.elements['contact'].value = property.contact;
@@ -1310,6 +1328,7 @@
                 }
                 const deleteBtn = e.target.closest('.delete-btn');
                 if (deleteBtn) {
+
                     showCustomPopup('\u26A0 Are you sure you want to delete this property for sale?', true, async (confirmed) => {
                         if (confirmed) {
                             try {
@@ -1317,6 +1336,7 @@
                                 if (!accessToken) { showCustomPopup('\u274C Authentication error.'); return; }
                                 const response = await fetch(`${BASE_URL}/delete/${deleteBtn.dataset.id}`, { method: 'DELETE', headers: { 'authorization': `Bearer ${accessToken}` } });
                                 if (!response.ok) throw new Error('Failed to delete property.');
+
                                 showCustomPopup('\u2705 Property for sale deleted successfully!');
                                 await fetchAndRenderProperties();
                             } catch (error) {
@@ -1467,7 +1487,7 @@
                     if (filters[key] && filters[key].value) {
                         const tag = document.createElement('div');
                         tag.className = 'filter-tag';
-                        tag.innerHTML = `<span>${filters[key].text}</span><div class="remove" data-filter="${key}">×</div>`;
+                        tag.innerHTML = `<span>${filters[key].text}</span><div class="remove" data-filter="${key}">Ã—</div>`;
                         selectedFiltersContainer.appendChild(tag);
                     }
                 });
@@ -1504,3 +1524,4 @@
 </body>
 
 </html>
+

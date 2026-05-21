@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -457,6 +457,15 @@
       }
     }
   </style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YS2N7C27EC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-YS2N7C27EC');
+  </script>
 </head>
 
 <body>
@@ -521,23 +530,23 @@
 
       function setupRecaptchaRegister() {
         if (window.recaptchaRegister) {
-          console.log("♻️ Re-using existing reCAPTCHA");
+          console.log("â™»ï¸ Re-using existing reCAPTCHA");
           return window.recaptchaRegister;
         }
 
         const container = document.getElementById('recaptcha-container-register');
         if (!container) {
-          console.error("❌ recaptcha-container-register not found in DOM!");
+          console.error("âŒ recaptcha-container-register not found in DOM!");
           return null;
         }
 
         window.recaptchaRegister = new RecaptchaVerifier(container, {
           size: 'invisible',
           callback: (response) => {
-            console.log("✅ reCAPTCHA solved:", response);
+            console.log("âœ… reCAPTCHA solved:", response);
           },
           'expired-callback': () => {
-            showCustomPopup("⚠️ reCAPTCHA expired, please try again.");
+            showCustomPopup("âš ï¸ reCAPTCHA expired, please try again.");
           }
         }, auth);
         return window.recaptchaRegister;
@@ -545,23 +554,23 @@
 
       function setupRecaptchaForgot() {
         if (window.recaptchaForgot) {
-          console.log("♻️ Re-using existing reCAPTCHA");
+          console.log("â™»ï¸ Re-using existing reCAPTCHA");
           return window.recaptchaForgot;
         }
 
         const container = document.getElementById('recaptcha-container-forgot');
         if (!container) {
-          console.error("❌ recaptcha-container-forgot not found in DOM!");
+          console.error("âŒ recaptcha-container-forgot not found in DOM!");
           return null;
         }
 
         window.recaptchaForgot = new RecaptchaVerifier(container, {
           size: 'invisible',
           callback: (response) => {
-            console.log("✅ reCAPTCHA solved:", response);
+            console.log("âœ… reCAPTCHA solved:", response);
           },
           'expired-callback': () => {
-            showCustomPopup("⚠️ reCAPTCHA expired, please try again.");
+            showCustomPopup("âš ï¸ reCAPTCHA expired, please try again.");
           }
         }, auth);
         return window.recaptchaForgot;
@@ -681,7 +690,7 @@
             e.preventDefault();
             const lastPhoneNumber = localStorage.getItem('tempMobileNumber');
             if (!lastPhoneNumber) {
-              showCustomPopup('⚠️ Phone number not found. Please go back and enter your number again.');
+              showCustomPopup('âš ï¸ Phone number not found. Please go back and enter your number again.');
               return;
             }
 
@@ -692,21 +701,21 @@
               } else if (mode === 'forgot') {
                 recaptcha = setupRecaptchaForgot();
               } else {
-                showCustomPopup('❌ Invalid mode for resending OTP.');
+                showCustomPopup('âŒ Invalid mode for resending OTP.');
                 return;
               }
 
               if (!recaptcha) {
-                showCustomPopup("❌ Could not initialize reCAPTCHA");
+                showCustomPopup("âŒ Could not initialize reCAPTCHA");
                 return;
               }
 
               confirmationResult = await signInWithPhoneNumber(auth, lastPhoneNumber, recaptcha);
               window.confirmationResult = confirmationResult;
-              showCustomPopup('✅ OTP resend successfully!');
+              showCustomPopup('âœ… OTP resend successfully!');
             } catch (error) {
               console.error("Resend OTP error:", error);
-              showCustomPopup('❌ Error resending OTP: ' + error.message);
+              showCustomPopup('âŒ Error resending OTP: ' + error.message);
             }
           });
         }
@@ -819,15 +828,15 @@
             const data = await response.json();
 
             if (response.ok) {
-              showCustomPopup("✅ " + data.message);
+              showCustomPopup("âœ… " + data.message);
               localStorage.setItem("userToken", data.token);
               localStorage.setItem("userMobileNumber", phoneNumber);
               localStorage.setItem("user", JSON.stringify(data.data));
               window.location.href = "rentProperties.html";
             } else if (response.status === 403 && data.subscriptionActive === false) {
-              // Subscription expired / not active – ask user to subscribe now
+              // Subscription expired / not active â€“ ask user to subscribe now
               showCustomPopup(
-                data.message || "⚠️ Your subscription has expired. Please subscribe to continue.",
+                data.message || "âš ï¸ Your subscription has expired. Please subscribe to continue.",
                 "Subscription Required",
                 () => {
                   // Redirect to pricing page so user can choose a plan and renew
@@ -837,11 +846,11 @@
                 true
               );
             } else {
-              showCustomPopup("❌ " + (data.message || "Login failed"));
+              showCustomPopup("âŒ " + (data.message || "Login failed"));
             }
           } catch (error) {
             console.error("API error:", error);
-            showCustomPopup("❌ Error logging in: " + error.message);
+            showCustomPopup("âŒ Error logging in: " + error.message);
           }
         });
 
@@ -862,17 +871,22 @@
           const phoneNumber = "+91" + mobileInput;
 
           if (!/^\+91[6-9]\d{9}$/.test(phoneNumber)) {
-            showCustomPopup("⚠️ Please enter a valid 10-digit mobile number.");
+            showCustomPopup("âš ï¸ Please enter a valid 10-digit mobile number.");
             return;
           }
+
+          const btn = document.getElementById("sendOtpBtn");
+          if (btn) btn.disabled = true;
+          const regNameVal = document.getElementById("regName").value;
+          const regPasswordVal = document.getElementById("regPassword").value;
 
           try {
             confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, setupRecaptchaRegister());
             window.confirmationResult = confirmationResult;
-            showCustomPopup("✅ OTP sent for registration!");
+            showCustomPopup("âœ… OTP sent for registration!");
 
-            tempFullName = document.getElementById("regName").value;
-            tempPassword = document.getElementById("regPassword").value;
+            tempFullName = regNameVal;
+            tempPassword = regPasswordVal;
             tempMobileNumber = phoneNumber;
 
             localStorage.setItem("tempFullName", tempFullName);
@@ -881,7 +895,8 @@
 
             renderOtpForm("register", phoneNumber);
           } catch (error) {
-            showCustomPopup("❌ Error sending OTP: " + error.message);
+            if (btn) btn.disabled = false;
+            showCustomPopup("âŒ Error sending OTP: " + error.message);
           }
         });
 
@@ -892,7 +907,7 @@
           const phoneNumber = '+91' + mobileInput;
 
           if (!/^\+91[6-9]\d{9}$/.test(phoneNumber)) {
-            showCustomPopup("⚠️ Please enter a valid 10-digit mobile number.");
+            showCustomPopup("âš ï¸ Please enter a valid 10-digit mobile number.");
             return;
           }
 
@@ -907,17 +922,17 @@
 
             const data = await response.json();
             if (!response.ok) {
-              showCustomPopup("❌ " + data.msg);
+              showCustomPopup("âŒ " + data.msg);
               return;
             }
 
-            showCustomPopup("✅ " + data.message);
+            showCustomPopup("âœ… " + data.message);
             confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, setupRecaptchaForgot());
             window.confirmationResult = confirmationResult;
             localStorage.setItem("tempMobileNumber", phoneNumber);
             renderOtpForm("forgot", phoneNumber);
           } catch (error) {
-            showCustomPopup("❌ Error sending OTP: " + error.message);
+            showCustomPopup("âŒ Error sending OTP: " + error.message);
           }
         });
 
@@ -929,7 +944,7 @@
           const mobileNumber = localStorage.getItem("tempMobileNumber");
 
           if (newPass !== confirmPass) {
-            return showCustomPopup("⚠️ Passwords do not match.");
+            return showCustomPopup("âš ï¸ Passwords do not match.");
           }
 
           try {
@@ -945,15 +960,15 @@
 
             const data = await response.json();
             if (response.ok) {
-              showCustomPopup("✅ " + data.message);
+              showCustomPopup("âœ… " + data.message);
               localStorage.removeItem("tempMobileNumber");
               renderVerificationPage();
             } else {
-              showCustomPopup("❌ " + data.msg);
+              showCustomPopup("âŒ " + data.msg);
             }
           } catch (err) {
             console.error("API error:", err);
-            showCustomPopup("⚠️ Server error. Try again.");
+            showCustomPopup("âš ï¸ Server error. Try again.");
           }
         });
       };
@@ -992,7 +1007,7 @@
           const otp = Array.from(otpInputs).map(input => input.value).join('');
 
           if (otp.length !== 6) {
-            showCustomPopup("⚠️ Please enter a valid 6-digit OTP.");
+            showCustomPopup("âš ï¸ Please enter a valid 6-digit OTP.");
             return;
           }
 
@@ -1000,14 +1015,14 @@
             await window.confirmationResult.confirm(otp);
 
             if (mode === 'forgot') {
-              showCustomPopup("✅ OTP verified! Please set your new password.", "Success", () => {
+              showCustomPopup("âœ… OTP verified! Please set your new password.", "Success", () => {
                 renderPasswordResetForm();
               });
               return;
             }
 
             showCustomPopup(
-              "✅ OTP verified. To start your account, please pay the subscription fee now. You will 1 month subscription.",
+              "âœ… OTP verified. To start your account, please pay the subscription fee now. You will 1 month subscription.",
               "Subscription Required",
               async () => {
                 const fullName = localStorage.getItem("tempFullName");
@@ -1015,7 +1030,7 @@
                 const mobileNumber = localStorage.getItem("tempMobileNumber");
 
                 if (!fullName || !password || !mobileNumber) {
-                  showCustomPopup("⚠️ Registration data not found. Please try again.");
+                  showCustomPopup("âš ï¸ Registration data not found. Please try again.");
                   return;
                 }
 
@@ -1036,18 +1051,18 @@
                     localStorage.setItem("userMobileNumber", mobileNumber);
                     window.location.href = `pricing.html?mode=registration&mobile=${encodeURIComponent(mobileNumber)}`;
                   } else {
-                    showCustomPopup("❌ " + (data.msg || "Registration failed."));
+                    showCustomPopup("âŒ " + (data.msg || "Registration failed."));
                   }
                 } catch (error) {
                   console.error("API error:", error);
-                  showCustomPopup("❌ Error registering user: " + error.message);
+                  showCustomPopup("âŒ Error registering user: " + error.message);
                 }
               },
               true
             );
           } catch (error) {
             console.error("OTP verification failed:", error);
-            showCustomPopup("❌ OTP verification failed: " + error.message);
+            showCustomPopup("âŒ OTP verification failed: " + error.message);
           }
         });
       };
@@ -1063,7 +1078,7 @@
 
           const data = await response.json();
           if (!response.ok) {
-            throw new Error(data.message || "⚠️ Failed to create subscription.");
+            throw new Error(data.message || "âš ï¸ Failed to create subscription.");
           }
 
           const options = {
@@ -1072,13 +1087,13 @@
             handler: async function (response) {
               if (mode === "registration") {
                 showCustomPopup(
-                  "✅ Payment Successful! Your 1 month subscription is now active.",
+                  "âœ… Payment Successful! Your 1 month subscription is now active.",
                   "Subscription Confirmed",
                   () => renderRegistrationConfirmPage()
                 );
               } else if (mode === "renewal") {
                 showCustomPopup(
-                  "✅ Payment Successful! Your subscription has been renewed. Logging you in...",
+                  "âœ… Payment Successful! Your subscription has been renewed. Logging you in...",
                   "Subscription Renewed",
                   async () => {
                     try {
@@ -1098,11 +1113,11 @@
                         localStorage.setItem("user", JSON.stringify(loginData.data));
                         window.location.href = "rentProperties.html";
                       } else {
-                        showCustomPopup("⚠️ " + (loginData.message || "Please try to login again manually."));
+                        showCustomPopup("âš ï¸ " + (loginData.message || "Please try to login again manually."));
                       }
                     } catch (err) {
                       console.error("Login after renewal failed:", err);
-                      showCustomPopup("⚠️ Payment done but automatic login failed. Please try logging in again.");
+                      showCustomPopup("âš ï¸ Payment done but automatic login failed. Please try logging in again.");
                     }
                   }
                 );
@@ -1114,7 +1129,7 @@
           rzp.open();
         } catch (error) {
           console.error("Error starting subscription:", error);
-          showCustomPopup("❌ Error starting subscription: " + error.message);
+          showCustomPopup("âŒ Error starting subscription: " + error.message);
         }
       };
 
@@ -1169,3 +1184,4 @@
 </body>
 
 </html>
+
