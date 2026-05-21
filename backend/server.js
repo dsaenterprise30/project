@@ -4,7 +4,6 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from "cors";
 import path from "path";
-import https from "https";
 import userRoutes from "./routes/userRoutes.js";
 import rentRoutes from "./routes/rentRoutes.js";
 import sellRoutes from "./routes/sellRoutes.js";
@@ -17,6 +16,8 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import webhookRoutes from "./routes/webhook.js";
 import planRoutes from "./routes/planRoutes.js";
 
+
+
 dotenv.config();
 const app = express(); // Initialize Express app
 
@@ -26,11 +27,6 @@ app.use(cors());
 const frontendPath = path.join(process.cwd(), "..", "frontend");
 app.use(express.static(frontendPath));
 app.get('/pricing', (req, res) => res.sendFile(path.join(frontendPath, 'pricing.html')));
-
-// Lightweight /ping endpoint for keep-alive pings
-app.get('/ping', (req, res) => {
-  res.status(200).send("pong");
-});
 
 // razorpay webhook route
 app.use("/api/webhook", webhookRoutes);
@@ -59,18 +55,4 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  
-  // Render keep-alive pinger to prevent server from sleeping (only in production)
-  if (process.env.NODE_ENV === "production" || (process.env.MONGODB_URI && process.env.MONGODB_URI.includes("mongodb+srv"))) {
-    const PING_INTERVAL = 14 * 60 * 1000; // Ping every 14 minutes
-    const SELF_URL = "https://project-tbbc.onrender.com/ping";
-
-    setInterval(() => {
-      https.get(SELF_URL, (res) => {
-        console.log(`Self-ping successful: ${res.statusCode}`);
-      }).on('error', (err) => {
-        console.error(`Self-ping failed: ${err.message}`);
-      });
-    }, PING_INTERVAL);
-  }
 });

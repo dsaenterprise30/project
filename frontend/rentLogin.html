@@ -815,12 +815,6 @@
           const passwordInput = document.getElementById('password').value;
           const phoneNumber = "+91" + mobileInput;
 
-          const btn = document.getElementById("loginBtn");
-          if (btn) {
-            btn.disabled = true;
-            btn.innerText = "Logging in...";
-          }
-
           try {
             const response = await fetch(`${API_BASE_URL}/api/users/login`, {
               method: "POST",
@@ -834,19 +828,15 @@
             const data = await response.json();
 
             if (response.ok) {
-              showCustomPopup("✅ " + data.message);
+              showCustomPopup("\u2705 " + data.message);
               localStorage.setItem("userToken", data.token);
               localStorage.setItem("userMobileNumber", phoneNumber);
               localStorage.setItem("user", JSON.stringify(data.data));
               window.location.href = "rentProperties.html";
             } else if (response.status === 403 && data.subscriptionActive === false) {
-              if (btn) {
-                btn.disabled = false;
-                btn.innerText = "Login";
-              }
-              // Subscription expired / not active – ask user to subscribe now
+              // Subscription expired / not active â€“ ask user to subscribe now
               showCustomPopup(
-                data.message || "⚠️ Your subscription has expired. Please subscribe to continue.",
+                data.message || "\u26A0 Your subscription has expired. Please subscribe to continue.",
                 "Subscription Required",
                 () => {
                   // Redirect to pricing page so user can choose a plan and renew
@@ -856,19 +846,11 @@
                 true
               );
             } else {
-              if (btn) {
-                btn.disabled = false;
-                btn.innerText = "Login";
-              }
-              showCustomPopup("❌ " + (data.message || "Login failed"));
+              showCustomPopup("âŒ " + (data.message || "Login failed"));
             }
           } catch (error) {
-            if (btn) {
-              btn.disabled = false;
-              btn.innerText = "Login";
-            }
             console.error("API error:", error);
-            showCustomPopup("❌ Error logging in: " + error.message);
+            showCustomPopup("âŒ Error logging in: " + error.message);
           }
         });
 
