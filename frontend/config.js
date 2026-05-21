@@ -1,7 +1,9 @@
 // Centralized API Configuration
+const isLocalhost = 
+  window.location.hostname === "localhost" || 
+  window.location.hostname === "127.0.0.1" || 
+  window.location.hostname === "";
 
-// Production URL
-export const API_BASE_URL = "https://project-tbbc.onrender.com";
-
-// Localhost URL (Comment out above and uncomment below for local development)
-// export const API_BASE_URL = "http://localhost:5000";
+export const API_BASE_URL = isLocalhost 
+  ? "http://localhost:5000" 
+  : "https://project-tbbc.onrender.com";
