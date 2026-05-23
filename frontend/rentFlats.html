@@ -1534,11 +1534,24 @@
 
             dropdowns.forEach(dropdown => {
                 const btn = dropdown.querySelector('.dropdown-btn');
-                const options = dropdown.querySelectorAll('.dropdown-option');
                 btn.addEventListener('click', (e) => { e.stopPropagation(); dropdowns.forEach(d => { if (d !== dropdown) d.classList.remove('active'); }); dropdown.classList.toggle('active'); });
-                options.forEach(option => {
-                    option.addEventListener('click', (e) => { e.stopPropagation(); btn.querySelector('span').textContent = option.textContent; options.forEach(opt => opt.classList.remove('selected')); option.classList.add('selected'); filters[dropdown.id] = { value: option.dataset.value, text: option.textContent }; dropdown.classList.remove('active'); updateSelectedFilters(); filterAndRender(); });
-                });
+                
+                // Use event delegation on the dropdown content for options
+                const content = dropdown.querySelector('.dropdown-content');
+                if (content) {
+                    content.addEventListener('click', (e) => {
+                        const option = e.target.closest('.dropdown-option');
+                        if (!option) return;
+                        e.stopPropagation();
+                        btn.querySelector('span').textContent = option.textContent;
+                        content.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
+                        option.classList.add('selected');
+                        filters[dropdown.id] = { value: option.dataset.value, text: option.textContent };
+                        dropdown.classList.remove('active');
+                        updateSelectedFilters();
+                        filterAndRender();
+                    });
+                }
             });
 
             document.addEventListener('click', () => dropdowns.forEach(d => d.classList.remove('active')));
@@ -1601,7 +1614,50 @@
             }
             // --- end quick-fix ---
 
-            fetchAndRenderProperties();
+            // Hydrate the location dropdowns dynamically
+            async function loadDynamicCities() {
+                try {
+                    const response = await fetch(`${window.API_BASE_URL}/api/cities`);
+                    const data = await response.json();
+                    if (response.ok && data.status === 'success') {
+                        const cities = data.data;
+
+                        // Hydrate property location form select
+                        const formSelect = document.getElementById('propertyLocation');
+                        if (formSelect) {
+                            formSelect.innerHTML = '<option value="">Select a Location</option>';
+                            cities.forEach(city => {
+                                const opt = document.createElement('option');
+                                opt.value = city.name;
+                                opt.textContent = city.name;
+                                formSelect.appendChild(opt);
+                            });
+                        }
+
+                        // Hydrate search location filter options
+                        const filterDropdownContent = document.querySelector('#location .dropdown-content');
+                        if (filterDropdownContent) {
+                            filterDropdownContent.innerHTML = '';
+                            cities.forEach(city => {
+                                const optionDiv = document.createElement('div');
+                                optionDiv.className = 'dropdown-option';
+                                optionDiv.dataset.value = city.name;
+                                optionDiv.textContent = city.name;
+                                filterDropdownContent.appendChild(optionDiv);
+                            });
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error loading dynamic cities:", error);
+                }
+            }
+
+            async function initializePage() {
+                await loadDynamicCities();
+                await fetchAndRenderProperties();
+            }
+
+            initializePage();
         });
     </script>
 

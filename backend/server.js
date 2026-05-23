@@ -15,6 +15,7 @@ import cookieParser from "cookie-parser";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import webhookRoutes from "./routes/webhook.js";
 import planRoutes from "./routes/planRoutes.js";
+import cityRoutes from "./routes/cityRoutes.js";
 
 
 
@@ -40,6 +41,7 @@ app.use('/api/rentflats', rentRoutes);
 app.use('/api/sellflats', sellRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/plans", planRoutes);
+app.use("/api/cities", cityRoutes);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)

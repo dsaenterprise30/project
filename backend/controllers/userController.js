@@ -26,7 +26,7 @@ const addOneMonth = (date) => {
 
 //Route 1 - Register user
 export const registerUser = async (req, res) => {
-  const { fullName, mobileNumber, password } = req.body;
+  const { fullName, mobileNumber, password, location } = req.body;
 
   try {
     if (!fullName || !mobileNumber || !password) {
@@ -48,7 +48,8 @@ export const registerUser = async (req, res) => {
     pendingUsers[mobileNumber] = {
       fullName,
       mobileNumber,
-      password: hashpassword
+      password: hashpassword,
+      location: location || null
     };
 
     // ❗️User is created only as "not yet subscribed" – payment must happen
@@ -56,6 +57,7 @@ export const registerUser = async (req, res) => {
       fullName,
       mobileNumber,
       password: hashpassword,
+      location: location || null,
       subscriptionActive: false,
       subscriptionStatus: "Inactive",
       subscriptionExpiry: null,
@@ -135,6 +137,7 @@ export const loginUser = async (req, res) => {
         userId: existingUser._id,
         fullName: existingUser.fullName,
         mobileNumber: existingUser.mobileNumber,
+        location: existingUser.location,
         subscriptionActive: existingUser.subscriptionActive,
         subscriptionStatus: existingUser.subscriptionStatus,
         subscriptionExpiry: existingUser.subscriptionExpiry,
@@ -442,12 +445,16 @@ export const deleteUserByAdmin = async (req, res) => {
 // Route 13 - Update User (Admin only)
 export const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { password, subscriptionExpiry } = req.body;
+  const { password, subscriptionExpiry, location } = req.body;
 
   try {
     const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
+    }
+
+    if (location !== undefined) {
+      user.location = location;
     }
 
     if (password && password.trim() !== "") {

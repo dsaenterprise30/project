@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -1139,6 +1139,8 @@
             <input type="text" id="profileName" readonly>
             <label for="profileMobile">Mobile Number:</label>
             <input type="text" id="profileMobile" readonly>
+            <label for="profileLocation">Location:</label>
+            <input type="text" id="profileLocation" readonly>
             <button id="logoutBtn">Logout</button>
         </div>
     </div>
@@ -1351,6 +1353,8 @@
             if (userData) {
                 profileName.value = userData.fullName || '';
                 profileMobile.value = userData.mobileNumber || '';
+                const profileLoc = document.getElementById('profileLocation');
+                if (profileLoc) profileLoc.value = userData.location || 'N/A';
             }
 
             // --- Panel Management ---
@@ -1578,7 +1582,6 @@
 
             dropdowns.forEach(dropdown => {
                 const btn = dropdown.querySelector('.dropdown-btn');
-                const options = dropdown.querySelectorAll('.dropdown-option');
 
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -1587,18 +1590,48 @@
                     if (!isActive) dropdown.classList.add('active');
                 });
 
-                options.forEach(option => {
-                    option.addEventListener('click', (e) => {
+                // Use event delegation on the dropdown content for options
+                const content = dropdown.querySelector('.dropdown-content');
+                if (content) {
+                    content.addEventListener('click', (e) => {
+                        const option = e.target.closest('.dropdown-option');
+                        if (!option) return;
                         e.stopPropagation();
                         btn.querySelector('span').textContent = option.textContent;
-                        options.forEach(opt => opt.classList.remove('selected'));
+                        content.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
                         option.classList.add('selected');
                         filters[dropdown.id] = { value: option.dataset.value, text: option.textContent };
                         dropdown.classList.remove('active');
                         updateSelectedFilters();
                     });
-                });
+                }
             });
+
+            // Hydrate the location dropdowns dynamically
+            async function loadDynamicCities() {
+                try {
+                    const response = await fetch(`${window.API_BASE_URL}/api/cities`);
+                    const data = await response.json();
+                    if (response.ok && data.status === 'success') {
+                        const cities = data.data;
+
+                        // Hydrate search location filter options
+                        const filterDropdownContent = document.querySelector('#location .dropdown-content');
+                        if (filterDropdownContent) {
+                            filterDropdownContent.innerHTML = '';
+                            cities.forEach(city => {
+                                const optionDiv = document.createElement('div');
+                                optionDiv.className = 'dropdown-option';
+                                optionDiv.dataset.value = city.name;
+                                optionDiv.textContent = city.name;
+                                filterDropdownContent.appendChild(optionDiv);
+                            });
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error loading dynamic cities:", error);
+                }
+            }
 
             priceInput.addEventListener('input', () => {
                 const priceValue = priceInput.value.trim();
@@ -1662,7 +1695,11 @@
 
             // --- INITIALIZATION ---
             showTableMessage('🔍 Please use the search filters above to find properties.');
-            fetchProperties();
+            async function initializePage() {
+                await loadDynamicCities();
+                fetchProperties();
+            }
+            initializePage();
         }); // DOMContentLoaded
 
         // --- POPUP FUNCTIONS (unchanged) ---

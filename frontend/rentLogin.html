@@ -654,6 +654,27 @@
         return window.recaptchaForgot;
       }
 
+      async function fetchCitiesForRegister() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/cities`);
+          const data = await response.json();
+          if (response.ok && data.status === 'success') {
+            const select = document.getElementById('regLocation');
+            if (select) {
+              select.innerHTML = '<option value="">Select your Location</option>';
+              data.data.forEach(city => {
+                const opt = document.createElement('option');
+                opt.value = city.name;
+                opt.textContent = city.name;
+                select.appendChild(opt);
+              });
+            }
+          }
+        } catch (error) {
+          console.error("Error loading cities for register:", error);
+        }
+      }
+
       const renderLoginForm = () => {
         formContainer.innerHTML = `
         <h2>Login</h2>
@@ -692,6 +713,12 @@
             <input type="text" id="regName" name="name" placeholder="Enter your name" required>
           </div>
           <div class="input-group">
+            <label for="regLocation">Location</label>
+            <select id="regLocation" name="location" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-grey); border-radius: 8px; font-size: 1rem; box-sizing: border-box; background: white;">
+              <option value="">Select your Location</option>
+            </select>
+          </div>
+          <div class="input-group">
             <label for="regMobile">Mobile Number</label>
             <div class="phone-input">
               <span>+91</span>
@@ -712,6 +739,7 @@
       `;
         setupEventListeners();
         setupRecaptchaRegister();
+        fetchCitiesForRegister();
       };
 
       const renderForgotPasswordForm = () => {
@@ -960,6 +988,7 @@
           if (btn) btn.disabled = true;
           const regNameVal = document.getElementById("regName").value;
           const regPasswordVal = document.getElementById("regPassword").value;
+          const regLocationVal = document.getElementById("regLocation").value;
 
           try {
             showLoader();
@@ -974,6 +1003,7 @@
             localStorage.setItem("tempFullName", tempFullName);
             localStorage.setItem("tempPassword", tempPassword);
             localStorage.setItem("tempMobileNumber", tempMobileNumber);
+            localStorage.setItem("tempLocation", regLocationVal);
 
             renderOtpForm("register", phoneNumber);
           } catch (error) {
@@ -1122,13 +1152,15 @@
                 }
 
                 try {
+                  const location = localStorage.getItem("tempLocation");
                   const response = await fetch(`${API_BASE_URL}/api/users/create`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                       fullName: fullName,
                       mobileNumber: mobileNumber,
-                      password: password
+                      password: password,
+                      location: location || null
                     })
                   });
 
