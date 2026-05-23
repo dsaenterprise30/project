@@ -1125,7 +1125,7 @@
                     <!-- Options populated via JS -->
                 </select>
                 <small style="color: #666; font-size: 0.8rem; margin-top: 5px; display: block;">
-                    âš ï¸ Note: Only use this for corrections or existing subscribers. <br>
+                    ⚠️ Note: Only use this for corrections or existing subscribers. <br>
                     <strong>For new payments:</strong> Do NOT select a plan here. Ask the user to log in and pay.
                 </small>
 
@@ -1152,7 +1152,7 @@
                         technology to help you buy, sell, or rent with confidence.
                     </p>
                     <div class="footer-copyright">
-                        Â© 2025 DSA Enterprise. All rights reserved.
+                        &copy; 2025 DSA Enterprise. All rights reserved.
                     </div>
                 </div>
 
@@ -1174,8 +1174,8 @@
                         <div class="contact-item">
                             <i class="fas fa-envelope"></i>
                             <span>
-                                <a href="mailto:dsaenterprise30@gmail.com"
-                                    style="text-decoration: none; color: inherit;">dsaenterprise30@gmail.com</a>
+                                <a href="mailto:dsaenterprise.support@gmail.com"
+                                    style="text-decoration: none; color: inherit;">dsaenterprise.support@gmail.com</a>
                             </span>
                         </div>
                         <div class="contact-item">
@@ -1340,14 +1340,14 @@
                         const result = await response.json();
                         if (!response.ok) throw new Error(result.msg || "Failed");
 
-                        showCustomPopup("âœ… User created successfully!");
+                        showCustomPopup("✅ User created successfully!");
                         if (addUserModal) addUserModal.classList.remove('open');
                         overlay.classList.remove('show');
                         addUserForm.reset();
                         fetchUsers();
 
                     } catch (error) {
-                        showCustomPopup("âŒ " + error.message);
+                        showCustomPopup("❌ " + error.message);
                     }
                 });
             }
@@ -1406,7 +1406,7 @@
                         plans.forEach(plan => {
                             const option = document.createElement('option');
                             option.value = plan.planType;
-                            option.textContent = `${plan.name} (â‚¹${plan.price})`;
+                            option.textContent = `${plan.name} (&#8377;${plan.price})`;
                             select.appendChild(option);
                         });
                     }
@@ -1450,13 +1450,13 @@
                         const result = await response.json();
                         if (!response.ok) throw new Error(result.message || "Failed");
 
-                        showCustomPopup("âœ… " + result.message);
+                        showCustomPopup("✅ " + result.message);
                         if (editUserModal) editUserModal.classList.remove('open');
                         overlay.classList.remove('show');
                         fetchUsers();
 
                     } catch (error) {
-                        showCustomPopup("âŒ " + error.message);
+                        showCustomPopup("❌ " + error.message);
                     }
                 });
             }
@@ -1482,7 +1482,7 @@
                     updateCounters(allusers); // Pass fresh users to counters
                 } catch (error) {
                     console.error("Error fetching users:", error);
-                    showCustomPopup("âŒ Error fetching users. Please try again." + error.message);
+                    showCustomPopup("❌ Error fetching users. Please try again." + error.message);
                     usersBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px;">Error loading users.</td></tr>`;
                 }
             }
@@ -1653,13 +1653,13 @@
                                 throw new Error(result.message || "Failed to delete user");
                             }
 
-                            showCustomPopup("âœ… " + result.message);
+                            showCustomPopup("✅ " + result.message);
 
                             // Refresh the list
                             fetchUsers();
                         } catch (error) {
                             console.error("Error deleting user:", error);
-                            showCustomPopup("âŒ " + error.message);
+                            showCustomPopup("❌ " + error.message);
                         }
                     }
                 });
