@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -215,13 +215,13 @@
         name: "Half Yearly Plan",
         price: 2499,
         interval: "6 months",
-        promo: "Save â‚¹495"
+        promo: "Save &#8377;495"
       },
       {
         name: "Yearly Plan",
         price: 4999,
         interval: "yr",
-        promo: "Save â‚¹990",
+        promo: "Save &#8377;990",
         popular: true
       }
     ];
@@ -236,7 +236,7 @@
 
       card.innerHTML += `
         <h2>${plan.name}</h2>
-        <div class="plan-price">â‚¹${plan.price.toLocaleString()} / ${plan.interval}</div>
+        <div class="plan-price">&#8377;${plan.price.toLocaleString()} / ${plan.interval}</div>
         ${plan.promo ? `<div class="promo">${plan.promo}</div>` : ""}
         <button class="btn" onclick="showPopup('Please log in to subscribe', {type: 'info'})">
           Subscribe

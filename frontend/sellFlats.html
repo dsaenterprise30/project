@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -1471,7 +1471,7 @@
                     if (filters[key] && filters[key].value) {
                         const tag = document.createElement('div');
                         tag.className = 'filter-tag';
-                        tag.innerHTML = `<span>${filters[key].text}</span><div class="remove" data-filter="${key}">Ã—</div>`;
+                        tag.innerHTML = `<span>${filters[key].text}</span><div class="remove" data-filter="${key}">&times;</div>`;
                         selectedFiltersContainer.appendChild(tag);
                     }
                 });
