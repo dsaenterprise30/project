@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -456,6 +456,75 @@
         font-size: 1.2rem;
       }
     }
+
+    /* Loading Overlay & Cyclic Moving Dots */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(5px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .loading-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .loading-dots {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 120px;
+        height: 30px;
+        position: relative;
+    }
+
+    .loading-dots div {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        background: #3b82f6; /* Blue */
+        border-radius: 50%;
+        animation: cyclic-move 1.6s infinite cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .loading-dots div:nth-child(1) { animation-delay: 0s; }
+    .loading-dots div:nth-child(2) { animation-delay: 0.4s; }
+    .loading-dots div:nth-child(3) { animation-delay: 0.8s; }
+    .loading-dots div:nth-child(4) { animation-delay: 1.2s; }
+
+    @keyframes cyclic-move {
+        0% {
+            left: 0%;
+            transform: scale(0.6);
+            opacity: 0;
+            background-color: #3b82f6;
+        }
+        20% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        80% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        100% {
+            left: 100%;
+            transform: scale(0.6);
+            opacity: 0;
+            background-color: #1e3a8a;
+        }
+    }
   </style>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YS2N7C27EC"></script>
@@ -519,6 +588,15 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+
+    // --- Loading Overlay Functions ---
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    function showLoader() {
+        if (loadingOverlay) loadingOverlay.classList.add('active');
+    }
+    function hideLoader() {
+        if (loadingOverlay) loadingOverlay.classList.remove('active');
+    }
 
     let recaptchaRegister, recaptchaForgot;
     let tempFullName, tempMobileNumber, tempPassword;
@@ -818,6 +896,7 @@
           const phoneNumber = "+91" + mobileInput;
 
           try {
+            showLoader();
             const response = await fetch(`${API_BASE_URL}/api/users/login`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -855,6 +934,8 @@
           } catch (error) {
             console.error("API error:", error);
             showCustomPopup("❌ Error logging in: " + error.message);
+          } finally {
+            hideLoader();
           }
         });
 
@@ -885,6 +966,7 @@
           const regPasswordVal = document.getElementById("regPassword").value;
 
           try {
+            showLoader();
             confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, setupRecaptchaRegister());
             window.confirmationResult = confirmationResult;
             showCustomPopup("✅ OTP sent for registration!");
@@ -901,6 +983,8 @@
           } catch (error) {
             if (btn) btn.disabled = false;
             showCustomPopup("❌ Error sending OTP: " + error.message);
+          } finally {
+            hideLoader();
           }
         });
 
@@ -916,6 +1000,7 @@
           }
 
           try {
+            showLoader();
             const response = await fetch(`${API_BASE_URL}/api/users/forgot`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -937,6 +1022,8 @@
             renderOtpForm("forgot", phoneNumber);
           } catch (error) {
             showCustomPopup("❌ Error sending OTP: " + error.message);
+          } finally {
+            hideLoader();
           }
         });
 
@@ -1183,6 +1270,16 @@
       document.querySelector('.custom-popup-card').style.transform = 'scale(0.9)';
     }
   </script>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-dots">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
 
 </body>
 
