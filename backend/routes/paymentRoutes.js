@@ -96,20 +96,6 @@ router.post("/create-subscription", async (req, res) => {
       customer_id: razorCustomer.id,
     };
 
-    // Explicitly set mandate end_at validity to exactly 2 years or 12 months (1 year) from now
-    const now = new Date();
-    if (plan.planType === "YEARLY") {
-      const twoYearsFromNow = new Date(now);
-      twoYearsFromNow.setFullYear(now.getFullYear() + 2);
-      twoYearsFromNow.setDate(twoYearsFromNow.getDate() + 1); // 1-day buffer
-      subscriptionPayload.end_at = Math.floor(twoYearsFromNow.getTime() / 1000);
-    } else if (plan.planType === "HALF_YEARLY") {
-      const oneYearFromNow = new Date(now);
-      oneYearFromNow.setFullYear(now.getFullYear() + 1);
-      oneYearFromNow.setDate(oneYearFromNow.getDate() + 1); // 1-day buffer
-      subscriptionPayload.end_at = Math.floor(oneYearFromNow.getTime() / 1000);
-    }
-
     const subscription = await razorpay.subscriptions.create(subscriptionPayload);
 
     await User.findOneAndUpdate(
