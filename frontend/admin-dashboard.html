@@ -1439,14 +1439,9 @@
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // --- Loading Overlay Functions ---
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            function showLoader() {
-                if (loadingOverlay) loadingOverlay.classList.add('active');
-            }
-            function hideLoader() {
-                if (loadingOverlay) loadingOverlay.classList.remove('active');
-            }
+            // --- Loading Overlay Functions (Disabled on Admin side) ---
+            function showLoader() {}
+            function hideLoader() {}
 
             // --- Initial State & Data ---
 
