@@ -1667,7 +1667,8 @@
             // Hydrate the location dropdowns dynamically
             async function loadDynamicCities() {
                 try {
-                    const response = await fetch(`${window.API_BASE_URL}/api/cities`);
+                    const apiBase = window.API_BASE_URL || '';
+                    const response = await fetch(`${apiBase}/api/cities`);
                     const data = await response.json();
                     if (response.ok && data.status === 'success') {
                         const cities = data.data;
