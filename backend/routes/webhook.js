@@ -4,6 +4,7 @@ import crypto from "crypto";
 import User from "../models/User.js";
 import dotenv from "dotenv";
 import SubscriptionPlan from "../models/subscriptionPlan.js";
+import razorpay from "../config/razorpay.js";
 dotenv.config();
 
 const router = express.Router();
@@ -111,6 +112,16 @@ router.post(
 
             await user.save();
             console.log(`✅ Subscription activated for ${user.mobileNumber}. Expires: ${user.subscriptionExpiry} (${duration} months)`);
+
+            // Cancel auto-renewal for Yearly and Half-Yearly plans immediately so they end once their time finishes
+            if (user.planType === "YEARLY" || user.planType === "HALF_YEARLY") {
+              try {
+                await razorpay.subscriptions.cancel(subscriptionId);
+                console.log(`Auto-cancelled renewal for ${user.planType} subscription: ${subscriptionId}`);
+              } catch (err) {
+                console.warn(`Failed to auto-cancel subscription ${subscriptionId}:`, err.message);
+              }
+            }
           } else {
             console.warn("subscription.activated: user not found for subscriptionId:", subscriptionId);
           }
@@ -207,8 +218,19 @@ router.post(
         const subscriptionEntity = payload.subscription?.entity;
         if (subscriptionEntity) {
           const subscriptionId = subscriptionEntity.id;
-          await User.findOneAndUpdate({ subscriptionId }, { subscriptionActive: false, subscriptionStatus: "Inactive" });
-          console.log(`❌ Subscription cancelled/paused: ${subscriptionId}`);
+          const user = await User.findOne({ subscriptionId });
+          if (user) {
+            const now = new Date();
+            // Only deactivate immediately if expiry date has passed or doesn't exist
+            if (!user.subscriptionExpiry || user.subscriptionExpiry <= now) {
+              user.subscriptionActive = false;
+              user.subscriptionStatus = "Inactive";
+            } else {
+              user.subscriptionStatus = "Cancelled"; // Keeps subscriptionActive as true so they have access until expiry
+            }
+            await user.save();
+            console.log(`❌ Subscription cancelled/paused: ${subscriptionId}. Status set to: ${user.subscriptionStatus}`);
+          }
         }
       }
 
