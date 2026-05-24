@@ -79,22 +79,38 @@ router.post("/create-subscription", async (req, res) => {
       email: user.email,
     });
 
-    // Configure standard 3-year recurring mandate validity limits for UPI Autopay.
-    // (Bypasses Google Pay's 4-day one-time mandate cap by ensuring totalCount > 1,
-    // allowing plans to auto-renew continuously until manually cancelled).
+    // Configure standard recurring mandate validity limits for UPI Autopay.
+    // (Bypasses Google Pay's 4-day one-time mandate cap by ensuring totalCount is sufficiently large,
+    // and explicitly sets end_at to display the exact intended validity period).
     let totalCount = 11; // 1 month plan: 11 transaction cycles
     if (plan.planType === "YEARLY") {
-      totalCount = 1; // 1 year plan: ends after 1 cycle (1 year)
+      totalCount = 12; // 12 cycles
     } else if (plan.planType === "HALF_YEARLY") {
-      totalCount = 1; // 6 month plan: ends after 1 cycle (6 months)
+      totalCount = 12; // 12 cycles
     }
 
-    const subscription = await razorpay.subscriptions.create({
+    const subscriptionPayload = {
       plan_id: plan.razorpayPlanId,
       customer_notify: 1,
       total_count: totalCount,
       customer_id: razorCustomer.id,
-    });
+    };
+
+    // Explicitly set mandate end_at validity to exactly 1 year or 6 months from now
+    const now = new Date();
+    if (plan.planType === "YEARLY") {
+      const oneYearFromNow = new Date(now);
+      oneYearFromNow.setFullYear(now.getFullYear() + 1);
+      oneYearFromNow.setDate(oneYearFromNow.getDate() + 1); // 1-day buffer
+      subscriptionPayload.end_at = Math.floor(oneYearFromNow.getTime() / 1000);
+    } else if (plan.planType === "HALF_YEARLY") {
+      const sixMonthsFromNow = new Date(now);
+      sixMonthsFromNow.setMonth(now.getMonth() + 6);
+      sixMonthsFromNow.setDate(sixMonthsFromNow.getDate() + 1); // 1-day buffer
+      subscriptionPayload.end_at = Math.floor(sixMonthsFromNow.getTime() / 1000);
+    }
+
+    const subscription = await razorpay.subscriptions.create(subscriptionPayload);
 
     await User.findOneAndUpdate(
       { mobileNumber },
@@ -179,6 +195,16 @@ router.post("/verify-subscription", async (req, res) => {
       user.paymentId = razorpay_payment_id;
 
       await user.save();
+
+      // Cancel auto-renewal for Yearly and Half-Yearly plans immediately so they end once their time finishes
+      if (user.planType === "YEARLY" || user.planType === "HALF_YEARLY") {
+        try {
+          await razorpay.subscriptions.cancel(user.subscriptionId);
+          console.log(`Auto-cancelled renewal for ${user.planType} subscription: ${user.subscriptionId}`);
+        } catch (err) {
+          console.warn(`Failed to auto-cancel subscription ${user.subscriptionId}:`, err.message);
+        }
+      }
     }
 
     res.json({ status: "success", message: "Payment verified successfully" });
