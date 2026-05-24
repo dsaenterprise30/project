@@ -51,14 +51,13 @@ router.post(
       const event = bodyJson.event;
       const payload = bodyJson.payload || {};
 
-      // Helper to get duration from plan
+      // Helper to get duration in months from plan
       const getPlanDuration = async (planId) => {
         if (!planId) return 1; // Default to 1 month
         try {
-          // Avoid circular dependency issues if possible, or just standard import
-          // SubscriptionPlan is imported at top
           const plan = await SubscriptionPlan.findOne({ razorpayPlanId: planId });
-          return plan ? plan.duration : 1;
+          if (!plan) return 1;
+          return plan.interval === "yearly" ? (plan.duration * 12) : (plan.duration || 1);
         } catch (e) {
           console.error("Error finding plan duration:", e);
           return 1;

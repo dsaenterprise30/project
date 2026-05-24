@@ -79,8 +79,15 @@ router.post("/create-subscription", async (req, res) => {
       email: user.email,
     });
 
-    const totalCount =
-      plan.interval === "yearly" ? 1 : plan.duration;
+    // Configure standard 3-year recurring mandate validity limits for UPI Autopay.
+    // (Bypasses Google Pay's 4-day one-time mandate cap by ensuring totalCount > 1,
+    // allowing plans to auto-renew continuously until manually cancelled).
+    let totalCount = 36; // Default: 36 monthly cycles (3 years)
+    if (plan.planType === "YEARLY") {
+      totalCount = 3; // 3 yearly cycles (3 years)
+    } else if (plan.planType === "HALF_YEARLY") {
+      totalCount = 6; // 6 half-yearly cycles (3 years)
+    }
 
     const subscription = await razorpay.subscriptions.create({
       plan_id: plan.razorpayPlanId,
@@ -138,10 +145,13 @@ router.post("/verify-subscription", async (req, res) => {
     // Check if it's already active (e.g. webhook was faster)
     if (user.subscriptionStatus !== "Active") {
       // Determine the duration of the plan
-      let duration = 1;
+      // Determine the duration of the plan in months
+      let durationInMonths = 1;
       if (user.planType) {
         const plan = await SubscriptionPlan.findOne({ planType: user.planType });
-        if (plan) duration = plan.duration || 1;
+        if (plan) {
+          durationInMonths = plan.interval === "yearly" ? (plan.duration * 12) : (plan.duration || 1);
+        }
       }
 
       // Calculate expiry
@@ -156,11 +166,11 @@ router.post("/verify-subscription", async (req, res) => {
 
       let expiry;
       if (!user.hasUsedTrial) {
-        expiry = addMonths(now, duration);
+        expiry = addMonths(now, durationInMonths);
         user.hasUsedTrial = true;
       } else {
         const base = user.subscriptionExpiry && user.subscriptionExpiry > now ? user.subscriptionExpiry : now;
-        expiry = addMonths(base, duration);
+        expiry = addMonths(base, durationInMonths);
       }
 
       user.subscriptionActive = true;
