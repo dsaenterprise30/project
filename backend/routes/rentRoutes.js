@@ -3,7 +3,8 @@ import {
     createRentListing, 
     getAllRentListings, 
     updateRentListingById, 
-    deleteRentListingById 
+    deleteRentListingById,
+    bulkCreateRentListings
 } from "../controllers/rentController.js";
 import { verifyAccessToken } from "../middleware/userAuth.js";
 import { checkAdminNumber } from "../middleware/checkAdminNumber.js";
@@ -12,6 +13,9 @@ const router = express.Router();
 
 router.post("/create", verifyAccessToken, checkAdminNumber, createRentListing);
 // route 1: create Rent listing
+
+router.post("/bulk", verifyAccessToken, checkAdminNumber, bulkCreateRentListings);
+// bulk: create Rent listings from Excel
 
 router.get("/all", verifyAccessToken, checkAdminNumber, getAllRentListings);
 // route 2: get all Rent listings

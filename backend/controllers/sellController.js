@@ -163,3 +163,102 @@ export const deleteSellListingById = async (req, res) => {
         res.status(500).json({ message: "Server error while deleting listings." });
     }
 };
+
+// Route 5: Bulk upload sale properties
+export const bulkCreateSellListings = async (req, res) => {
+    const { listings } = req.body || {};
+    if (!Array.isArray(listings) || listings.length === 0) {
+        return res.status(400).json({ message: "No listings provided or invalid format." });
+    }
+
+    let successCount = 0;
+    let duplicateCount = 0;
+    let errorCount = 0;
+    const errors = [];
+    const seenInBatch = new Set();
+
+    for (let i = 0; i < listings.length; i++) {
+        const item = listings[i];
+        const { contact, area, location, propertyType, price, date, ownershipType, name } = item;
+
+        try {
+            if (!contact || !area || !location || !propertyType || !price || !date || !ownershipType || !name) {
+                errorCount++;
+                errors.push(`Row ${i + 1}: Missing required fields.`);
+                continue;
+            }
+
+            // Standardize contact to 10 digits
+            const cleaned = String(contact).replace(/\D/g, '');
+            const tenDigit = cleaned.slice(-10);
+            if (tenDigit.length !== 10) {
+                errorCount++;
+                errors.push(`Row ${i + 1}: Contact number must contain a valid 10-digit mobile number.`);
+                continue;
+            }
+
+            const parsedPriceValue = parsePrice(String(price));
+            if (parsedPriceValue === null || isNaN(parsedPriceValue)) {
+                errorCount++;
+                errors.push(`Row ${i + 1}: Price must be a valid number.`);
+                continue;
+            }
+
+            // Deduplicate within the same uploaded Excel batch
+            const batchKey = `${tenDigit}_${String(location).trim().toLowerCase()}_${String(area).trim().toLowerCase()}_${String(propertyType).trim().toLowerCase()}_${parsedPriceValue}_${String(ownershipType).trim().toLowerCase()}`;
+            if (seenInBatch.has(batchKey)) {
+                duplicateCount++;
+                continue;
+            }
+            seenInBatch.add(batchKey);
+
+            // Lookup user with "91" prefix
+            const matchedUser = await User.findOne({ mobileNumber: "91" + tenDigit });
+            let finalUserName = name;
+            if (matchedUser) {
+                finalUserName = matchedUser.fullName;
+            }
+
+            // Duplicate check against existing database records
+            const duplicateListing = await SellFlat.findOne({
+                contact: tenDigit,
+                location,
+                area,
+                propertyType,
+                price: parsedPriceValue,
+                ownershipType
+            });
+
+            if (duplicateListing) {
+                duplicateCount++;
+                continue;
+            }
+
+            const newListing = new SellFlat({
+                location,
+                area,
+                propertyType,
+                price: parsedPriceValue,
+                date: new Date(date),
+                ownershipType,
+                contact: tenDigit,
+                userName: finalUserName,
+            });
+
+            await newListing.save();
+            successCount++;
+        } catch (error) {
+            console.error(`Error in bulk sale row ${i + 1}:`, error.message);
+            errorCount++;
+            errors.push(`Row ${i + 1}: ${error.message}`);
+        }
+    }
+
+    res.status(200).json({
+        message: `Bulk upload completed. Success: ${successCount}, Duplicates: ${duplicateCount}, Errors: ${errorCount}`,
+        successCount,
+        duplicateCount,
+        errorCount,
+        errors
+    });
+};

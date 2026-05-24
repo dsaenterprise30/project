@@ -80,13 +80,13 @@ router.post("/create-subscription", async (req, res) => {
     });
 
     // Configure standard recurring mandate validity limits for UPI Autopay.
-    // (Bypasses Google Pay's 4-day one-time mandate cap by ensuring totalCount is sufficiently large,
+    // (Bypasses Google Pay's 4-day one-time mandate cap by ensuring totalCount > 1,
     // and explicitly sets end_at to display the exact intended validity period).
     let totalCount = 11; // 1 month plan: 11 transaction cycles
     if (plan.planType === "YEARLY") {
-      totalCount = 12; // 12 cycles
+      totalCount = 2; // 1 year plan: ends after 2 cycles (2 years)
     } else if (plan.planType === "HALF_YEARLY") {
-      totalCount = 12; // 12 cycles
+      totalCount = 2; // 6 month plan: ends after 2 cycles (12 months)
     }
 
     const subscriptionPayload = {
@@ -96,18 +96,18 @@ router.post("/create-subscription", async (req, res) => {
       customer_id: razorCustomer.id,
     };
 
-    // Explicitly set mandate end_at validity to exactly 1 year or 6 months from now
+    // Explicitly set mandate end_at validity to exactly 2 years or 12 months (1 year) from now
     const now = new Date();
     if (plan.planType === "YEARLY") {
+      const twoYearsFromNow = new Date(now);
+      twoYearsFromNow.setFullYear(now.getFullYear() + 2);
+      twoYearsFromNow.setDate(twoYearsFromNow.getDate() + 1); // 1-day buffer
+      subscriptionPayload.end_at = Math.floor(twoYearsFromNow.getTime() / 1000);
+    } else if (plan.planType === "HALF_YEARLY") {
       const oneYearFromNow = new Date(now);
       oneYearFromNow.setFullYear(now.getFullYear() + 1);
       oneYearFromNow.setDate(oneYearFromNow.getDate() + 1); // 1-day buffer
       subscriptionPayload.end_at = Math.floor(oneYearFromNow.getTime() / 1000);
-    } else if (plan.planType === "HALF_YEARLY") {
-      const sixMonthsFromNow = new Date(now);
-      sixMonthsFromNow.setMonth(now.getMonth() + 6);
-      sixMonthsFromNow.setDate(sixMonthsFromNow.getDate() + 1); // 1-day buffer
-      subscriptionPayload.end_at = Math.floor(sixMonthsFromNow.getTime() / 1000);
     }
 
     const subscription = await razorpay.subscriptions.create(subscriptionPayload);

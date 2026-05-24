@@ -3,7 +3,8 @@ import {
     createSellListing, 
     getAllSellListings, 
     updateSellListingById, 
-    deleteSellListingById 
+    deleteSellListingById,
+    bulkCreateSellListings
 } from "../controllers/sellController.js";
 // Comment out or remove these imports for now
 import { verifyAccessToken } from "../middleware/userAuth.js";
@@ -13,6 +14,9 @@ const router = express.Router();
 
 router.post("/create", verifyAccessToken, checkAdminNumber, createSellListing);
 // route 1: create sell listing
+
+router.post("/bulk", verifyAccessToken, checkAdminNumber, bulkCreateSellListings);
+// bulk: create sell listings from Excel
 
 router.get("/all", verifyAccessToken, checkAdminNumber, getAllSellListings);
 // route 2: get all sell listings

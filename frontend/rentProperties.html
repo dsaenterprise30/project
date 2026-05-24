@@ -9,6 +9,27 @@
     <meta name="author" content="QuadCoders Team">
     <link rel="icon" href="img/DSA.png" type="image/x-icon">
     <title>DSA Enterprise - Homepage</title>
+    <script>
+        if (typeof window.API_BASE_URL === 'undefined') {
+            const isLocal = 
+                window.location.hostname === 'localhost' || 
+                window.location.hostname === '127.0.0.1' || 
+                window.location.hostname === '[::1]' || 
+                window.location.hostname.startsWith('192.168.') || 
+                window.location.hostname.startsWith('10.') || 
+                window.location.hostname.startsWith('172.') ||
+                window.location.hostname.endsWith('.local') ||
+                window.location.hostname === '' ||
+                window.location.protocol === 'file:';
+            
+            const proto = (window.location.protocol === 'file:' || window.location.protocol === 'http:') ? 'http:' : window.location.protocol;
+            const host = window.location.hostname || 'localhost';
+            
+            window.API_BASE_URL = isLocal 
+                ? `${proto}//${host}:3000` 
+                : "https://project-tbbc.onrender.com";
+        }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1324,7 +1345,7 @@
                     </div>
 
                     <div class="social-links">
-                        <a href="https://wa.link/qykos7" class="social-link" title="Whatsapp">
+                        <a href="https://api.whatsapp.com/send/?phone=918433731810&text&type=phone_number&app_absent=0" class="social-link" title="Whatsapp">
                             <i class="fab fa-whatsapp"></i>
                         </a>
                         <a href="https://www.facebook.com/share/14R1w7XsyMb/" class="social-link" title="Facebook">

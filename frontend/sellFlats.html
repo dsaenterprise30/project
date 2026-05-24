@@ -5,7 +5,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DSA Enterprise - Sell Properties Admin Panel</title>
+    <script>
+        if (typeof window.API_BASE_URL === 'undefined') {
+            const isLocal = 
+                window.location.hostname === 'localhost' || 
+                window.location.hostname === '127.0.0.1' || 
+                window.location.hostname === '[::1]' || 
+                window.location.hostname.startsWith('192.168.') || 
+                window.location.hostname.startsWith('10.') || 
+                window.location.hostname.startsWith('172.') ||
+                window.location.hostname.endsWith('.local') ||
+                window.location.hostname === '' ||
+                window.location.protocol === 'file:';
+            
+            const proto = (window.location.protocol === 'file:' || window.location.protocol === 'http:') ? 'http:' : window.location.protocol;
+            const host = window.location.hostname || 'localhost';
+            
+            window.API_BASE_URL = isLocal 
+                ? `${proto}//${host}:3000` 
+                : "https://project-tbbc.onrender.com";
+        }
+    </script>
     <link rel="icon" type="image/x-icon" href="img/DSA.png">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1160,6 +1182,8 @@
             <div class="property-header">
                 <h2 class="property-title">Listed Properties for Sell</h2>
                 <button class="add-property-btn" id="addNewBtn"><i class="fas fa-plus"></i> Add New</button>
+                <button class="add-property-btn" id="uploadExcelBtn" style="background-color: #10b981; margin-left: 10px;"><i class="fas fa-file-excel"></i> Upload Excel</button>
+                <input type="file" id="excelFileInput" accept=".xlsx, .xls" style="display: none;">
             </div>
             <div class="property-counters">
                 <div class="counter-card">
@@ -1631,6 +1655,173 @@
                 } catch (error) {
                     console.error("Error loading dynamic cities:", error);
                 }
+            }
+
+            // --- Excel Bulk Upload Logic ---
+            const uploadExcelBtn = document.getElementById('uploadExcelBtn');
+            const excelFileInput = document.getElementById('excelFileInput');
+
+            if (uploadExcelBtn && excelFileInput) {
+                uploadExcelBtn.addEventListener('click', () => {
+                    excelFileInput.click();
+                });
+
+                excelFileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    showLoader();
+                    const reader = new FileReader();
+                    reader.onload = async function (evt) {
+                        try {
+                            const data = new Uint8Array(evt.target.result);
+                            const workbook = XLSX.read(data, { type: 'array' });
+                            const firstSheetName = workbook.SheetNames[0];
+                            const worksheet = workbook.Sheets[firstSheetName];
+
+                            // Highly Resilient Header-Row Locator
+                            const rawRows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+                            let headerRowIndex = -1;
+                            let headers = [];
+
+                            for (let r = 0; r < rawRows.length; r++) {
+                                const row = rawRows[r];
+                                if (Array.isArray(row)) {
+                                    const hasLocation = row.some(cell => String(cell).toLowerCase().includes('location'));
+                                    const hasContact = row.some(cell => String(cell).toLowerCase().includes('contact') || String(cell).toLowerCase().includes('phone') || String(cell).toLowerCase().includes('mobile'));
+                                    const hasRentOrPrice = row.some(cell => String(cell).toLowerCase().includes('rent') || String(cell).toLowerCase().includes('price') || String(cell).toLowerCase().includes('cost'));
+                                    
+                                    if (hasLocation && (hasContact || hasRentOrPrice)) {
+                                        headerRowIndex = r;
+                                        headers = row.map(h => String(h).trim());
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (headerRowIndex === -1) {
+                                showCustomPopup("⚠️ Could not find a valid header row containing 'Location', 'Contact', or 'Rent'/'Price'. Please ensure these columns exist.");
+                                return;
+                            }
+
+                            // Map subsequent rows into JSON using headers
+                            const json = [];
+                            for (let r = headerRowIndex + 1; r < rawRows.length; r++) {
+                                const row = rawRows[r];
+                                if (Array.isArray(row) && row.some(cell => String(cell).trim() !== "")) {
+                                    const rowObj = {};
+                                    headers.forEach((header, colIndex) => {
+                                        if (header !== "") {
+                                            rowObj[header] = row[colIndex] !== undefined ? row[colIndex] : "";
+                                        }
+                                    });
+                                    json.push(rowObj);
+                                }
+                            }
+
+                            if (json.length === 0) {
+                                showCustomPopup("⚠️ Excel sheet is empty or invalid.");
+                                return;
+                            }
+
+                            // Highly Resilient Date Parser to handle DD/MM/YYYY and year normalization
+                            const parseResilientDate = (rawDate) => {
+                                if (!rawDate) return new Date().toISOString().substring(0, 10);
+                                
+                                if (typeof rawDate === 'number') {
+                                    try {
+                                        return new Date((rawDate - 25569) * 86400 * 1000).toISOString().substring(0, 10);
+                                    } catch(err) {
+                                        return new Date().toISOString().substring(0, 10);
+                                    }
+                                }
+                                
+                                const str = String(rawDate).trim();
+                                
+                                // Matches DD/MM/YYYY, DD-MM-YYYY, etc.
+                                const matchDMY = str.match(/^(\d{1,2})[\/\.-](\d{1,2})[\/\.-](\d{4,5})$/);
+                                if (matchDMY) {
+                                    const day = parseInt(matchDMY[1], 10);
+                                    const month = parseInt(matchDMY[2], 10) - 1;
+                                    let year = parseInt(matchDMY[3], 10);
+                                    if (year > 9999) {
+                                        year = parseInt(String(year).slice(-4), 10); // get last 4 digits (e.g. 22026 => 2026)
+                                    }
+                                    try {
+                                        const d = new Date(year, month, day);
+                                        if (!isNaN(d.getTime())) {
+                                            return d.toISOString().substring(0, 10);
+                                        }
+                                    } catch(err) {}
+                                }
+                                
+                                try {
+                                    const d = new Date(str);
+                                    if (!isNaN(d.getTime())) {
+                                        return d.toISOString().substring(0, 10);
+                                    }
+                                } catch(err) {}
+                                
+                                return new Date().toISOString().substring(0, 10);
+                            };
+
+                            // Dynamic column mapper
+                            const normalizedListings = json.map(row => {
+                                const findVal = (possibleKeys) => {
+                                    const foundKey = Object.keys(row).find(k => 
+                                        possibleKeys.some(pk => k.toLowerCase().replace(/[\s_-]+/g, '').includes(pk))
+                                    );
+                                    return foundKey ? row[foundKey] : undefined;
+                                };
+
+                                const rawDate = findVal(['date', 'listed', 'on']);
+                                const dateValue = parseResilientDate(rawDate);
+
+                                return {
+                                    location: findVal(['location', 'city']) || '',
+                                    area: findVal(['area', 'sector', 'locality']) || '',
+                                    propertyType: findVal(['propertytype', 'flattype', 'type']) || '',
+                                    price: String(findVal(['price', 'cost']) || ''),
+                                    name: findVal(['name', 'ownername', 'username']) || '',
+                                    contact: String(findVal(['contact', 'mobile', 'phone', 'number']) || ''),
+                                    date: dateValue,
+                                    ownershipType: findVal(['ownershiptype', 'ownership']) || 'Owner'
+                                };
+                            });
+
+                            const accessToken = localStorage.getItem('token');
+                            if (!accessToken) {
+                                showCustomPopup("⚠️ Access denied. Please login again.");
+                                return;
+                            }
+
+                            const apiBase = window.API_BASE_URL || '';
+                            const res = await fetch(`${apiBase}/api/sellflats/bulk`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'authorization': `Bearer ${accessToken}`
+                                },
+                                body: JSON.stringify({ listings: normalizedListings })
+                            });
+
+                            const result = await res.json();
+                            if (res.ok) {
+                                showCustomPopup(`✅ Upload completed!\n\nSuccess: ${result.successCount}\nDuplicates: ${result.duplicateCount}\nErrors: ${result.errorCount}`);
+                                await fetchAndRenderProperties();
+                            } else {
+                                showCustomPopup("❌ Failed upload: " + (result.message || "Unknown error"));
+                            }
+                        } catch (err) {
+                            console.error("Excel processing error:", err);
+                            showCustomPopup("❌ Error parsing Excel file: " + err.message);
+                        } finally {
+                            hideLoader();
+                            excelFileInput.value = '';
+                        }
+                    };
+                    reader.readAsArrayBuffer(file);
+                });
             }
 
             async function initializePage() {

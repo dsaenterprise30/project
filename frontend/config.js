@@ -8,10 +8,13 @@ const isLocalhost =
     window.location.hostname.endsWith('.local') ||
     window.location.hostname === '';
 
+const protocol = window.location.protocol === 'file:' ? 'http:' : window.location.protocol;
+
 // Automatically points to the correct origin if served by the backend, or localhost/production fallback
 export const API_BASE_URL = isLocalhost 
     ? (["3000", "5000"].includes(window.location.port) 
         ? window.location.origin 
-        : `${window.location.protocol}//${window.location.hostname || 'localhost'}:3000`)
+        : `${protocol}//${window.location.hostname || 'localhost'}:3000`)
     : "https://project-tbbc.onrender.com";
+
 

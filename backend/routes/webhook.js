@@ -113,15 +113,7 @@ router.post(
             await user.save();
             console.log(`✅ Subscription activated for ${user.mobileNumber}. Expires: ${user.subscriptionExpiry} (${duration} months)`);
 
-            // Cancel auto-renewal for Yearly and Half-Yearly plans immediately so they end once their time finishes
-            if (user.planType === "YEARLY" || user.planType === "HALF_YEARLY") {
-              try {
-                await razorpay.subscriptions.cancel(subscriptionId);
-                console.log(`Auto-cancelled renewal for ${user.planType} subscription: ${subscriptionId}`);
-              } catch (err) {
-                console.warn(`Failed to auto-cancel subscription ${subscriptionId}:`, err.message);
-              }
-            }
+
           } else {
             console.warn("subscription.activated: user not found for subscriptionId:", subscriptionId);
           }
