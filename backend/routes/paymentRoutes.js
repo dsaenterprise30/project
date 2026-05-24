@@ -82,11 +82,11 @@ router.post("/create-subscription", async (req, res) => {
     // Configure standard 3-year recurring mandate validity limits for UPI Autopay.
     // (Bypasses Google Pay's 4-day one-time mandate cap by ensuring totalCount > 1,
     // allowing plans to auto-renew continuously until manually cancelled).
-    let totalCount = 36; // Default: 36 monthly cycles (3 years)
+    let totalCount = 11; // 1 month plan: 11 transaction cycles
     if (plan.planType === "YEARLY") {
-      totalCount = 3; // 3 yearly cycles (3 years)
+      totalCount = 1; // 1 year plan: ends after 1 cycle (1 year)
     } else if (plan.planType === "HALF_YEARLY") {
-      totalCount = 6; // 6 half-yearly cycles (3 years)
+      totalCount = 1; // 6 month plan: ends after 1 cycle (6 months)
     }
 
     const subscription = await razorpay.subscriptions.create({
