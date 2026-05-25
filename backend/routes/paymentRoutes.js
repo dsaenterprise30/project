@@ -153,7 +153,45 @@ router.post("/verify-subscription", async (req, res) => {
       return res.status(400).json({ status: "failed", message: "Invalid signature" });
     }
 
-    const user = await User.findOne({ subscriptionId: razorpay_subscription_id });
+    let user = await User.findOne({ subscriptionId: razorpay_subscription_id });
+    
+    // 🔄 Robust Fallback: If subscription ID is overwritten or mismatched in the database,
+    // fetch details from Razorpay to find the user by their contact number and heal the state.
+    if (!user) {
+      console.log(`⚠️ Subscription ID ${razorpay_subscription_id} not found in DB. Initiating fallback customer lookup...`);
+      try {
+        const rzpSub = await razorpay.subscriptions.fetch(razorpay_subscription_id);
+        if (rzpSub && rzpSub.customer_id) {
+          const rzpCustomer = await razorpay.customers.fetch(rzpSub.customer_id);
+          if (rzpCustomer && rzpCustomer.contact) {
+            let contactNum = rzpCustomer.contact.replace(/\D/g, "");
+            if (contactNum.length === 10) {
+              contactNum = "91" + contactNum;
+            }
+            const mobileNumber = Number(contactNum);
+            
+            user = await User.findOne({ mobileNumber });
+            if (user) {
+              console.log(`✅ Robust Fallback: Found user ${user.fullName} (${mobileNumber}) via contact. Healing subscriptionId...`);
+              user.subscriptionId = razorpay_subscription_id;
+              
+              if (rzpSub.plan_id) {
+                const plan = await SubscriptionPlan.findOne({ razorpayPlanId: rzpSub.plan_id });
+                if (plan) {
+                  user.planType = plan.planType;
+                  user.planName = plan.name;
+                  user.planPrice = plan.price;
+                }
+              }
+              await user.save();
+            }
+          }
+        }
+      } catch (err) {
+        console.error("❌ Robust Fallback customer lookup failed:", err.message);
+      }
+    }
+
     if (!user) {
       return res.status(404).json({ status: "failed", message: "User not found" });
     }

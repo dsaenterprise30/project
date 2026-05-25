@@ -23,10 +23,41 @@ const addMonths = (date, months) => {
 
 // ... (existing helper addOneMonth removed or replaced) ...
 
+// Helper: robustly find and heal user by subscriptionId or fallback customer lookup
+const findAndHealUser = async (subscriptionId, subscriptionOrInvoiceEntity) => {
+  let user = await User.findOne({ subscriptionId });
+  if (user) return user;
+
+  console.log(`⚠️ Webhook Fallback: Subscription ID ${subscriptionId} not found in DB. Attempting customer lookup...`);
+  try {
+    let customerId = subscriptionOrInvoiceEntity?.customer_id;
+    if (customerId) {
+      const rzpCustomer = await razorpay.customers.fetch(customerId);
+      if (rzpCustomer && rzpCustomer.contact) {
+        let contactNum = rzpCustomer.contact.replace(/\D/g, "");
+        if (contactNum.length === 10) {
+          contactNum = "91" + contactNum;
+        }
+        const mobileNumber = Number(contactNum);
+
+        user = await User.findOne({ mobileNumber });
+        if (user) {
+          console.log(`✅ Webhook Fallback: Found user ${user.fullName} (${mobileNumber}) via contact. Healing subscriptionId...`);
+          user.subscriptionId = subscriptionId;
+          await user.save();
+        }
+      }
+    }
+  } catch (err) {
+    console.error("❌ Webhook Fallback customer lookup failed:", err.message);
+  }
+  return user;
+};
+
 // Since we need raw body to verify signature, we define a raw body route
 router.post(
   "/razorpay-webhook",
-  express.raw({ type: "application/json" }),
+  express.raw({ type: "*/*" }),
   async (req, res) => {
     try {
       const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
@@ -71,7 +102,7 @@ router.post(
         if (subscriptionEntity) {
           const subscriptionId = subscriptionEntity.id;
           const planId = subscriptionEntity.plan_id;
-          const user = await User.findOne({ subscriptionId });
+          const user = await findAndHealUser(subscriptionId, subscriptionEntity);
 
           if (user) {
             const now = new Date();
@@ -144,7 +175,7 @@ router.post(
           // Better: The User model should store the plan_id? Or we just assume the same plan.
           // Let's rely on the User's stored planType to find the duration, or default 1.
 
-          const user = await User.findOne({ subscriptionId });
+          const user = await findAndHealUser(subscriptionId, subscriptionEntity || invoiceEntity);
           if (user) {
             let duration = 1;
             if (user.planType) {
@@ -186,7 +217,7 @@ router.post(
           const subscriptionId = subscriptionEntity.id;
           const planId = subscriptionEntity.plan_id;
 
-          const user = await User.findOne({ subscriptionId });
+          const user = await findAndHealUser(subscriptionId, subscriptionEntity);
           if (user) {
             const duration = await getPlanDuration(planId);
             const now = new Date();
@@ -218,7 +249,7 @@ router.post(
         const subscriptionEntity = payload.subscription?.entity;
         if (subscriptionEntity) {
           const subscriptionId = subscriptionEntity.id;
-          const user = await User.findOne({ subscriptionId });
+          const user = await findAndHealUser(subscriptionId, subscriptionEntity);
           if (user) {
             const now = new Date();
             // Only deactivate immediately if expiry date has passed or doesn't exist
