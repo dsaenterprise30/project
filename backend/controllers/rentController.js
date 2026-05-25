@@ -8,10 +8,11 @@ const parsePrice = (priceString) => {
     return parseFloat(numericString);
 };
 
-// Helper function to clean the mobile number string
+// Helper function to clean the mobile number string and return exactly 10 digits
 const cleanMobileNumber = (mobileString) => {
     if (typeof mobileString !== 'string') return '';
-    return mobileString.replace(/\D/g, '');
+    const clean = mobileString.replace(/\D/g, '');
+    return clean.slice(-10);
 };
 
 // Route 1: Create a new rent listing
@@ -23,8 +24,8 @@ export const createRentListing = async (req, res) => {
             return res.status(400).json({ message: "All required fields must be provided." });
         }
 
-        // Always normalize to 10 digits
-        const sanitizedContact = '91' + contact.trim();
+        // Always normalize to 91 + last 10 digits
+        const sanitizedContact = '91' + cleanMobileNumber(contact);
 
         // Lookup user with prefixed 91
         const matchedUser = await User.findOne({ mobileNumber: sanitizedContact });
@@ -129,7 +130,7 @@ export const updateRentListingById = async (req, res) => {
             propertyType,
             price: parsePrice(price),
             userName: name,
-            contact: cleanMobileNumber(contact),
+            contact: '91' + cleanMobileNumber(contact),
             date,
             tenantType, // ✅ CORRECTED: Update tenantType
             ownershipType // ✅ CORRECTED: Update ownershipType

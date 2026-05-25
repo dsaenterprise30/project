@@ -1187,12 +1187,12 @@
       };
 
       // ===== Razorpay Subscription Handler =====
-      const handleSubscription = async (mobileNumber, mode = "registration", loginPassword = null) => {
+      const handleSubscription = async (mobileNumber, mode = "registration", loginPassword = null, planType = "MONTHLY") => {
         try {
           const response = await fetch(`${API_BASE_URL}/api/payment/create-subscription`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ mobileNumber: mobileNumber }),
+            body: JSON.stringify({ mobileNumber: mobileNumber, planType: planType }),
           });
 
           const data = await response.json();
@@ -1204,42 +1204,65 @@
             key: RAZORPAY_KEY_ID,
             subscription_id: data.subscriptionId,
             handler: async function (response) {
-              if (mode === "registration") {
-                showCustomPopup(
-                  "✅ Payment Successful! Your 1 month subscription is now active.",
-                  "Subscription Confirmed",
-                  () => renderRegistrationConfirmPage()
-                );
-              } else if (mode === "renewal") {
-                showCustomPopup(
-                  "✅ Payment Successful! Your subscription has been renewed. Logging you in...",
-                  "Subscription Renewed",
-                  async () => {
-                    try {
-                      // Re-login after renewal
-                      const loginRes = await fetch(`${API_BASE_URL}/api/users/login`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                          mobileNumber: mobileNumber,
-                          password: loginPassword
-                        })
-                      });
-                      const loginData = await loginRes.json();
-                      if (loginRes.ok) {
-                        localStorage.setItem("userToken", loginData.token);
-                        localStorage.setItem("userMobileNumber", mobileNumber);
-                        localStorage.setItem("user", JSON.stringify(loginData.data));
-                        window.location.href = "rentProperties.html";
-                      } else {
-                        showCustomPopup("⚠️ " + (loginData.message || "Please try to login again manually."));
+              try {
+                showLoader();
+                const verifyRes = await fetch(`${API_BASE_URL}/api/payment/verify-subscription`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_subscription_id: response.razorpay_subscription_id,
+                    razorpay_signature: response.razorpay_signature,
+                  }),
+                });
+
+                const verifyData = await verifyRes.json();
+                if (!verifyRes.ok || verifyData.status !== "success") {
+                  throw new Error(verifyData.message || "Signature verification failed.");
+                }
+
+                if (mode === "registration") {
+                  showCustomPopup(
+                    "✅ Payment Successful! Your subscription is now active.",
+                    "Subscription Confirmed",
+                    () => renderRegistrationConfirmPage()
+                  );
+                } else if (mode === "renewal") {
+                  showCustomPopup(
+                    "✅ Payment Successful! Your subscription has been renewed. Logging you in...",
+                    "Subscription Renewed",
+                    async () => {
+                      try {
+                        // Re-login after renewal
+                        const loginRes = await fetch(`${API_BASE_URL}/api/users/login`, {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            mobileNumber: mobileNumber,
+                            password: loginPassword
+                          })
+                        });
+                        const loginData = await loginRes.json();
+                        if (loginRes.ok) {
+                          localStorage.setItem("userToken", loginData.token);
+                          localStorage.setItem("userMobileNumber", mobileNumber);
+                          localStorage.setItem("user", JSON.stringify(loginData.data));
+                          window.location.href = "rentProperties.html";
+                        } else {
+                          showCustomPopup("⚠️ " + (loginData.message || "Please try to login again manually."));
+                        }
+                      } catch (err) {
+                        console.error("Login after renewal failed:", err);
+                        showCustomPopup("⚠️ Payment done but automatic login failed. Please try logging in again.");
                       }
-                    } catch (err) {
-                      console.error("Login after renewal failed:", err);
-                      showCustomPopup("⚠️ Payment done but automatic login failed. Please try logging in again.");
                     }
-                  }
-                );
+                  );
+                }
+              } catch (verifyError) {
+                console.error("Verification error:", verifyError);
+                showCustomPopup("❌ Payment verification failed: " + verifyError.message);
+              } finally {
+                hideLoader();
               }
             },
           };

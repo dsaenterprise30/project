@@ -26,7 +26,14 @@ const addOneMonth = (date) => {
 
 //Route 1 - Register user
 export const registerUser = async (req, res) => {
-  const { fullName, mobileNumber, password, location } = req.body;
+  let { fullName, mobileNumber, password, location } = req.body;
+
+  if (mobileNumber) {
+    mobileNumber = mobileNumber.toString().replace(/\D/g, '');
+    if (mobileNumber.length === 10) {
+      mobileNumber = "91" + mobileNumber;
+    }
+  }
 
   try {
     if (!fullName || !mobileNumber || !password) {
@@ -84,7 +91,14 @@ export const registerUser = async (req, res) => {
 
 //Route 2 - Login user
 export const loginUser = async (req, res) => {
-  const { mobileNumber, password } = req.body;
+  let { mobileNumber, password } = req.body;
+  if (mobileNumber) {
+    mobileNumber = mobileNumber.toString().replace(/\D/g, '');
+    if (mobileNumber.length === 10) {
+      mobileNumber = "91" + mobileNumber;
+    }
+  }
+
   try {
     if (!mobileNumber || !password) {
       return res.status(400).json({ message: 'Please enter all fields.' });
@@ -184,7 +198,7 @@ export const getUserByContact = async (req, res) => {
     }
 
     // 3️⃣ Check in SellFlat
-    const sellUserDetails = await SellFlat.findOne({ contact: contact });
+    const sellUserDetails = await SellFlat.findOne({ contact: contact.slice(-10) });
     if (sellUserDetails) {
       return res.json({
         message: "sell",
@@ -208,7 +222,14 @@ export const getUserByContact = async (req, res) => {
 
 //Route 3 - Forgot Password
 export const forgotPassword = async (req, res) => {
-  const { contact } = req.body;
+  let { contact } = req.body;
+
+  if (contact) {
+    contact = contact.toString().replace(/\D/g, '');
+    if (contact.length === 10) {
+      contact = "91" + contact;
+    }
+  }
 
   if (!contact) {
     return res.status(400).json({ msg: 'Please enter your mobile number.' });
@@ -233,7 +254,14 @@ export const forgotPassword = async (req, res) => {
 
 //Route 4 - reset password
 export const resetPassword = async (req, res) => {
-  const { contact, confirmPassword, newPassword } = req.body;
+  let { contact, confirmPassword, newPassword } = req.body;
+
+  if (contact) {
+    contact = contact.toString().replace(/\D/g, '');
+    if (contact.length === 10) {
+      contact = "91" + contact;
+    }
+  }
 
   if (!contact || !confirmPassword || !newPassword) {
     return res.status(400).json({ msg: "Mobile number, confirm password and new password are required." });
@@ -272,7 +300,14 @@ export const resetPassword = async (req, res) => {
 
 // Route 5 - Admin Login
 export const adminLogin = async (req, res) => {
-  const { mobileNumber, password } = req.body;
+  let { mobileNumber, password } = req.body;
+  if (mobileNumber) {
+    mobileNumber = mobileNumber.toString().replace(/\D/g, '');
+    if (mobileNumber.length === 10) {
+      mobileNumber = "91" + mobileNumber;
+    }
+  }
+
   try {
     const user = await User.findOne({ mobileNumber });
     if (!user) {

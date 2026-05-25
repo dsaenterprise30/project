@@ -8,10 +8,11 @@ const parsePrice = (priceString) => {
     return parseFloat(numericString);
 };
 
-// New helper function to clean the mobile number
+// Helper function to clean the mobile number string and return exactly 10 digits
 const cleanMobileNumber = (mobileString) => {
-    // This will remove any non-digit characters from the string
-    return mobileString.replace(/\D/g, '');
+    if (typeof mobileString !== 'string') return '';
+    const clean = mobileString.replace(/\D/g, '');
+    return clean.slice(-10);
 };
 
 // Route 1: Create a new sell listing
