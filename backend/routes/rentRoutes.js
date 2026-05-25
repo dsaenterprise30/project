@@ -3,10 +3,15 @@ import {
     createRentListing, 
     getAllRentListings, 
     updateRentListingById, 
-    deleteRentListingById 
+    deleteRentListingById,
+    uploadRentExcel
 } from "../controllers/rentController.js";
 import { verifyAccessToken } from "../middleware/userAuth.js";
 import { checkAdminNumber } from "../middleware/checkAdminNumber.js";
+import multer from "multer";
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const router = express.Router();
 
@@ -22,7 +27,10 @@ router.put("/update/:id", verifyAccessToken, checkAdminNumber, updateRentListing
 router.delete("/delete/:id", verifyAccessToken, checkAdminNumber, deleteRentListingById);
 // route 4: delete a single Rent listing by ID
 
-//Route 5: fetch all rent listings for public access
-router.get("/all-public",verifyAccessToken, getAllRentListings);
+router.post("/upload-excel", verifyAccessToken, checkAdminNumber, upload.single("file"), uploadRentExcel);
+// route 5: upload properties from excel sheet
+
+//Route 6: fetch all rent listings for public access
+router.get("/all-public", verifyAccessToken, getAllRentListings);
 
 export default router;

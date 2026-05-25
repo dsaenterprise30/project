@@ -1150,7 +1150,11 @@
         <div class="property-container">
             <div class="property-header">
                 <h2 class="property-title">Listed Properties for Rent</h2>
-                <button class="add-property-btn" id="addNewBtn"><i class="fas fa-plus"></i>Add New</button>
+                <div style="display: flex; gap: 10px;">
+                    <button class="add-property-btn" id="uploadExcelBtn" style="background: linear-gradient(135deg, #10b981, #059669);"><i class="fas fa-file-excel"></i> Upload Excel</button>
+                    <input type="file" id="excelFileInput" accept=".xlsx, .xls" style="display: none;">
+                    <button class="add-property-btn" id="addNewBtn"><i class="fas fa-plus"></i>Add New</button>
+                </div>
             </div>
             <div class="property-counters">
                 <div class="counter-card">
@@ -1659,6 +1663,62 @@
             }
 
             initializePage();
+
+            // --- Excel Upload logic ---
+            const uploadExcelBtn = document.getElementById('uploadExcelBtn');
+            const excelFileInput = document.getElementById('excelFileInput');
+
+            if (uploadExcelBtn && excelFileInput) {
+                uploadExcelBtn.addEventListener('click', () => {
+                    excelFileInput.click();
+                });
+
+                excelFileInput.addEventListener('change', async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    excelFileInput.value = '';
+
+                    const accessToken = localStorage.getItem('token');
+                    if (!accessToken) {
+                        showCustomPopup("⚠️ Please log in as admin.");
+                        return;
+                    }
+
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    try {
+                        showLoader();
+                        const response = await fetch(`${BASE_URL}/upload-excel`, {
+                            method: 'POST',
+                            headers: {
+                                'authorization': `Bearer ${accessToken}`
+                            },
+                            body: formData
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            let message = `✅ Excel upload successful!\nImported: ${data.successCount} listings.`;
+                            if (data.errorCount > 0) {
+                                message += `\nSkipped/Errors: ${data.errorCount}.\nFirst few errors:\n` + data.errors.slice(0, 3).join('\n');
+                            }
+                            showCustomPopup(message, false, () => {
+                                fetchAndRenderProperties();
+                            }, 5000);
+                        } else {
+                            showCustomPopup("❌ " + (data.message || "Excel upload failed."));
+                        }
+                    } catch (error) {
+                        console.error("Excel upload error:", error);
+                        showCustomPopup("❌ Server error during Excel upload: " + error.message);
+                    } finally {
+                        hideLoader();
+                    }
+                });
+            }
         });
     </script>
 

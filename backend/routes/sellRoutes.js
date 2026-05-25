@@ -3,11 +3,16 @@ import {
     createSellListing, 
     getAllSellListings, 
     updateSellListingById, 
-    deleteSellListingById 
+    deleteSellListingById,
+    uploadSellExcel
 } from "../controllers/sellController.js";
 // Comment out or remove these imports for now
 import { verifyAccessToken } from "../middleware/userAuth.js";
 import { checkAdminNumber } from "../middleware/checkAdminNumber.js";
+import multer from "multer";
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const router = express.Router();
 
@@ -23,7 +28,10 @@ router.put("/update/:id", verifyAccessToken, checkAdminNumber, updateSellListing
 router.delete("/delete/:id", verifyAccessToken, checkAdminNumber, deleteSellListingById);
 // route 4: delete a single sell listing by ID
 
-//Route 5: fetch all sell listings for public access
+router.post("/upload-excel", verifyAccessToken, checkAdminNumber, upload.single("file"), uploadSellExcel);
+// route 5: upload properties from excel sheet
+
+//Route 6: fetch all sell listings for public access
 router.get("/all-public", verifyAccessToken, getAllSellListings);
 
 export default router;
