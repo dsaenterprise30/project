@@ -1141,6 +1141,12 @@
             <input type="text" id="profileMobile" readonly>
             <label for="profileLocation">Location:</label>
             <input type="text" id="profileLocation" readonly>
+            <label for="profileType">User Type:</label>
+            <input type="text" id="profileType" readonly>
+            <label for="profileRegDate">Registration Date:</label>
+            <input type="text" id="profileRegDate" readonly>
+            <label for="profileExpiryDate">Plan Expiry Date:</label>
+            <input type="text" id="profileExpiryDate" readonly>
             <button id="logoutBtn">Logout</button>
         </div>
     </div>
@@ -1357,10 +1363,51 @@
                 if (profileLoc) profileLoc.value = userData.location || 'N/A';
             }
 
+            // Fetch and display full user details in the profile panel
+            async function loadFullUserProfile() {
+                try {
+                    const mobile = (userData && userData.mobileNumber) || localStorage.getItem("userMobileNumber");
+                    if (!mobile) return;
+                    
+                    const cleanMobile = String(mobile).replace(/\D/g, '');
+                    const response = await fetch(`${window.API_BASE_URL}/api/users/contact/${cleanMobile}`);
+                    if (!response.ok) throw new Error("Failed to fetch profile details");
+                    
+                    const fullUserData = await response.json();
+                    
+                    const formatDate = (dateStr) => {
+                        if (!dateStr) return 'N/A';
+                        const date = new Date(dateStr);
+                        if (isNaN(date.getTime())) return 'N/A';
+                        const day = String(date.getDate()).padStart(2, '0');
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const year = date.getFullYear();
+                        return `${day}/${month}/${year}`;
+                    };
+
+                    const regDate = formatDate(fullUserData.registrationDate);
+                    const expiryDate = formatDate(fullUserData.subscriptionExpiry);
+                    
+                    const profileType = document.getElementById('profileType');
+                    const profileRegDate = document.getElementById('profileRegDate');
+                    const profileExpiryDate = document.getElementById('profileExpiryDate');
+                    
+                    if (profileType) profileType.value = fullUserData.type || 'Agent';
+                    if (profileRegDate) profileRegDate.value = regDate;
+                    if (profileExpiryDate) profileExpiryDate.value = expiryDate;
+                } catch (error) {
+                    console.error("Error loading user profile details:", error);
+                }
+            }
+
+            // Load initial profile data on page load
+            loadFullUserProfile();
+
             // --- Panel Management ---
             function openPanel() {
                 profilePanel.classList.add('open');
                 overlay.classList.add('show');
+                loadFullUserProfile();
             }
             function closeAllPanels() {
                 profilePanel.classList.remove('open');
