@@ -276,14 +276,23 @@ export const uploadSellExcel = async (req, res) => {
 
             let parsedDate = new Date();
             if (dateVal) {
-                const checkDate = new Date(dateVal);
-                if (!isNaN(checkDate.getTime())) {
-                    parsedDate = checkDate;
-                } else if (typeof dateVal === "number") {
+                if (typeof dateVal === "number") {
                     parsedDate = new Date((dateVal - 25569) * 86400 * 1000);
+                } else if (dateVal instanceof Date && !isNaN(dateVal.getTime())) {
+                    parsedDate = dateVal;
                 } else {
-                    errors.push(`Row ${rowNumber}: Invalid listed date format (${dateVal}).`);
-                    continue;
+                    const checkDate = new Date(dateVal);
+                    if (!isNaN(checkDate.getTime())) {
+                        parsedDate = checkDate;
+                    } else {
+                        const parsedNum = Number(dateVal);
+                        if (!isNaN(parsedNum) && parsedNum > 0 && parsedNum < 100000) {
+                            parsedDate = new Date((parsedNum - 25569) * 86400 * 1000);
+                        } else {
+                            errors.push(`Row ${rowNumber}: Invalid listed date format (${dateVal}).`);
+                            continue;
+                        }
+                    }
                 }
             }
 
