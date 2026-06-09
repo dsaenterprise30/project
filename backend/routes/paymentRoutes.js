@@ -41,7 +41,8 @@ router.post("/create-subscription", async (req, res) => {
       return res.status(400).json({ message: "Mobile number and planType are required" });
     }
 
-    const user = await User.findOne({ mobileNumber });
+    const cleanNum = Number(String(mobileNumber).replace(/\D/g, '').slice(-10));
+    const user = await User.findOne({ mobileNumber: cleanNum });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -113,7 +114,7 @@ router.post("/create-subscription", async (req, res) => {
     const subscription = await razorpay.subscriptions.create(subscriptionPayload);
 
     await User.findOneAndUpdate(
-      { mobileNumber },
+      { mobileNumber: cleanNum },
       {
         subscriptionId: subscription.id,
         subscriptionStatus: "Inactive",
@@ -165,10 +166,7 @@ router.post("/verify-subscription", async (req, res) => {
           const rzpCustomer = await razorpay.customers.fetch(rzpSub.customer_id);
           if (rzpCustomer && rzpCustomer.contact) {
             let contactNum = rzpCustomer.contact.replace(/\D/g, "");
-            if (contactNum.length === 10) {
-              contactNum = "91" + contactNum;
-            }
-            const mobileNumber = Number(contactNum);
+            const mobileNumber = Number(contactNum.slice(-10));
             
             user = await User.findOne({ mobileNumber });
             if (user) {

@@ -25,11 +25,11 @@ export const createSellListing = async (req, res) => {
             return res.status(400).json({ message: "All required fields must be provided." });
         }
 
-        // ✅ Always normalize contact to 10 digits
+        // Always normalize contact to exactly last 10 digits
         const sanitizedContact = cleanMobileNumber(contact);
 
-        // ✅ Lookup user with "91" prefix
-        const matchedUser = await User.findOne({ mobileNumber: "91" + sanitizedContact });
+        // Lookup user with 10-digit number
+        const matchedUser = await User.findOne({ mobileNumber: Number(sanitizedContact) });
 
         let finalUserName = name;
         if (matchedUser) {
@@ -273,6 +273,7 @@ export const uploadSellExcel = async (req, res) => {
                 errors.push(`Row ${rowNumber}: Contact number must contain a valid 10-digit mobile number (${contactVal}).`);
                 continue;
             }
+            const sanitizedContact = tenDigitMobile;
 
             let parsedDate = new Date();
             if (dateVal) {
@@ -300,7 +301,7 @@ export const uploadSellExcel = async (req, res) => {
             if (/agent/i.test(ownershipType)) ownershipType = "Agent";
             else ownershipType = "Owner";
 
-            const rowKey = `${tenDigitMobile}_${location}_${area}_${propertyType}_${numericPrice}_${ownershipType}`.toLowerCase().replace(/\s+/g, "");
+            const rowKey = `${sanitizedContact}_${location}_${area}_${propertyType}_${numericPrice}_${ownershipType}`.toLowerCase().replace(/\s+/g, "");
             if (seenInDocument.has(rowKey)) {
                 errors.push(`Row ${rowNumber}: Duplicate entry found within the uploaded document itself.`);
                 continue;
@@ -308,7 +309,7 @@ export const uploadSellExcel = async (req, res) => {
             seenInDocument.add(rowKey);
 
             const duplicateListing = await SellFlat.findOne({
-                contact: tenDigitMobile,
+                contact: sanitizedContact,
                 location,
                 area,
                 propertyType,
@@ -321,7 +322,7 @@ export const uploadSellExcel = async (req, res) => {
                 continue;
             }
 
-            const matchedUser = await User.findOne({ mobileNumber: "91" + tenDigitMobile });
+            const matchedUser = await User.findOne({ mobileNumber: Number(sanitizedContact) });
             const finalUserName = matchedUser ? matchedUser.fullName : (userName || "Unknown");
 
             const newListing = new SellFlat({
@@ -329,7 +330,7 @@ export const uploadSellExcel = async (req, res) => {
                 area,
                 propertyType,
                 price: numericPrice,
-                contact: tenDigitMobile,
+                contact: sanitizedContact,
                 userName: finalUserName,
                 date: parsedDate,
                 ownershipType

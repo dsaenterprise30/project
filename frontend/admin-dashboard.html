@@ -1872,6 +1872,12 @@
                 }
             }
 
+            function formatContactNumber(contact) {
+                if (!contact) return '';
+                let clean = String(contact).replace(/\D/g, '');
+                return '+91 ' + clean.slice(-10);
+            }
+
             function renderTable(data) {
                 usersBody.innerHTML = '';
                 if (data.length === 0) {
@@ -1881,12 +1887,7 @@
                 data.forEach((user) => {
                     const statusText = user.subscriptionStatus ? user.subscriptionStatus : "Unknown";
                     const statusClass = `status-${user.subscriptionStatus ? user.subscriptionStatus.toLowerCase() : 'unknown'}`;
-                    let formattedMobile = String(user.mobileNumber || "N/A");
-                    if (formattedMobile !== "N/A" && formattedMobile.startsWith('91')) {
-                        formattedMobile = formattedMobile.replace('91', '+91 ');
-                    } else if (formattedMobile !== "N/A") {
-                        formattedMobile = '+91' + formattedMobile;
-                    }
+                    let formattedMobile = user.mobileNumber ? formatContactNumber(user.mobileNumber) : "N/A";
                     // Determine expiry value from multiple possible fields
                     const expiryRaw = user.planExpiryDate || user.subscriptionExpiry || user.planExpiry || user.expiry || null;
                     const expiryText = expiryRaw ? new Date(expiryRaw).toLocaleDateString('en-GB') : "N/A";
