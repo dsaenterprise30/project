@@ -937,9 +937,16 @@
             const data = await response.json();
 
             if (response.ok) {
-              const expiryDate = data.subscriptionExpiry
-                ? new Date(data.subscriptionExpiry).toLocaleDateString()
-                : "N/A";
+              let expiryDate = "N/A";
+              if (data.subscriptionExpiry) {
+                const date = new Date(data.subscriptionExpiry);
+                if (!isNaN(date.getTime())) {
+                  const day = String(date.getDate()).padStart(2, '0');
+                  const month = String(date.getMonth() + 1).padStart(2, '0');
+                  const year = date.getFullYear();
+                  expiryDate = `${day}-${month}-${year}`;
+                }
+              }
               showCustomPopup(`✅ User logged in successfully! Your subscription expires on ${expiryDate}.`);
               localStorage.setItem("userToken", data.token);
               localStorage.setItem("userMobileNumber", phoneNumber);

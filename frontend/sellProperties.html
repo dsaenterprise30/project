@@ -1503,6 +1503,16 @@
                 return '+91 ' + clean.slice(-10);
             }
 
+            function formatDate(dateInput) {
+                if (!dateInput) return '';
+                const date = new Date(dateInput);
+                if (isNaN(date.getTime())) return '';
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}-${month}-${year}`;
+            }
+
             // --- RENDER HELPERS (TABLE + CARDS) ---
             function renderProperties() {
                 if (!propertiesBody) return;
@@ -1525,7 +1535,7 @@
                 <td data-label="Price">${displayPrice}</td>
                 <td data-label="Name">${property.userName || ''}</td>
                 <td data-label="Contact">${formatContactNumber(property.contact)}</td>
-                <td data-label="Date">${property.date ? new Date(property.date).toLocaleDateString() : ''}</td>
+                <td data-label="Date">${property.date ? formatDate(property.date) : ''}</td>
                 <td data-label="Ownership">${property.ownershipType || ''}</td>
             `;
                     propertiesBody.appendChild(row);
@@ -1549,7 +1559,7 @@
                 <div class="card-row"><span class="card-label">Price:</span> <span class="card-value">${displayPrice}</span></div>
                 <div class="card-row"><span class="card-label">Name:</span> <span class="card-value">${property.userName || ''}</span></div>
                 <div class="card-row"><span class="card-label">Contact:</span> <span class="card-value">${formatContactNumber(property.contact)}</span></div>
-                <div class="card-row"><span class="card-label">Date:</span> <span class="card-value">${property.date ? new Date(property.date).toLocaleDateString() : ''}</span></div>
+                <div class="card-row"><span class="card-label">Date:</span> <span class="card-value">${property.date ? formatDate(property.date) : ''}</span></div>
                 <div class="card-row"><span class="card-label">Ownership:</span> <span class="card-value">${property.ownershipType || ''}</span></div>
             `;
                     cardView.appendChild(card);
