@@ -1510,7 +1510,7 @@
                 const day = String(date.getDate()).padStart(2, '0');
                 const month = String(date.getMonth() + 1).padStart(2, '0');
                 const year = date.getFullYear();
-                return `${day}-${month}-${year}`;
+                return `${day}/${month}/${year}`;
             }
 
             // --- RENDER HELPERS (TABLE + CARDS) ---
@@ -1534,13 +1534,8 @@
                 <td data-label="Property Type">${property.propertyType || ''}</td>
                 <td data-label="Price">${displayPrice}</td>
                 <td data-label="Name">${property.userName || ''}</td>
-<<<<<<< HEAD
-                <td data-label="Contact">${(function(){let c = property.contact || ''; if (typeof c === 'string' && c.startsWith('91')) c = c.replace(/^91/, '+91 '); return c; })() || ''}</td>
-                <td data-label="Date">${property.date ? new Date(property.date).toLocaleDateString('en-GB') : ''}</td>
-=======
                 <td data-label="Contact">${formatContactNumber(property.contact)}</td>
                 <td data-label="Date">${property.date ? formatDate(property.date) : ''}</td>
->>>>>>> 7f37f08ca86cc92e26fef6f18ecd7d9015a0e17c
                 <td data-label="Ownership">${property.ownershipType || ''}</td>
             `;
                     propertiesBody.appendChild(row);
@@ -1563,13 +1558,8 @@
                 <div class="card-row"><span class="card-label">Type:</span> <span class="card-value">${property.propertyType || ''}</span></div>
                 <div class="card-row"><span class="card-label">Price:</span> <span class="card-value">${displayPrice}</span></div>
                 <div class="card-row"><span class="card-label">Name:</span> <span class="card-value">${property.userName || ''}</span></div>
-<<<<<<< HEAD
-                <div class="card-row"><span class="card-label">Contact:</span> <span class="card-value">${(function(){let c = property.contact || ''; if (typeof c === 'string' && c.startsWith('91')) c = c.replace(/^91/, '+91 '); return c; })() || ''}</span></div>
-                <div class="card-row"><span class="card-label">Date:</span> <span class="card-value">${property.date ? new Date(property.date).toLocaleDateString('en-GB') : ''}</span></div>
-=======
                 <div class="card-row"><span class="card-label">Contact:</span> <span class="card-value">${formatContactNumber(property.contact)}</span></div>
                 <div class="card-row"><span class="card-label">Date:</span> <span class="card-value">${property.date ? formatDate(property.date) : ''}</span></div>
->>>>>>> 7f37f08ca86cc92e26fef6f18ecd7d9015a0e17c
                 <div class="card-row"><span class="card-label">Ownership:</span> <span class="card-value">${property.ownershipType || ''}</span></div>
             `;
                     cardView.appendChild(card);

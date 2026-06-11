@@ -1583,7 +1583,7 @@
                 const day = String(date.getDate()).padStart(2, '0');
                 const month = String(date.getMonth() + 1).padStart(2, '0');
                 const year = date.getFullYear();
-                return `${day}-${month}-${year}`;
+                return `${day}/${month}/${year}`;
             }
 
             // --- UI RENDERING & UPDATES ---
@@ -1611,11 +1611,7 @@
                 <td data-label="Contact">${displayContact || ''}</td>
                 <td data-label="Tenant Type">${property.tenantType || ''}</td>
                 <td data-label="Ownership Type">${property.ownershipType || 'Agent'}</td>
-<<<<<<< HEAD
-                <td data-label="Date">${property.date ? new Date(property.date).toLocaleDateString('en-GB') : ''}</td>
-=======
                 <td data-label="Date">${property.date ? formatDate(property.date) : ''}</td>
->>>>>>> 7f37f08ca86cc92e26fef6f18ecd7d9015a0e17c
             `;
                     propertiesBody.appendChild(row);
                 });
@@ -1641,11 +1637,7 @@
                 <div class="card-row"><span class="card-label">Contact:</span> <span class="card-value">${formatContactNumber(property.contact)}</span></div>
                 <div class="card-row"><span class="card-label">Tenant Type:</span> <span class="card-value">${property.tenantType || ''}</span></div>
                 <div class="card-row"><span class="card-label">Ownership Type:</span> <span class="card-value">${property.ownershipType || ''}</span></div>
-<<<<<<< HEAD
-                <div class="card-row"><span class="card-label">Date:</span> <span class="card-value">${property.date ? new Date(property.date).toLocaleDateString('en-GB') : ''}</span></div>
-=======
                 <div class="card-row"><span class="card-label">Date:</span> <span class="card-value">${property.date ? formatDate(property.date) : ''}</span></div>
->>>>>>> 7f37f08ca86cc92e26fef6f18ecd7d9015a0e17c
             `;
                     cardView.appendChild(card);
                 });
