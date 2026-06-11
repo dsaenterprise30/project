@@ -1410,7 +1410,15 @@
                         propertyForm.elements['price'].value = property.price.replace(/[&#8377;,]/g, '');
                         propertyForm.elements['userName'].value = property.userName;
                         propertyForm.elements['contact'].value = property.contact;
-                        propertyForm.elements['date'].value = new Date(property.date).toISOString().substring(0, 10);
+                        if (property.date) {
+                            const dateObj = new Date(property.date);
+                            const year = dateObj.getFullYear();
+                            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                            const day = String(dateObj.getDate()).padStart(2, '0');
+                            propertyForm.elements['date'].value = `${year}-${month}-${day}`;
+                        } else {
+                            propertyForm.elements['date'].value = '';
+                        }
                         propertyForm.elements['tenantType'].value = property.tenantType;
                         propertyForm.elements['ownershipType'].value = property.ownershipType;
                         document.getElementById('propertyPanelTitle').textContent = 'Edit Rental Property';
@@ -1493,15 +1501,36 @@
             }
             // --- end updated rotation logic ---
 
+            function formatContactNumber(contact) {
+                if (!contact) return '';
+                let clean = String(contact).replace(/\D/g, '');
+                return '+91 ' + clean.slice(-10);
+            }
+
+            function formatDate(dateInput) {
+                if (!dateInput) return '';
+                const date = new Date(dateInput);
+                if (isNaN(date.getTime())) return '';
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}-${month}-${year}`;
+            }
+
             function renderTable(data) {
                 propertiesBody.innerHTML = '';
                 data.forEach(prop => {
                     const row = propertiesBody.insertRow();
+<<<<<<< HEAD
                     let contact = String(prop.contact || '');
                     if (contact && contact.startsWith('91')) {
                         contact = contact.replace('91', '+91 ');
                     }
                     row.innerHTML = `<td>${prop.location || ''}</td><td>${prop.area || ''}</td><td>${prop.propertyType || ''}</td><td>${prop.price || ''}</td><td>${prop.userName || ''}</td><td>${contact}</td><td>${new Date(prop.date).toLocaleDateString('en-GB')}</td><td>${prop.tenantType || ''}</td><td>${prop.ownershipType || 'Agent'}</td><td class="actions-cell"><button class="action-btn edit-btn" data-id="${prop.id}"><i class="fas fa-edit"></i></button><button class="action-btn delete-btn" data-id="${prop.id}"><i class="fas fa-trash-alt"></i></button></td>`;
+=======
+                    let contact = formatContactNumber(prop.contact);
+                    row.innerHTML = `<td>${prop.location || ''}</td><td>${prop.area || ''}</td><td>${prop.propertyType || ''}</td><td>${prop.price || ''}</td><td>${prop.userName || ''}</td><td>${contact}</td><td>${formatDate(prop.date)}</td><td>${prop.tenantType || ''}</td><td>${prop.ownershipType || 'Agent'}</td><td class="actions-cell"><button class="action-btn edit-btn" data-id="${prop.id}"><i class="fas fa-edit"></i></button><button class="action-btn delete-btn" data-id="${prop.id}"><i class="fas fa-trash-alt"></i></button></td>`;
+>>>>>>> 7f37f08ca86cc92e26fef6f18ecd7d9015a0e17c
                 });
             }
 
@@ -1510,11 +1539,16 @@
                 data.forEach(prop => {
                     const card = document.createElement('div');
                     card.className = 'card-item';
+<<<<<<< HEAD
                     let contact = String(prop.contact || '');
                     if (contact && contact.startsWith('91')) {
                         contact = contact.replace('91', '+91 ');
                     }
                     card.innerHTML = `<div class="card-row"><span class="card-label">Location:</span> <span class="card-value">${prop.location}</span></div><div class="card-row"><span class="card-label">Type:</span> <span class="card-value">${prop.propertyType}</span></div><div class="card-row"><span class="card-label">Rent:</span> <span class="card-value">${prop.price}</span></div><div class="card-row"><span class="card-label">Name:</span> <span class="card-value">${prop.userName}</span></div><div class="card-row"><span class="card-label">Contact:</span> <span class="card-value">${contact}</span></div><div class="card-row"><span class="card-label">Date:</span> <span class="card-value">${new Date(prop.date).toLocaleDateString('en-GB')}</span></div><div class="card-row"><span class="card-label">Preference:</span> <span class="card-value">${prop.tenantType}</span></div><div class="card-row"><span class="card-label">Ownership Type:</span> <span class="card-value">${prop.ownershipType || 'Agent'}</span></div><div class="card-actions actions-cell"><button class="action-btn edit-btn" data-id="${prop.id}"><i class="fas fa-edit"></i></button><button class="action-btn delete-btn" data-id="${prop.id}"><i class="fas fa-trash-alt"></i></button></div>`;
+=======
+                    let contact = formatContactNumber(prop.contact);
+                    card.innerHTML = `<div class="card-row"><span class="card-label">Location:</span> <span class="card-value">${prop.location}</span></div><div class="card-row"><span class="card-label">Type:</span> <span class="card-value">${prop.propertyType}</span></div><div class="card-row"><span class="card-label">Rent:</span> <span class="card-value">${prop.price}</span></div><div class="card-row"><span class="card-label">Name:</span> <span class="card-value">${prop.userName}</span></div><div class="card-row"><span class="card-label">Contact:</span> <span class="card-value">${contact}</span></div><div class="card-row"><span class="card-label">Date:</span> <span class="card-value">${formatDate(prop.date)}</span></div><div class="card-row"><span class="card-label">Preference:</span> <span class="card-value">${prop.tenantType}</span></div><div class="card-row"><span class="card-label">Ownership Type:</span> <span class="card-value">${prop.ownershipType || 'Agent'}</span></div><div class="card-actions actions-cell"><button class="action-btn edit-btn" data-id="${prop.id}"><i class="fas fa-edit"></i></button><button class="action-btn delete-btn" data-id="${prop.id}"><i class="fas fa-trash-alt"></i></button></div>`;
+>>>>>>> 7f37f08ca86cc92e26fef6f18ecd7d9015a0e17c
                     cardView.appendChild(card);
                 });
             }

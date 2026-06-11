@@ -29,10 +29,7 @@ export const registerUser = async (req, res) => {
   let { fullName, mobileNumber, password, location } = req.body;
 
   if (mobileNumber) {
-    mobileNumber = mobileNumber.toString().replace(/\D/g, '');
-    if (mobileNumber.length === 10) {
-      mobileNumber = "91" + mobileNumber;
-    }
+    mobileNumber = Number(mobileNumber.toString().replace(/\D/g, '').slice(-10));
   }
 
   try {
@@ -93,10 +90,7 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   let { mobileNumber, password } = req.body;
   if (mobileNumber) {
-    mobileNumber = mobileNumber.toString().replace(/\D/g, '');
-    if (mobileNumber.length === 10) {
-      mobileNumber = "91" + mobileNumber;
-    }
+    mobileNumber = Number(mobileNumber.toString().replace(/\D/g, '').slice(-10));
   }
 
   try {
@@ -168,13 +162,11 @@ export const getUserByContact = async (req, res) => {
   try {
     let { contact } = req.params;
 
-    // Normalize to 91XXXXXXXXXX
-    if (/^[0-9]{10}$/.test(contact)) {
-      contact = "91" + contact;
-    }
+    // Normalize to exactly 10 digits
+    const contactClean = contact.toString().replace(/\D/g, '').slice(-10);
 
     // 1️⃣ Check in User collection
-    const user = await User.findOne({ mobileNumber: contact });
+    const user = await User.findOne({ mobileNumber: Number(contactClean) });
     if (user) {
       if (user.subscriptionStatus === "Active") {
         return res.json({
@@ -188,7 +180,7 @@ export const getUserByContact = async (req, res) => {
     }
 
     // 2️⃣ Check in RentFlat
-    const rentUserDetails = await RentFlat.findOne({ contact: contact });
+    const rentUserDetails = await RentFlat.findOne({ contact: contactClean });
     if (rentUserDetails) {
       return res.json({
         message: "rent",
@@ -198,7 +190,7 @@ export const getUserByContact = async (req, res) => {
     }
 
     // 3️⃣ Check in SellFlat
-    const sellUserDetails = await SellFlat.findOne({ contact: contact.slice(-10) });
+    const sellUserDetails = await SellFlat.findOne({ contact: contactClean });
     if (sellUserDetails) {
       return res.json({
         message: "sell",
@@ -211,7 +203,7 @@ export const getUserByContact = async (req, res) => {
     return res.status(200).json({
       message: "Data is not associated with this number, You can write the name manually",
       fullName: null,
-      mobileNumber: contact.slice(-10),
+      mobileNumber: contactClean,
     });
 
   } catch (err) {
@@ -225,10 +217,7 @@ export const forgotPassword = async (req, res) => {
   let { contact } = req.body;
 
   if (contact) {
-    contact = contact.toString().replace(/\D/g, '');
-    if (contact.length === 10) {
-      contact = "91" + contact;
-    }
+    contact = Number(contact.toString().replace(/\D/g, '').slice(-10));
   }
 
   if (!contact) {
@@ -257,10 +246,7 @@ export const resetPassword = async (req, res) => {
   let { contact, confirmPassword, newPassword } = req.body;
 
   if (contact) {
-    contact = contact.toString().replace(/\D/g, '');
-    if (contact.length === 10) {
-      contact = "91" + contact;
-    }
+    contact = Number(contact.toString().replace(/\D/g, '').slice(-10));
   }
 
   if (!contact || !confirmPassword || !newPassword) {
@@ -302,10 +288,7 @@ export const resetPassword = async (req, res) => {
 export const adminLogin = async (req, res) => {
   let { mobileNumber, password } = req.body;
   if (mobileNumber) {
-    mobileNumber = mobileNumber.toString().replace(/\D/g, '');
-    if (mobileNumber.length === 10) {
-      mobileNumber = "91" + mobileNumber;
-    }
+    mobileNumber = Number(mobileNumber.toString().replace(/\D/g, '').slice(-10));
   }
 
   try {
@@ -314,7 +297,7 @@ export const adminLogin = async (req, res) => {
       return res.status(400).json({ message: "Admin not found" });
     }
 
-    const adminNumber = process.env.ADMIN_NUMBER || "8591325875";
+    const adminNumber = String(process.env.ADMIN_NUMBER || "8591325875").replace(/\D/g, '').slice(-10);
     const phoneNumber = user.mobileNumber;
     if (String(phoneNumber) !== String(adminNumber)) {
       return res.status(403).json({

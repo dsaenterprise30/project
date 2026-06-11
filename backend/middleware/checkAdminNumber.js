@@ -15,9 +15,11 @@ export const checkAdminNumber = (req, res, next) => {
     }
     const ADMIN_NUMBER = String(ADMIN_NUMBER_RAW).trim();
 
-    // direct string compare (you can adapt normalization if your ADMIN_NUMBER has country code)
-    if (mobileNumber !== ADMIN_NUMBER && mobileNumber !== `91${ADMIN_NUMBER}` && (`91${mobileNumber}` !== ADMIN_NUMBER)) {
-      // basic normalization: admin stored with/without 91
+    // direct string compare of last 10 digits
+    const cleanMobile = mobileNumber.replace(/\D/g, '').slice(-10);
+    const cleanAdmin = ADMIN_NUMBER.replace(/\D/g, '').slice(-10);
+
+    if (cleanMobile !== cleanAdmin) {
       return res.status(403).json({ message: "Access denied: Admin only" });
     }
 

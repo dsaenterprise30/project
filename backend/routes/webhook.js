@@ -35,10 +35,7 @@ const findAndHealUser = async (subscriptionId, subscriptionOrInvoiceEntity) => {
       const rzpCustomer = await razorpay.customers.fetch(customerId);
       if (rzpCustomer && rzpCustomer.contact) {
         let contactNum = rzpCustomer.contact.replace(/\D/g, "");
-        if (contactNum.length === 10) {
-          contactNum = "91" + contactNum;
-        }
-        const mobileNumber = Number(contactNum);
+        const mobileNumber = Number(contactNum.slice(-10));
 
         user = await User.findOne({ mobileNumber });
         if (user) {

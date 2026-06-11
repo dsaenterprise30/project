@@ -10,8 +10,12 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     required: [true, 'Mobile number is required.'],
     unique: true,
-    trim: true,
-    match: [/^91[0-9]{10}$/, 'Please fill a valid 10-digit mobile number.'],
+    validate: {
+      validator: function(v) {
+        return /^[0-9]{10}$/.test(String(v));
+      },
+      message: 'Please fill a valid 10-digit mobile number.'
+    }
   },
   email: {
     type: String,

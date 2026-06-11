@@ -24,7 +24,7 @@ const RentFlatSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Mobile number is required.'],
         trim: true,
-        match: [/^91+[0-9]{10}$/, 'Please fill a valid 10-digit mobile number.'],
+        match: [/^[0-9]{10}$/, 'Please fill a valid 10-digit mobile number.'],
         index: true // ✅ Index for faster lookups
     },
     date: {

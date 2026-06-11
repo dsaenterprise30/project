@@ -25,11 +25,11 @@ export const createRentListing = async (req, res) => {
             return res.status(400).json({ message: "All required fields must be provided." });
         }
 
-        // Always normalize to 91 + last 10 digits
-        const sanitizedContact = '91' + cleanMobileNumber(contact);
+        // Always normalize to exactly last 10 digits
+        const sanitizedContact = cleanMobileNumber(contact);
 
-        // Lookup user with prefixed 91
-        const matchedUser = await User.findOne({ mobileNumber: sanitizedContact });
+        // Lookup user with 10-digit number
+        const matchedUser = await User.findOne({ mobileNumber: Number(sanitizedContact) });
         let finalUserName = name;
 
         if (matchedUser) {
@@ -131,7 +131,7 @@ export const updateRentListingById = async (req, res) => {
             propertyType,
             price: parsePrice(price),
             userName: name,
-            contact: '91' + cleanMobileNumber(contact),
+            contact: cleanMobileNumber(contact),
             date,
             tenantType, // ✅ CORRECTED: Update tenantType
             ownershipType // ✅ CORRECTED: Update ownershipType
@@ -280,7 +280,7 @@ export const uploadRentExcel = async (req, res) => {
                 errors.push(`Row ${rowNumber}: Contact number must contain a valid 10-digit mobile number (${contactVal}).`);
                 continue;
             }
-            const sanitizedContact = "91" + tenDigitMobile;
+            const sanitizedContact = tenDigitMobile;
 
             let parsedDate = new Date();
             if (dateVal) {
@@ -334,7 +334,7 @@ export const uploadRentExcel = async (req, res) => {
                 continue;
             }
 
-            const matchedUser = await User.findOne({ mobileNumber: sanitizedContact });
+            const matchedUser = await User.findOne({ mobileNumber: Number(sanitizedContact) });
             const finalUserName = matchedUser ? matchedUser.fullName : (userName || "Unknown");
 
             const newListing = new RentFlat({
