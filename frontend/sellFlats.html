@@ -1189,7 +1189,7 @@
                             <th>Price</th>
                             <th>Name</th>
                             <th>Contact</th>
-                            <th>Date(MM/DD/YYYY)</th>
+                            <th>Date(DD/MM/YYYY)</th>
                             <th>Ownership</th>
                             <th>Actions</th>
                         </tr>
@@ -1472,7 +1472,7 @@
             <td>${prop.propertyType || ''}</td>
             <td>${prop.price || ''}</td><td>${prop.userName || ''}</td>
             <td>${"+91 " + (prop.contact || '')}</td>
-            <td>${new Date(prop.date).toLocaleDateString()}</td>
+            <td>${new Date(prop.date).toLocaleDateString('en-GB')}</td>
             <td>${prop.ownershipType || ''}</td>
             <td class="actions-cell"><button class="action-btn edit-btn" data-id="${prop.id}"><i class="fas fa-edit"></i></button>
                 <button class="action-btn delete-btn" data-id="${prop.id}"><i class="fas fa-trash-alt"></i></button></td>`;
@@ -1484,7 +1484,7 @@
                 data.forEach(prop => {
                     const card = document.createElement('div');
                     card.className = 'card-item';
-                    card.innerHTML = `<div class="card-row"><span class="card-label">Location:</span> <span class="card-value">${prop.location}</span></div><div class="card-row"><span class="card-label">Type:</span> <span class="card-value">${prop.propertyType}</span></div><div class="card-row"><span class="card-label">Price:</span> <span class="card-value">${prop.price}</span></div><div class="card-row"><span class="card-label">Name:</span> <span class="card-value">${prop.userName}</span></div><div class="card-row"><span class="card-label">Contact:</span> <span class="card-value">${"+91 " + prop.contact}</span></div><div class="card-row"><span class="card-label">Date:</span> <span class="card-value">${new Date(prop.date).toLocaleDateString()}</span></div><div class="card-row"><span class="card-label">Ownership:</span> <span class="card-value">${prop.ownershipType}</span></div><div class="card-actions actions-cell"><button class="action-btn edit-btn" data-id="${prop.id}"><i class="fas fa-edit"></i></button><button class="action-btn delete-btn" data-id="${prop.id}"><i class="fas fa-trash-alt"></i></button></div>`;
+                    card.innerHTML = `<div class="card-row"><span class="card-label">Location:</span> <span class="card-value">${prop.location}</span></div><div class="card-row"><span class="card-label">Type:</span> <span class="card-value">${prop.propertyType}</span></div><div class="card-row"><span class="card-label">Price:</span> <span class="card-value">${prop.price}</span></div><div class="card-row"><span class="card-label">Name:</span> <span class="card-value">${prop.userName}</span></div><div class="card-row"><span class="card-label">Contact:</span> <span class="card-value">${"+91 " + prop.contact}</span></div><div class="card-row"><span class="card-label">Date:</span> <span class="card-value">${new Date(prop.date).toLocaleDateString('en-GB')}</span></div><div class="card-row"><span class="card-label">Ownership:</span> <span class="card-value">${prop.ownershipType}</span></div><div class="card-actions actions-cell"><button class="action-btn edit-btn" data-id="${prop.id}"><i class="fas fa-edit"></i></button><button class="action-btn delete-btn" data-id="${prop.id}"><i class="fas fa-trash-alt"></i></button></div>`;
                     cardView.appendChild(card);
                 });
             }

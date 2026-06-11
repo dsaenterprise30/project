@@ -1519,7 +1519,7 @@
                 <td data-label="Price">${displayPrice}</td>
                 <td data-label="Name">${property.userName || ''}</td>
                 <td data-label="Contact">${(function(){let c = property.contact || ''; if (typeof c === 'string' && c.startsWith('91')) c = c.replace(/^91/, '+91 '); return c; })() || ''}</td>
-                <td data-label="Date">${property.date ? new Date(property.date).toLocaleDateString() : ''}</td>
+                <td data-label="Date">${property.date ? new Date(property.date).toLocaleDateString('en-GB') : ''}</td>
                 <td data-label="Ownership">${property.ownershipType || ''}</td>
             `;
                     propertiesBody.appendChild(row);
@@ -1543,7 +1543,7 @@
                 <div class="card-row"><span class="card-label">Price:</span> <span class="card-value">${displayPrice}</span></div>
                 <div class="card-row"><span class="card-label">Name:</span> <span class="card-value">${property.userName || ''}</span></div>
                 <div class="card-row"><span class="card-label">Contact:</span> <span class="card-value">${(function(){let c = property.contact || ''; if (typeof c === 'string' && c.startsWith('91')) c = c.replace(/^91/, '+91 '); return c; })() || ''}</span></div>
-                <div class="card-row"><span class="card-label">Date:</span> <span class="card-value">${property.date ? new Date(property.date).toLocaleDateString() : ''}</span></div>
+                <div class="card-row"><span class="card-label">Date:</span> <span class="card-value">${property.date ? new Date(property.date).toLocaleDateString('en-GB') : ''}</span></div>
                 <div class="card-row"><span class="card-label">Ownership:</span> <span class="card-value">${property.ownershipType || ''}</span></div>
             `;
                     cardView.appendChild(card);

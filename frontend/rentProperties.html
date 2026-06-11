@@ -1270,7 +1270,7 @@
                             <th>Contact</th>
                             <th>Tenant Choice</th>
                             <th>Ownership Type</th>
-                            <th>Listed on Date(MM/DD/YYYY)</th>
+                            <th>Listed on Date(DD/MM/YYYY)</th>
                         </tr>
                     </thead>
                     <tbody id="propertiesBody">
@@ -1598,7 +1598,7 @@
                 <td data-label="Contact">${displayContact || ''}</td>
                 <td data-label="Tenant Type">${property.tenantType || ''}</td>
                 <td data-label="Ownership Type">${property.ownershipType || 'Agent'}</td>
-                <td data-label="Date">${property.date ? new Date(property.date).toLocaleDateString() : ''}</td>
+                <td data-label="Date">${property.date ? new Date(property.date).toLocaleDateString('en-GB') : ''}</td>
             `;
                     propertiesBody.appendChild(row);
                 });
@@ -1624,7 +1624,7 @@
                 <div class="card-row"><span class="card-label">Contact:</span> <span class="card-value">${property.contact || ''}</span></div>
                 <div class="card-row"><span class="card-label">Tenant Type:</span> <span class="card-value">${property.tenantType || ''}</span></div>
                 <div class="card-row"><span class="card-label">Ownership Type:</span> <span class="card-value">${property.ownershipType || ''}</span></div>
-                <div class="card-row"><span class="card-label">Date:</span> <span class="card-value">${property.date ? new Date(property.date).toLocaleDateString() : ''}</span></div>
+                <div class="card-row"><span class="card-label">Date:</span> <span class="card-value">${property.date ? new Date(property.date).toLocaleDateString('en-GB') : ''}</span></div>
             `;
                     cardView.appendChild(card);
                 });
