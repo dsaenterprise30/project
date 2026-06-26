@@ -177,7 +177,7 @@ router.post(
             let duration = 1;
             if (user.planType) {
               const plan = await SubscriptionPlan.findOne({ planType: user.planType });
-              if (plan) duration = plan.duration;
+              if (plan) duration = plan.interval === "yearly" ? (plan.duration * 12) : (plan.duration || 1);
             }
 
             const now = new Date();

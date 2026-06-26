@@ -1818,7 +1818,7 @@
                     try {
                         showLoader();
                         const token = localStorage.getItem("token");
-                        const response = await fetch(`${API_BASE}/users/update/${userId}`, {
+                        const response = await fetch(`${API_BASE}/update/${userId}`, {
                             method: "PUT",
                             headers: {
                                 "Content-Type": "application/json",
