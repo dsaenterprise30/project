@@ -1202,8 +1202,11 @@
                 </div>
             </div>
 
-            <div class="data-header">
-                <h2 class="data-title">User Management</h2>
+            <div class="data-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2 class="data-title" style="margin: 0;">User Management</h2>
+                <button class="btn btn-success" onclick="syncAllUsersSubscriptions()" style="background: #10b981; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+                    <i class="fas fa-sync-alt"></i> Sync All Users with Razorpay
+                </button>
             </div>
 
             <div class="data-table-wrapper">
@@ -1757,6 +1760,47 @@
                     }
                 } catch (err) {
                     console.error('Error syncing subscription:', err);
+                    if (typeof showCustomPopup === 'function') {
+                        showCustomPopup('❌ Failed to connect to server');
+                    } else {
+                        alert('❌ Failed to connect to server');
+                    }
+                } finally {
+                    if (typeof hideLoader === 'function') hideLoader();
+                }
+            };
+
+            // Global bulk sync function for all users
+            window.syncAllUsersSubscriptions = async function () {
+                if (!confirm("Are you sure you want to sync ALL user subscriptions live with Razorpay?")) return;
+                try {
+                    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                    if (typeof showLoader === 'function') showLoader();
+                    const response = await fetch(`${API_BASE}/sync-all-subscriptions`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        if (typeof showCustomPopup === 'function') {
+                            showCustomPopup(`✅ ${data.message}`);
+                        } else {
+                            alert(`✅ ${data.message}`);
+                        }
+                        if (typeof fetchUsers === 'function') fetchUsers();
+                    } else {
+                        const msg = data.message || 'Failed to sync all user subscriptions';
+                        if (typeof showCustomPopup === 'function') {
+                            showCustomPopup(`⚠️ ${msg}`);
+                        } else {
+                            alert(`⚠️ ${msg}`);
+                        }
+                    }
+                } catch (err) {
+                    console.error('Error in bulk sync:', err);
                     if (typeof showCustomPopup === 'function') {
                         showCustomPopup('❌ Failed to connect to server');
                     } else {

@@ -483,6 +483,42 @@ export const syncUserSubscriptionByAdmin = async (req, res) => {
   }
 };
 
+// Route - Admin bulk sync ALL user subscriptions with Razorpay
+export const syncAllUsersSubscriptionsByAdmin = async (req, res) => {
+  try {
+    const users = await User.find({ subscriptionId: { $ne: null, $exists: true } });
+    
+    let syncedCount = 0;
+    let activeCount = 0;
+    let inactiveCount = 0;
+
+    for (const user of users) {
+      if (user.subscriptionId) {
+        const syncResult = await syncUserSubscription(user);
+        syncedCount++;
+        if (syncResult.active) {
+          activeCount++;
+        } else {
+          inactiveCount++;
+        }
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `Successfully synced ${syncedCount} user subscription(s) with Razorpay! (${activeCount} Active, ${inactiveCount} Inactive)`,
+      summary: {
+        totalSynced: syncedCount,
+        active: activeCount,
+        inactive: inactiveCount,
+      }
+    });
+  } catch (error) {
+    console.error("Admin Bulk Sync Error:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error during bulk sync", error: error.message });
+  }
+};
+
 //route 12: delete user
 export const deleteUserByAdmin = async (req, res) => {
   try {
