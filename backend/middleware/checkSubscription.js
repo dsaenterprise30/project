@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import { syncUserSubscription } from "../utils/subscriptionSync.js";
 
 async function checkSubscription(req, res, next) {
   try {
@@ -13,8 +14,15 @@ async function checkSubscription(req, res, next) {
 
     const now = new Date();
 
-    // If no active subscription or expired
+    // If no active subscription or expired, attempt live sync with Razorpay first
     if (!user.subscriptionActive || !user.subscriptionExpiry || user.subscriptionExpiry < now) {
+      if (user.subscriptionId) {
+        const syncResult = await syncUserSubscription(user);
+        if (syncResult.active) {
+          return next();
+        }
+      }
+
       user.subscriptionActive = false;
       user.subscriptionStatus = "Inactive";
       await user.save();

@@ -1727,7 +1727,33 @@
                 });
             }
 
-            // Make Open Edit accessible globally
+            // Global manual sync with Razorpay function
+            window.syncUserSubscription = async function (id) {
+                try {
+                    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                    if (typeof showLoader === 'function') showLoader();
+                    const res = await fetch(`/api/users/sync-subscription/${id}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    const data = await res.json();
+                    if (typeof hideLoader === 'function') hideLoader();
+                    if (res.ok && data.success) {
+                        alert(`✅ ${data.message}\nStatus: ${data.subscriptionStatus}\nActive: ${data.subscriptionActive}`);
+                        if (typeof fetchUsers === 'function') fetchUsers();
+                    } else {
+                        alert(`⚠️ ${data.message || 'Failed to sync user subscription'}`);
+                    }
+                } catch (err) {
+                    if (typeof hideLoader === 'function') hideLoader();
+                    console.error('Error syncing subscription:', err);
+                    alert('Failed to connect to server');
+                }
+            };
+
             // Make Open Edit accessible globally
             window.openEditUserModal = function (id) {
                 // Find user from the local allusers array
@@ -1920,6 +1946,9 @@
                 <td data-label="Location">${user.location || "N/A"}</td>
                 <td data-label="Status"><span class="${statusClass}">${statusText}</span></td>
                 <td data-label="Actions"> 
+                    <button class="btn btn-success btn-sm" onclick="syncUserSubscription('${user._id}')" title="Sync Live Subscription with Razorpay" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px; background: #10b981; color: white; border: none; font-weight: 500;">
+                        <i class="fas fa-sync-alt"></i> Sync
+                    </button>
                     <button class="btn btn-primary btn-sm" onclick="openEditUserModal('${user._id}', '${user.fullName}', '${user.subscriptionExpiry}')" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px; background: #3b82f6; border: none;">
                         <i class="fas fa-edit"></i>
                     </button>

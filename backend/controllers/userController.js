@@ -7,6 +7,7 @@ import bcrypt from "bcrypt";
 import express from 'express';
 import jwt from "jsonwebtoken";
 import { generateRefreshToken, generateAccessToken, sendTokenResponse } from './jwtController.js';
+import { syncUserSubscription } from '../utils/subscriptionSync.js';
 
 // ---- Global in-memory pending user store ----
 const pendingUsers = {};
@@ -121,11 +122,17 @@ export const loginUser = async (req, res) => {
     // ✅ Check subscription validity
     let subscriptionActive = existingUser.subscriptionActive;
 
-    if (existingUser.subscriptionExpiry && existingUser.subscriptionExpiry < new Date()) {
-      subscriptionActive = false;
-      existingUser.subscriptionActive = false;
-      existingUser.subscriptionStatus = "Inactive";
-      await existingUser.save();
+    if (!subscriptionActive || (existingUser.subscriptionExpiry && existingUser.subscriptionExpiry < new Date())) {
+      if (existingUser.subscriptionId) {
+        const syncResult = await syncUserSubscription(existingUser);
+        subscriptionActive = syncResult.active;
+      }
+
+      if (!subscriptionActive) {
+        existingUser.subscriptionActive = false;
+        existingUser.subscriptionStatus = "Inactive";
+        await existingUser.save();
+      }
     }
 
     if (!subscriptionActive) {
@@ -426,11 +433,15 @@ export const getSubscriptionStatus = async (req, res) => {
       return res.status(404).json({ message: "User not found." });
     }
 
-    // Check if subscription has expired
-    if (user.subscriptionExpiry && user.subscriptionExpiry < new Date()) {
-      user.subscriptionActive = false;
-      user.subscriptionStatus = "Inactive";
-      await user.save();
+    // Check if subscription has expired - attempt live Razorpay sync first
+    if (!user.subscriptionActive || (user.subscriptionExpiry && user.subscriptionExpiry < new Date())) {
+      if (user.subscriptionId) {
+        await syncUserSubscription(user);
+      } else {
+        user.subscriptionActive = false;
+        user.subscriptionStatus = "Inactive";
+        await user.save();
+      }
     }
 
     res.status(200).json({
@@ -441,6 +452,34 @@ export const getSubscriptionStatus = async (req, res) => {
   } catch (error) {
     console.error("Get Subscription Status Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// Route - Admin sync user subscription status with Razorpay
+export const syncUserSubscriptionByAdmin = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found." });
+    }
+
+    if (!user.subscriptionId) {
+      return res.status(400).json({ success: false, message: "User does not have a Razorpay subscription ID." });
+    }
+
+    const syncResult = await syncUserSubscription(user);
+    res.status(200).json({
+      success: true,
+      message: syncResult.active
+        ? "User subscription successfully synced & active!"
+        : "User subscription synced (Inactive or Expired on Razorpay).",
+      subscriptionActive: user.subscriptionActive,
+      subscriptionStatus: user.subscriptionStatus,
+      subscriptionExpiry: user.subscriptionExpiry,
+    });
+  } catch (error) {
+    console.error("Admin Sync Error:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
   }
 };
 

@@ -14,6 +14,7 @@ import {
   getSubscriptionStatus,
   deleteUserByAdmin,
   updateUser,
+  syncUserSubscriptionByAdmin,
 } from "../controllers/userController.js";
 
 import { verifyAccessToken } from "../middleware/userAuth.js";
@@ -85,5 +86,8 @@ router.delete("/delete/:id", verifyAccessToken, checkAdminNumber, deleteUserByAd
 
 // Route 13 - Update User (Admin only)
 router.put("/update/:id", verifyAccessToken, checkAdminNumber, updateUser);
+
+// Route 14 - Admin sync subscription with Razorpay
+router.post("/sync-subscription/:id", verifyAccessToken, checkAdminNumber, syncUserSubscriptionByAdmin);
 
 export default router;

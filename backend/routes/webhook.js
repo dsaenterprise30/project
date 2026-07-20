@@ -5,6 +5,7 @@ import User from "../models/User.js";
 import dotenv from "dotenv";
 import SubscriptionPlan from "../models/subscriptionPlan.js";
 import razorpay from "../config/razorpay.js";
+import { syncUserSubscription } from "../utils/subscriptionSync.js";
 dotenv.config();
 
 const router = express.Router();
@@ -160,35 +161,16 @@ router.post(
       if (event === "invoice.paid") {
         const invoiceEntity = payload.invoice?.entity;
         const subscriptionEntity = payload.subscription?.entity;
-        // Note: invoice.paid payload usually has subscription_id inside invoice entity
 
         if (invoiceEntity && invoiceEntity.subscription_id) {
           const subscriptionId = invoiceEntity.subscription_id;
-
-          // Try to get plan_id from invoice line items or subscription entity if available
-          // Usually we look up User to see their current plan or fetch generic default
-          // Ideally we fetch the subscription from Razorpay API to get plan_id, 
-          // but here we can try to look up the user's current plan or just default 1.
-          // Better: The User model should store the plan_id? Or we just assume the same plan.
-          // Let's rely on the User's stored planType to find the duration, or default 1.
-
           const user = await findAndHealUser(subscriptionId, subscriptionEntity || invoiceEntity);
+
           if (user) {
-            let duration = 1;
-            if (user.planType) {
-              const plan = await SubscriptionPlan.findOne({ planType: user.planType });
-              if (plan) duration = plan.interval === "yearly" ? (plan.duration * 12) : (plan.duration || 1);
-            }
+            // First sync directly with Razorpay API for authoritative current_end date
+            await syncUserSubscription(user);
 
-            const now = new Date();
-            const base = user.subscriptionExpiry && user.subscriptionExpiry > now ? user.subscriptionExpiry : now;
-            const expiry = addMonths(base, duration);
-
-            user.subscriptionActive = true;
-            user.subscriptionStatus = "Active";
-            user.subscriptionExpiry = expiry;
-
-            // Update Payment ID if available
+            // Update Payment ID and Email if available
             if (invoiceEntity.payment_id) {
               user.paymentId = invoiceEntity.payment_id;
             }
@@ -198,7 +180,7 @@ router.post(
             }
 
             await user.save();
-            console.log(`📅 Invoice paid: extended subscription for ${user.mobileNumber} to ${user.subscriptionExpiry} (+${duration} months)`);
+            console.log(`📅 Invoice paid: updated subscription status for ${user.mobileNumber} (Expiry: ${user.subscriptionExpiry})`);
           } else {
             console.warn("invoice.paid: user not found for subscriptionId:", invoiceEntity.subscription_id);
           }
@@ -212,20 +194,11 @@ router.post(
 
         if (subscriptionEntity) {
           const subscriptionId = subscriptionEntity.id;
-          const planId = subscriptionEntity.plan_id;
 
           const user = await findAndHealUser(subscriptionId, subscriptionEntity);
           if (user) {
-            const duration = await getPlanDuration(planId);
-            const now = new Date();
-            const base = user.subscriptionExpiry && user.subscriptionExpiry > now ? user.subscriptionExpiry : now;
-            const expiry = addMonths(base, duration);
+            await syncUserSubscription(user);
 
-            user.subscriptionActive = true;
-            user.subscriptionStatus = "Active";
-            user.subscriptionExpiry = expiry;
-
-            // Update Payment ID from payment entity
             if (paymentEntity && paymentEntity.id) {
               user.paymentId = paymentEntity.id;
             }
@@ -235,7 +208,7 @@ router.post(
             }
 
             await user.save();
-            console.log(`✅ Subscription charged: extended for ${user.mobileNumber} to ${user.subscriptionExpiry} (+${duration} months)`);
+            console.log(`✅ Subscription charged: updated subscription status for ${user.mobileNumber} (Expiry: ${user.subscriptionExpiry})`);
           } else {
             console.warn("subscription.charged: user not found for subscriptionId:", subscriptionId);
           }
