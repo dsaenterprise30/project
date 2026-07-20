@@ -1462,7 +1462,8 @@
             const userData = JSON.parse(localStorage.getItem("admin"));
             let allusers = [];
             // Base URL for user API (use deployed host; change here if needed)
-            const API_BASE = `${window.API_BASE_URL}/api/users`;
+            const baseUrl = (window.API_BASE_URL && window.API_BASE_URL !== 'undefined') ? window.API_BASE_URL : (window.location.origin || '');
+            const API_BASE = `${baseUrl}/api/users`;
 
             // --- Core Functions ---
 
@@ -1742,29 +1743,27 @@
                             'Authorization': `Bearer ${token}`
                         }
                     });
-                    const data = await response.json();
+                    let data = {};
+                    try {
+                        data = await response.json();
+                    } catch (e) {
+                        data = { message: `Server error (${response.status}: ${response.statusText})` };
+                    }
                     if (response.ok && data.success) {
-                        if (typeof showCustomPopup === 'function') {
-                            showCustomPopup(`✅ ${data.message} (Status: ${data.subscriptionStatus})`);
-                        } else {
-                            alert(`✅ ${data.message}\nStatus: ${data.subscriptionStatus}`);
-                        }
+                        const popMsg = `✅ ${data.message} (Status: ${data.subscriptionStatus})`;
+                        if (typeof showCustomPopup === 'function') showCustomPopup(popMsg);
+                        else alert(popMsg);
                         if (typeof fetchUsers === 'function') fetchUsers();
                     } else {
-                        const msg = data.message || 'Failed to sync user subscription';
-                        if (typeof showCustomPopup === 'function') {
-                            showCustomPopup(`⚠️ ${msg}`);
-                        } else {
-                            alert(`⚠️ ${msg}`);
-                        }
+                        const msg = data.message || `Failed to sync (HTTP ${response.status})`;
+                        if (typeof showCustomPopup === 'function') showCustomPopup(`⚠️ ${msg}`);
+                        else alert(`⚠️ ${msg}`);
                     }
                 } catch (err) {
                     console.error('Error syncing subscription:', err);
-                    if (typeof showCustomPopup === 'function') {
-                        showCustomPopup('❌ Failed to connect to server');
-                    } else {
-                        alert('❌ Failed to connect to server');
-                    }
+                    const errMsg = err.message ? `❌ ${err.message}` : '❌ Failed to connect to server';
+                    if (typeof showCustomPopup === 'function') showCustomPopup(errMsg);
+                    else alert(errMsg);
                 } finally {
                     if (typeof hideLoader === 'function') hideLoader();
                 }
@@ -1783,29 +1782,27 @@
                             'Authorization': `Bearer ${token}`
                         }
                     });
-                    const data = await response.json();
+                    let data = {};
+                    try {
+                        data = await response.json();
+                    } catch (e) {
+                        data = { message: `Server error (${response.status}: ${response.statusText})` };
+                    }
                     if (response.ok && data.success) {
-                        if (typeof showCustomPopup === 'function') {
-                            showCustomPopup(`✅ ${data.message}`);
-                        } else {
-                            alert(`✅ ${data.message}`);
-                        }
+                        const popMsg = `✅ ${data.message}`;
+                        if (typeof showCustomPopup === 'function') showCustomPopup(popMsg);
+                        else alert(popMsg);
                         if (typeof fetchUsers === 'function') fetchUsers();
                     } else {
-                        const msg = data.message || 'Failed to sync all user subscriptions';
-                        if (typeof showCustomPopup === 'function') {
-                            showCustomPopup(`⚠️ ${msg}`);
-                        } else {
-                            alert(`⚠️ ${msg}`);
-                        }
+                        const msg = data.message || `Failed to sync all users (HTTP ${response.status})`;
+                        if (typeof showCustomPopup === 'function') showCustomPopup(`⚠️ ${msg}`);
+                        else alert(`⚠️ ${msg}`);
                     }
                 } catch (err) {
                     console.error('Error in bulk sync:', err);
-                    if (typeof showCustomPopup === 'function') {
-                        showCustomPopup('❌ Failed to connect to server');
-                    } else {
-                        alert('❌ Failed to connect to server');
-                    }
+                    const errMsg = err.message ? `❌ ${err.message}` : '❌ Failed to connect to server';
+                    if (typeof showCustomPopup === 'function') showCustomPopup(errMsg);
+                    else alert(errMsg);
                 } finally {
                     if (typeof hideLoader === 'function') hideLoader();
                 }
