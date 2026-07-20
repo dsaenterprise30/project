@@ -1732,25 +1732,38 @@
                 try {
                     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
                     if (typeof showLoader === 'function') showLoader();
-                    const res = await fetch(`/api/users/sync-subscription/${id}`, {
+                    const response = await fetch(`${API_BASE}/sync-subscription/${id}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${token}`
                         }
                     });
-                    const data = await res.json();
-                    if (typeof hideLoader === 'function') hideLoader();
-                    if (res.ok && data.success) {
-                        alert(`✅ ${data.message}\nStatus: ${data.subscriptionStatus}\nActive: ${data.subscriptionActive}`);
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        if (typeof showCustomPopup === 'function') {
+                            showCustomPopup(`✅ ${data.message} (Status: ${data.subscriptionStatus})`);
+                        } else {
+                            alert(`✅ ${data.message}\nStatus: ${data.subscriptionStatus}`);
+                        }
                         if (typeof fetchUsers === 'function') fetchUsers();
                     } else {
-                        alert(`⚠️ ${data.message || 'Failed to sync user subscription'}`);
+                        const msg = data.message || 'Failed to sync user subscription';
+                        if (typeof showCustomPopup === 'function') {
+                            showCustomPopup(`⚠️ ${msg}`);
+                        } else {
+                            alert(`⚠️ ${msg}`);
+                        }
                     }
                 } catch (err) {
-                    if (typeof hideLoader === 'function') hideLoader();
                     console.error('Error syncing subscription:', err);
-                    alert('Failed to connect to server');
+                    if (typeof showCustomPopup === 'function') {
+                        showCustomPopup('❌ Failed to connect to server');
+                    } else {
+                        alert('❌ Failed to connect to server');
+                    }
+                } finally {
+                    if (typeof hideLoader === 'function') hideLoader();
                 }
             };
 
