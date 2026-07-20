@@ -13,5 +13,5 @@ export const API_BASE_URL = isLocalhost
     ? (["3000", "5000"].includes(window.location.port) 
         ? window.location.origin 
         : `${window.location.protocol}//${window.location.hostname || 'localhost'}:5000`)
-    : (window.location.origin && window.location.origin !== "null" ? window.location.origin : "https://project-tbbc.onrender.com");
+    : "https://project-tbbc.onrender.com";
 

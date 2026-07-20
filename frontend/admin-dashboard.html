@@ -1462,7 +1462,7 @@
             const userData = JSON.parse(localStorage.getItem("admin"));
             let allusers = [];
             // Base URL for user API (use deployed host; change here if needed)
-            const baseUrl = (window.API_BASE_URL && window.API_BASE_URL !== 'undefined') ? window.API_BASE_URL : (window.location.origin || '');
+            const baseUrl = window.API_BASE_URL || 'https://project-tbbc.onrender.com';
             const API_BASE = `${baseUrl}/api/users`;
 
             // --- Core Functions ---
